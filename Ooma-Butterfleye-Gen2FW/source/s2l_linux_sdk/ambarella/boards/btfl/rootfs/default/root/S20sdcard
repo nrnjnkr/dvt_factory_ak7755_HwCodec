@@ -1,0 +1,68 @@
+#!/bin/sh
+
+
+if [ -f /etc/ambarella.conf ]; then
+	. /etc/ambarella.conf
+fi
+
+install_sdcard_modules(){
+     echo "prepare sdcard drivers..."
+     modprobe ehci_hcd
+     modprobe ehci_ambarella
+     echo host > /proc/ambarella/usbphy0
+     modprobe scsi_mod
+     modprobe usb_storage
+     modprobe sd_mod
+     modprobe fat
+     modprobe vfat
+     sleep 3
+}
+
+
+mount_sdcard()
+{
+	if [ -e "/dev/sda1" ]
+	then
+		/bin/mount -t vfat /dev/sda1 /sdcard
+	else
+		echo "Failed to mount sdcard"
+	fi
+}
+
+start()
+{
+	kernel_ver=$(uname -r)
+
+	install_sdcard_modules
+
+	mount_sdcard
+}
+
+stop()
+{
+  kernel_ver=$(uname -r)
+}
+
+restart()
+{
+  stop
+  start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

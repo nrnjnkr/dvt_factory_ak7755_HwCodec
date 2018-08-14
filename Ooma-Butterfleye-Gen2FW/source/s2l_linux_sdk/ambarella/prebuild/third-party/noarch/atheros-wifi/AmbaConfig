@@ -1,0 +1,152 @@
+##
+## prebuild/third-party/noarch/atheros-wifi/AmbaConfig
+##
+## History:
+##    2012/06/19 - [Cao Rongrong] Create
+##
+## Copyright (c) 2015 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+config CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT
+  bool "Add Atheros Wifi firmware into root_fs"
+  default n
+  select CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT
+  help
+    Add Atheros Wifi firmware into root_fs.
+
+choice
+  prompt "Atheros 3xxx WiFi Firmware"
+  depends on CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT
+  help
+    Select Atheros WiFi 300x Firmware
+
+config CONFIG_ATHEROS_FIRMWARE_3X_NO_INSTALL
+  bool "Do not install any ar3xxx firmware"
+  help
+    Do not install any ar3xxx firmware
+
+config CONFIG_ATHEROS_FIRMARE_AR3K
+  bool "Select AR3k firmware"
+  help
+    Select AR3k firmware
+
+endchoice
+
+choice
+  prompt "Atheros 6xxx WiFi Firmware"
+  depends on CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT
+  help
+    Select Atheros WiFi 6xxx Firmware
+
+config CONFIG_ATHEROS_FIRMWARE_6X_NO_INSTALL
+  bool "Do not install any ar6xxx firmware"
+  help
+    Do not install any ar6xxx firmware
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6002
+  bool "AR6002 chip firmware"
+  help
+    Select AR6002 chip firmware
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6002_25
+  bool "AR6002 chip firmware version 25"
+  help
+    Select AR6002 chip firmware version 25
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6003
+  bool "AR6003 chip firmware"
+  help
+    Select AR6003 chip firmware
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6003_1
+  bool "AR6003 chip firmware version 1"
+  help
+    Select AR6003 chip firmware version 1
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6003_445
+  bool "AR6003 chip firmware version 445"
+  help
+    Select AR6003 chip firmware version 445
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6003_796
+  bool "AR6003 chip firmware version 796"
+  help
+    Select AR6003 chip firmware version 796
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6003_844
+  bool "AR6003 chip firmware version 844"
+  help
+    Select AR6003 chip firmware version 844
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6003_PA10
+  bool "AR6003 chip firmware version Pa10"
+  help
+    Select AR6003 chip firmware version Pa10
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6004
+  bool "AR6004 chip firmware"
+  help
+    Select AR6004 chip firmware
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6004_350374
+  bool "AR6004 chip QCA6234, AR9374 module firmware version 3.5.0.374"
+  help
+    Select AR6004 chip QCA6234, AR9374 module firmware version 3.5.0.374
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6004_35028
+  bool "AR6004 chip AR9374 module firmware version 3.5.0.28"
+  help
+    Select AR6004 chip AR9374 module firmware version 3.5.0.28
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6004_50080
+  bool "AR6004 chip AR1021 module firmware version 5.0.0.80"
+  help
+    Select AR6004 chip AR1021 module firmware version 5.0.0.80
+
+config CONFIG_ATHEROS_FIRMWARE_VERSION_6004_500110
+  bool "AR6004 chip AR9375 module firmware version 5.0.0.110"
+  help
+    Select AR6004 chip AR9375 module firmware version 5.0.0.110
+
+endchoice
+
+choice
+  prompt "Atheros 9xxx WiFi Firmware"
+  depends on CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT
+  help
+    Select Atheros WiFi AR9xxx Firmware
+
+config CONFIG_ATHEROS_FIRMWARE_ATH9K_NO_INSTALL
+  bool "Do not install any ath9k firmware"
+  help
+    Do not install any ath9k firmware
+
+config CONFIG_ATHEROS_FIRMWARE_ATH9K
+  bool "Select ath9k firmware"
+  help
+    ath9k firmware
+
+endchoice
+source prebuild/third-party/noarch/atheros-wifi-calib/AmbaConfig

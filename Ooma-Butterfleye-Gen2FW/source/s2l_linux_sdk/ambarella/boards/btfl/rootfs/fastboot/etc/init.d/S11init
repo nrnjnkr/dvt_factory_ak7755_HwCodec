@@ -1,0 +1,217 @@
+#!/bin/sh
+#
+# Init S2LM BTFL...
+#
+
+if [ -f /etc/ambarella.conf ]; then
+	. /etc/ambarella.conf
+fi
+
+create_node()
+{
+	[ -r /dev/iav ] || mknod -m 666 /dev/iav c 248 0
+	[ -r /dev/ucode ] || mknod -m 666 /dev/ucode c 248 1
+	[ -r /dev/overlay ] || mknod -m 666 /dev/overlay c 248 2
+	[ -r /dev/ambad ] || mknod -m 666 /dev/ambad c 248 248
+	[ -r /dev/dsplog ] || mknod -m 666 /dev/dsplog c 248 249
+}
+
+install_basic_modules(){
+  if [ /lib/modules/$kernel_ver/extra/ambad.ko ]; then
+    modprobe ambad
+    if [ "$?" == 0 ]; then
+      return 0
+    fi
+  fi
+  echo "modprobe ambad failed!"
+  return 1
+}
+
+install_video_modules()
+{
+  #Install IAV
+  if [ /lib/modules/$kernel_ver/extra/hw_timer.ko ]; then
+    modprobe hw_timer fastboot=1
+  fi
+
+  modprobe dsp
+  modprobe dsplog clean_dsplog_memory=0
+  modprobe iav
+  #/sbin/modprobe ambtve
+  modprobe imx322
+  #/usr/local/bin/test_fastosd -a &
+}
+
+install_audio_modules()
+{
+  #Audio
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/snd-soc-core.ko ]; then
+    modprobe snd-soc-core pmdown_time=500
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/ambarella/snd-soc-ambarella.ko ]; then
+    modprobe snd-soc-ambarella
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/ambarella/snd-soc-ambarella-i2s.ko ]; then
+    modprobe snd-soc-ambarella-i2s 
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/codecs/snd-soc-ambdummy.ko ]; then
+    modprobe snd-soc-ak7755 aec=0
+    modprobe snd-soc-ambdummy
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/ambarella/snd-soc-amba-board.ko ]; then
+    modprobe snd-soc-amba-board
+  fi
+}
+
+install_wifi_modules(){
+  #Inform MCU about successful boot
+  /usr/local/bin/amba_debug -g 112 -d 0x01
+  sleep 0.01
+  /usr/local/bin/amba_debug -g 112 -d 0x00
+
+  #Actually MCU already powered on WiFi chip, we can remove below line if
+  # WIFI successfully initialized.
+  /usr/local/bin/amba_debug -g 102 -d 0x01
+  #Below driver only brings up WiFi interface, for bluetooth we need to load
+  #the bluetooth firmware with uart device interface.
+  #modprobe bcmdhd firmware_path=/lib/firmware/broadcom/ap6255/fw_bcm43455c0_ag.bin nvram_path=/lib/firmware/broadcom/ap6255/nvram_ap6255_tcpka.txt
+  #RFF Test command
+  #modprobe bcmdhd firmware_path=/lib/firmware/broadcom/ap6255/fw_bcm43455c0_ag_mfg.bin nvram_path=/lib/firmware/broadcom/ap6255/nvram_ap6255_rff.txt
+}
+
+install_sdcard_modules(){
+     echo "prepare sdcard drivers..."
+     modprobe ehci_hcd
+     modprobe ehci_ambarella
+     echo host > /proc/ambarella/usbphy0
+     modprobe scsi_mod
+     modprobe usb_storage
+     modprobe sd_mod
+     modprobe fat
+     modprobe vfat
+     sleep 3
+}
+
+
+mount_sdcard()
+{
+	if [ -e "/dev/sda1" ]
+	then
+        /bin/mkdir -p /sdcard
+		/bin/mount -t vfat /dev/sda1 /sdcard
+	else
+		echo "Failed to mount sdcard"
+	fi
+}
+
+mount_config_files_partition()
+{
+	echo "start build config files..."
+	/bin/mkdir -p /tmp/config
+	ADD_NUM=$(grep add < /proc/mtd | awk -F: '{print $1}' | sed -e s/^mtd//)
+
+	if [ ! -z $ADD_NUM ]; then
+		/usr/sbin/ubiattach /dev/ubi_ctrl -d 0 -m $ADD_NUM
+		echo "/bin/mount -t ubifs /dev/ubi0_0 /tmp/config -o rw,sync,relatime"
+		/bin/mount -t ubifs /dev/ubi0_0 /tmp/config -o rw,sync,relatime
+	fi
+
+	if [ ! -d /tmp/config/etc/oryx ]; then
+		/bin/mkdir -p /tmp/config/etc/oryx
+		/bin/mkdir -p /tmp/config/etc/bpi
+        /bin/mkdir -p /tmp/config/etc/butterfleye
+		cp /etc/oryx/* /tmp/config/etc/oryx/ -rf
+		cp /etc/bpi/* /tmp/config/etc/bpi/ -rf
+        cp /etc/butterfleye/* /tmp/config/etc/butterfleye/ -rf
+	fi
+	/bin/mount /tmp/config/etc/oryx /etc/oryx
+	/bin/mount /tmp/config/etc/bpi /etc/bpi
+    /bin/mount /tmp/config/etc/butterfleye /etc/butterfleye
+	echo "build config files done"
+
+	if [ ! -d /mnt/provision ]; then
+		echo "Failed to mount calibration partition"
+	else
+        /bin/mkdir -p /tmp/config/calibration
+		/bin/mount /tmp/config/calibration /mnt/provision
+		echo "Mount calibration partition done"
+	fi
+}
+
+install_i2c_modules()
+{
+	#Install I2C module
+	# if [ -r /lib/modules/$kernel_ver/kernel/drivers/i2c/i2c-core.ko ]; then
+	# 	modprobe i2c-core
+	# fi
+	# if [ -r /lib/modules/$kernel_ver/kernel/drivers/i2c/busses/ambarella_i2c.ko ]; then
+#	# 	modprobe ambarella_i2c
+	# fi
+	# if [ -r /lib/modules/$kernel_ver/kernel/drivers/i2c/busses/i2c-ambarella.ko ]; then
+	# 	modprobe i2c-ambarella
+	# fi
+	# if [ -r /lib/modules/$kernel_ver/kernel/drivers/i2c/i2c-dev.ko ]; then
+	#	 modprobe i2c-dev
+	# fi
+	modprobe i2c-core
+ 	modprobe i2c-ambarella
+	modprobe i2c-dev
+}
+
+start()
+{
+  kernel_ver=$(uname -r)
+  create_node
+  install_basic_modules
+  install_video_modules
+  install_audio_modules
+  install_wifi_modules
+  #  install_i2c_modules
+  # install_sdcard_modules
+  modprobe pwm-ambarella
+  modprobe pwm_bl
+  #echo 1 > /sys/class/backlight/0.pwm_bl/brightness
+
+  mount_config_files_partition
+  # mount_sdcard
+    if [ -r /tmp/config/etc/butterfleye/normalboot ]; then
+        modprobe ehci-hcd
+        echo device > /proc/ambarella/usbphy0
+        modprobe ambarella_udc
+        modprobe g_ether
+        ifconfig usb0 10.1.0.200 netmask 255.255.255.0 up
+    else
+        /usr/local/bin/mptool > /dev/dmesg &
+        sleep 5
+    fi
+    /usr/sbin/telnetd &
+}
+
+stop()
+{
+  kernel_ver=$(uname -r)
+}
+
+restart()
+{
+  stop
+  start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

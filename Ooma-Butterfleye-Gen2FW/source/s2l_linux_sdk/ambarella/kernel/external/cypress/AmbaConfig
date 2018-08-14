@@ -1,0 +1,130 @@
+##################################
+#### WiFi SDIO Interface
+##################################
+
+config BUILD_CYPRESS_WIFI_SDIO
+	bool "Cypress WiFi SDIO 43340/43438"
+#	depends on MMC
+	---help---
+		This module adds support for wireless adapters based on
+		Cypress 43340/43438 chipset.
+
+config BUILD_CYPRESS_WIFI_PROC_PM_STATE
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Add PM State in proc file"
+	default n
+	help
+		Select Add PM State in "/proc/ambarella/wifi_pm_state"
+
+config BUILD_CYPRESS_WIFI_ARP_OFFLOAD
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Support WiFi ARP offload"
+	default n
+	help
+		Select Support WiFi ARP offload
+
+config BUILD_CYPRESS_WIFI_TXGLOM
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Support WiFi txglom"
+	default n
+	help
+		Select enable txglom in config.txt by "bus:rxglom=1", disable it by "bus:rxglom=0".
+		Should disable it for transfer video frame with 33ms interval which is faster than sg speed.
+
+config BUILD_CYPRESS_WIFI_INSMOD_NO_FW_LOAD
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Support WiFi insmod no fw load"
+	default n
+	help
+		Select it if connect WL_REG_ON in HW.
+		It will pull LOW of WL_REG_ON when ifconfig wlan0 down,
+		and pull HIGH of WL_REG_ON when ifconfig wlan0 up
+
+config BUILD_CYPRESS_WIFI_SDIO_OOB
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Out-of-Band Interrupt"
+	default n
+	help
+		Select the BCM WiFi SDIO OOB, otherwise Interrupt from SDIO DAT[1]
+
+config BUILD_CYPRESS_WIFI_SDIO_TCPKA
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "TCP Keepalive and wowl_pattern"
+	default n
+	help
+		Select the TCP Keeplalive nvram config, otherwise use UDP Keepalive config
+
+config BUILD_CYPRESS_WIFI_HOSTSLEEP
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Hostsleep will block all TX pkt in driver"
+	default n
+	help
+		Select the hostsleep will block all TX pkt in driver, otherwise block RX pkt in firmware only
+		Recommend select it in low power WiFi case.
+
+config BUILD_CYPRESS_WIFI_CMD53_TIMEOUT_PATCH
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	bool "Apply Fix CMD53 timeout issue"
+	default n
+	help
+		Using 4 CMD52 replace 1 CMD53 to read 4 bytes SDIO interupt data
+		Recommend select it in SDIO V2 driver.
+
+config GPIO_BCM_WL_HOST_WAKE
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	int "The GPIO of Platform to control WiFi WL_HOST_WAKE"
+	default 4
+	help
+		Config GPIO_BCM_WL_HOST_WAKE(Ironman 4)
+
+config GPIO_BCM_WL_REG_ON
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	int "The GPIO of Platform to control WiFi WL_REG_ON"
+	default 102
+	help
+		Config GPIO_BCM_WL_REG_ON(Ironman 102, Kiwi 113)
+
+config GPIO_BCM_WL_REG_ON_ACTIVE
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	int "The GPIO active value to control WiFi WL_REG_ON"
+	default 1
+	help
+		Config GPIO_BCM_WL_REG_ON_ACTIVE(Ironman 1, flashman 0)
+
+config WIFI_CONN_SD_SLOT_NUM
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	int "The SD Slot Number that Wifi connect"
+	default 0
+	help
+		Config SD Slot Number(Ironman=0, Antman=1)
+
+#########
+choice
+	prompt "Cypress WiFi driver Version"
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	help
+		Select the WiFi driver base on Kernel version.
+
+config BUILD_CYPRESS_WIFI_SDIO_V3_0
+	bool "Kernel 3.10; Driver 1.363.125.2"
+	help
+		Select driver base on Kernel [3.0, 3.10)
+		Verified on Kernel 3.10
+
+endchoice
+######### END of prompt "Cypress WiFi driver Version"
+
+########
+choice
+	prompt "Cypress WiFi Firmware and nvram Version"
+	depends on BUILD_CYPRESS_WIFI_SDIO
+	help
+		Select the Cypress WiFi Firmware and nvram version.
+
+config BUILD_CYPRESS_WIFI_SDIO_MODULE_43340
+	bool "43340"
+	help
+		Select 43340
+
+endchoice
+######### END of prompt "Cypress WiFi Firmware and nvram Version"

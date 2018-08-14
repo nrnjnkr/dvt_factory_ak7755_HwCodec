@@ -1,0 +1,77 @@
+--[[
+Copyright (c) 2016 Ambarella, Inc.
+
+This file and its contents ("Software") are protected by intellectual
+property rights including, without limitation, U.S. and/or foreign
+copyrights. This Software is also the confidential and proprietary
+information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+disclose, distribute, modify, or otherwise prepare derivative works of this
+Software or any portion thereof except pursuant to a signed license agreement
+or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+In the absence of such an agreement, you agree to promptly notify and return
+this Software to Ambarella, Inc.
+
+THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+--]]
+-- This is the configuration of Warp
+
+warp = {
+  log_level = 1, --[[ [0|1|2|3], 0: ERROR 1: INFO 2: DEBUG 3:TRACE ]]
+  enable = true,
+  channel_id = 0, --Channel ID
+  max_radius = 0, --[[ Full FOV circle radius (pixel) in vin. If equals 0,
+                       use vin_width/2 ]]
+  ldc_strength = 12, --[0.0~36.0] Lens full FOV in degree
+  proj_mode = 0, --[[ [0|1|2], 0: equidistant 1: stereo graphic
+                               2: lookup table ]]
+  lens_center_in_max_input = {
+    x = 0,  -- 0 means to calculate from buffer size
+    y = 0,  -- 0 means to calculate from buffer size
+  },
+  warp_mode = 1, --[[ [0~6], 0: No transform, 1: Normal, 2: Panorama, 3: Mercator,
+                      4: Subregion, 5: Vertical Panorama ,6: transverse mercator]]
+  pitch = 0,  --[-90~90] Lens Pitch in degree
+  yaw = 0,    --[-90~90] Lens Yaw in degree
+  rotate = 0, --[-10~10] Lens Rotate in degree
+  zoom = {      --Zoom factor. num<den: zoom out, num>den: zoom in
+   num = 0,
+    den = 0,
+  },
+  pano_hfov_degree = 180, --[0.0~180.0] Panorama horizontal angle
+  ver_panor_degree = 180, --[[ [0.0~180.0] (Wall vertical panorama)Panorama
+                               vertical angle]]
+  pan_tilt_flag = false; -- if enable the 'pan' and 'tilt' parameters below
+  pan = 0,  -- [-90~90] (Wall Subregion)Pan angle
+  tilt = 0, -- [-90~90] (Wall Subregion)Tilt angle
+  sub_roi_offset = { --[[ (Wall Subregion) ROI center offset to the circle
+                          center, Negative is left/top and positive is
+                          right/bottom ]]
+    x = 0,
+    y = 0,
+  },
+  no_roi_offset = { --(No Transform) ROI offset in vin
+    x = 0,
+    y = 0,
+  },
+  no_roi_size = { --(No Transform) ROI size in vin
+    width = 0,
+    height = 0,
+  },
+  efl_mm = 2.1, -- Effective focal length in mm
+  lut = "",     -- Look up table file
+  force_zero = false, --Force warp table content as zero
+  hor_disable = false, --Disable horizontal warp
+  ver_disable = false, --Disable vertical warp
+}
+
+return warp

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<title>VLC Mozilla plugin test page</title>
+<body>
+<script type="text/javascript">
+	function play() {
+		var vlc = document.getElementById("vlc");
+		var url = document.getElementById("url").value;
+		vlc.playlist.stop();
+		vlc.playlist.clear();
+		var id = vlc.playlist.add(url, "rtsp", options);
+		vlc.playlist.playItem(id);
+	}
+</script>
+<h1><a href="/">Home</a></h1>
+<br>
+<p>URL<input type="text" size="80" id="url" value="rtsp://" /> <input type="button" value="Go" onclick="play()"/></p>
+<br>
+<embed type="application/x-vlc-plugin" pluginspage="http://www.videolan.org"
+       width="640"
+       height="480"
+       id="vlc" />
+</body>
+</html>

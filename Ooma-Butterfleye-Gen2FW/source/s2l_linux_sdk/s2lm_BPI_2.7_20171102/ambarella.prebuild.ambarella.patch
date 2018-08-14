@@ -1,0 +1,4800 @@
+diff --git a/AmbaConfig b/AmbaConfig
+new file mode 100644
+index 0000000..11bc076
+--- /dev/null
++++ b/AmbaConfig
+@@ -0,0 +1,144 @@
++##
++## prebuild/ambarella/AmbaConfig
++##
++## History:
++##    2016/07/22 - [Hao Qian] Create
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++config CONFIG_AMBARELLA_DEWARP_LIBRARY
++	bool "Configure Ambarella dewarp library"
++	default n
++	help
++		Configure to include Ambarella dewarp library.
++
++config CONFIG_AMBARELLA_EIS_LIBRARY
++	bool "Configure Ambarella eis library"
++	default n
++	help
++		Configure to include Ambarella eis library.
++
++config CONFIG_AMBARELLA_SMARTRC_LIBRARY
++	bool "Configure Ambarella smartrc library"
++	default n
++	help
++		Configure to include Ambarella smartrc library.
++
++config CONFIG_AMBARELLA_SMARTRC2_LIBRARY
++	bool "Configure Ambarella smartrc library V2"
++	depends on (CONFIG_ARCH_S3L || CONFIG_ARCH_S5L)
++	default n
++	help
++		Configure to include Ambarella smartrc library V2.
++
++config CONFIG_AMBARELLA_PREANALYSIS_PACKAGE
++	bool "Configure Ambarella smart rate pre-analysis library"
++	depends on (CONFIG_ARCH_S3L || CONFIG_ARCH_S5L)
++	default n
++	help
++		Build Ambarella smart rate pre-analysis library
++
++if CONFIG_AMBARELLA_PREANALYSIS_PACKAGE
++
++config BUILD_AMBARELLA_PREANALYSIS_PACKAGE_UT
++	bool "Build Ambarella smart rate pre-analysis unit test"
++	default n
++	help
++		Build Ambarella smart rate pre-analysis unit test
++
++endif
++
++menuconfig CONFIG_AMBARELLA_SMARTCAM_PREBUILD
++	bool "CONFIG Ambarella Smartcam prebuild"
++	default y
++	help
++		Configure Smartcam prebuild.
++
++if CONFIG_AMBARELLA_SMARTCAM_PREBUILD
++config CONFIG_AMBARELLA_MDET_LIBRARY
++	bool "Configure Ambarella mdet library"
++	select CONFIG_AMBARELLA_OPENCV_SUPPORT
++	select CONFIG_AMBARELLA_OPENCV_CORE_LIB_SUPPORT
++	default n
++	help
++		Configure to include Ambarella mdet
++
++config CONFIG_AMBARELLA_FDET_LIBRARY
++	bool "Configure Ambarella fdet library"
++	select CONFIG_AMBARELLA_OPENCV_SUPPORT
++	select CONFIG_AMBARELLA_OPENCV_CORE_LIB_SUPPORT
++	default n
++	help
++		Configure to include Ambarella fdet
++
++config CONFIG_AMBARELLA_FDET2_LIBRARY
++        bool "Configure Ambarella fdet2 library"
++        select CONFIG_AMBARELLA_OPENCV_SUPPORT
++        select CONFIG_AMBARELLA_OPENCV_CORE_LIB_SUPPORT
++        default n
++        help
++                Configure to include Ambarella fdet2
++
++config CONFIG_AMBARELLA_LENS_MASK_DET_LIBRARY
++        bool "Configure Ambarella lens mask detection library"
++        default n
++        help
++                Configure to include Ambarella lens_mask_det
++
++config CONFIG_AMBARELLA_MOTION_PROFILE_DET_LIBRARY
++        bool "Configure Ambarella motion profile detection library"
++        default n
++        help
++                Configure to include Ambarella motion_profile_det
++
++config CONFIG_AMBARELLA_STEREO_LIBRARY
++        bool "Configure Ambarella Stereo Vision Library"
++        default n
++        help
++                Configure to include Ambarella stereo
++
++endif
++
++menuconfig CONFIG_AMBARELLA_AICAM_PREBUILD
++	bool "CONFIG Ambarella Aicam prebuild"
++	default y
++	help
++		Configure Aicam prebuild.
++
++if CONFIG_AMBARELLA_AICAM_PREBUILD
++config CONFIG_AMBARELLA_OPT_SC_ALGOS_LIBRARY
++        bool "Configure Ambarella Optimized Aicam Algos Library"
++        default n
++        help
++                Configure to include Ambarella Optimized Aicam Algos Library, support FD and FR.
++
++endif
++
++config CONFIG_AMBARELLA_STITCH_LIBRARY
++	bool "Configure Ambarella stitch library"
++	default n
++	help
++		Configure to include Ambarella stitch library.
+\ No newline at end of file
+diff --git a/library/dewarp/include/arch_s2l/lib_dewarp.h b/library/dewarp/include/arch_s2l/lib_dewarp.h
+new file mode 100644
+index 0000000..1b9d717
+--- /dev/null
++++ b/library/dewarp/include/arch_s2l/lib_dewarp.h
+@@ -0,0 +1,363 @@
++/*******************************************************************************
++ *  lib_dewarp.h
++ *
++ * History:
++ * 	2012/08/22 - [Qian Shen] created file
++ * 	2013/03/01 - [Qian Shen] Redesign APIs
++ * 	2013/05/03 - [Jian Tang] modified file
++ * 	2013/09/03 - [Qian Shen] added point mapping APIs
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _LIB_DEWARP_H_
++#define _LIB_DEWARP_H_
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#include <basetypes.h>
++
++#if defined(CONFIG_CPU_CORTEXA9_HF)
++#  if !((( __GNUC__  == 4) && (  __GNUC_MINOR__ >= 7)) || (__GNUC__  > 4))
++#    error  "Hard float needs Linaro Toolchain GCC4.8 to compile"
++#  endif
++#elif defined(CONFIG_CPU_CORTEXA9) && \
++      (((( __GNUC__  == 4) && (  __GNUC_MINOR__ >= 7)) || (__GNUC__  > 4)))
++#  error  "Soft float is not supported by GCC version > 4.7.4"
++#endif
++
++#ifndef AMBA_API
++#define AMBA_API __attribute__((visibility("default")))
++#endif
++
++typedef signed short data_t;
++
++typedef float degree_t;
++
++typedef enum {
++	HFLIP = (1 << 0),
++	VFLIP = (1 << 1),
++	ROTATE = (1 << 2),
++} ROTATE_FLIP;
++
++#define LDC_STITCH_WIDTH (1920)
++
++typedef enum {
++	PROJECTION_EQUIDISTANT = 0, // Linear scaled: r = f * theta (most common F theta)
++	PROJECTION_STEREOGRAPHIC, // Stereographic: r = 2 * f * tan(theta / 2)
++	PROJECTION_LOOKUPTABLE, // For other customized lens which the relationship between r and theta is given out in a look up table, such as tailor distortion lens.
++
++	PROJECTION_MODE_TOTAL_NUM,
++	PROJECTION_MODE_FIRST = PROJECTION_EQUIDISTANT,
++	PROJECTION_MODE_LAST = PROJECTION_LOOKUPTABLE,
++} PROJECTION_MODE;
++
++typedef enum {
++	CEILING_EAST = 0,
++	CEILING_NORTH,
++	CEILING_WEST,
++	CEILING_SOUTH,
++} ORIENTATION;
++
++typedef enum {
++	MAX_PITCH_DEGREE = 90,
++	MAX_YAW_DEGREE = 90,
++	MAX_ROTATE_DEGREE = 25,
++	MAX_ADV_PIT_YAW_DEGREE = 20,
++
++	MAX_FAN_WARP_PERCENT = 100,
++	MAX_POLAR_STRENGTH = 100,
++	MAX_POLAR_DEGREE = 180,
++} DEWARP_PARAM_RANGE;
++
++typedef struct {
++	int major;
++	int minor;
++	int patch;
++	unsigned int mod_time;
++	char description[64];
++} version_t;
++
++typedef struct {
++	int wall_normal_max_area_num;
++	int wall_panor_max_area_num;
++	int ceiling_normal_max_area_num;
++	int ceiling_panor_max_area_num;
++	int ceiling_sub_max_area_num;
++	int desktop_normal_max_area_num;
++	int desktop_panor_max_area_num;
++	int desktop_sub_max_area_num;
++	int max_warp_input_width;
++	int max_warp_input_height;
++	int max_warp_output_width;
++	int wall_transverse_mercator_max_area_num;
++	int wall_ver_panor_max_area_num;
++} fisheye_config_t;
++
++typedef unsigned int vector_debug_t;
++
++typedef struct {
++	int x;
++	int y;
++} point_t;
++
++typedef struct {
++	float x;
++	float y;
++} fpoint_t;
++
++typedef struct {
++	int width;
++	int height;
++} rect_t;
++
++typedef struct {
++	int width;
++	int height;
++	point_t upper_left;
++} rect_in_main_t;
++
++typedef struct {
++	int num;
++	int denom;
++} frac_t;
++
++typedef struct {
++	int strength;   /* range 0~100 */
++	int angle; 	 /* range -180~180 */
++} warp_polar_t;
++
++typedef struct {
++	frac_t left_ver_zoom;
++	frac_t right_ver_zoom;
++	frac_t top_hor_zoom; /* only support top_hor_zoom and bottom_hor_zoom */
++	frac_t bottom_hor_zoom;
++} warp_zoom_t;
++
++typedef struct {
++	int top;
++	int bot;
++} warp_adv_pitch_t;
++
++typedef struct {
++	int left;
++	int right;
++} warp_adv_yaw_t;
++
++typedef struct {
++	unsigned int mode;
++	unsigned int reserved[3];
++	warp_adv_pitch_t pitch;
++	warp_adv_yaw_t yaw;
++	warp_polar_t polar;
++} warp_adv_param_t;
++
++typedef struct {
++	rect_in_main_t output;
++	rect_in_main_t inter_output;
++	frac_t zoom;
++	frac_t hor_zoom;
++	frac_t vert_zoom;
++	int pitch;
++	int yaw;
++	int circle_radius;
++	int circle_max_fov;
++	point_t circle_center_in_premain;
++	int rotate;
++} warp_region_t;
++
++typedef struct {
++	degree_t pan;
++	degree_t tilt;
++} pantilt_angle_t;
++
++typedef struct {
++	int cols;
++	int rows;
++	int grid_width;
++	int grid_height;
++	data_t* addr;
++} vector_map_t;
++
++typedef struct {
++	rect_t size;
++	point_t unwarp_center;
++	fpoint_t upper_left;
++	fpoint_t lower_right;
++} input_limit_t;
++
++typedef struct {
++	PROJECTION_MODE projection_mode;
++	degree_t max_fov;
++	int max_radius;
++	int max_input_width;              // In fisheye (multi region) dewarp, max_input = pre_main; In lens warp, max_input = vin
++	int max_input_height;
++	point_t lens_center_in_max_input;
++	int lut_focal_length;             // only for PROJECTION_LOOKUPTABLE
++	int* lut_radius;                  // only for PROJECTION_LOOKUPTABLE
++	int main_buffer_width;	// we need this value to check stitching or not while init library.
++	input_limit_t max_input;
++	u32 debug_nocheck_enable : 1;
++	u32 reserved : 23;
++	u32 lut_num : 8;
++} dewarp_init_t;
++
++typedef struct {
++	rect_in_main_t input;
++	rect_in_main_t inter_output;
++	rect_in_main_t output;
++	int rotate_flip;
++	vector_map_t ver_map;
++	vector_map_t hor_map;
++	vector_map_t me1_ver_map;
++} warp_vector_t;
++
++
++AMBA_API int dewarp_init(dewarp_init_t* setup);
++AMBA_API int dewarp_deinit(void);
++AMBA_API int dewarp_get_version(version_t* version);
++
++// Lens Transforming APIs : lens to xxx
++AMBA_API int lens_no_transform(warp_region_t* region, rect_in_main_t* roi_in_vin,
++	warp_vector_t* vector);
++AMBA_API int lens_wall_normal(warp_region_t* region, warp_vector_t* vector);
++AMBA_API int lens_wall_panorama(warp_region_t* region, degree_t hor_range,
++	warp_vector_t* vector);
++AMBA_API int lens_wall_vertical_panorama(warp_region_t* region, degree_t ver_range,
++	warp_vector_t* vector);
++AMBA_API int lens_wall_transverse_mercator(warp_region_t* region, degree_t ver_range,
++	warp_vector_t* vector);
++AMBA_API int lens_wall_subregion_roi(warp_region_t* region, fpoint_t* roi_in_fisheye,
++	warp_vector_t* vector, pantilt_angle_t* angle);
++AMBA_API int lens_wall_subregion_angle(warp_region_t* region, pantilt_angle_t* angle,
++	warp_vector_t* vector, fpoint_t* roi_in_fisheye);
++
++// Fisheye Configuration APIs
++AMBA_API int fisheye_get_config(fisheye_config_t* config);
++AMBA_API int fisheye_set_config(fisheye_config_t* config);
++
++// Fisheye Transforming APIs
++AMBA_API int fisheye_no_transform(warp_region_t* region, rect_in_main_t* roi_in_premain,
++	warp_vector_t* vector);
++
++AMBA_API int fisheye_wall_normal(warp_region_t* region, warp_vector_t* vector);
++AMBA_API int fisheye_wall_panorama(warp_region_t* region, degree_t hor_range,
++	warp_vector_t* vector);
++AMBA_API int fisheye_wall_vertical_panorama(warp_region_t* region, degree_t ver_range,
++	warp_vector_t* vector);
++AMBA_API int fisheye_wall_transverse_mercator(warp_region_t* region, degree_t ver_range,
++	warp_vector_t* vector);
++AMBA_API int fisheye_wall_subregion_roi(warp_region_t* region, fpoint_t* roi_in_fisheye,
++	warp_vector_t* vector, pantilt_angle_t* angle);
++AMBA_API int fisheye_wall_subregion_angle(warp_region_t* region, pantilt_angle_t* angle,
++	warp_vector_t* vector, fpoint_t* roi_in_fisheye);
++
++AMBA_API int fisheye_ceiling_normal(warp_region_t* region, degree_t top_angle,
++	ORIENTATION orient, warp_vector_t* vector);
++AMBA_API int fisheye_ceiling_panorama(warp_region_t* region, degree_t top_angle,
++	degree_t hor_range, ORIENTATION orient, warp_vector_t* vector);
++AMBA_API int fisheye_ceiling_subregion_roi(warp_region_t* region,
++	fpoint_t* froi_in_fisheye,
++	warp_vector_t* vector, pantilt_angle_t* angle);
++AMBA_API int fisheye_ceiling_subregion_angle(warp_region_t* region,
++	pantilt_angle_t* angle, warp_vector_t* vector, fpoint_t* roi_in_fisheye);
++
++AMBA_API int fisheye_desktop_normal(warp_region_t* region, degree_t bottom_angle,
++	ORIENTATION orient, warp_vector_t* vector);
++AMBA_API int fisheye_desktop_panorama(warp_region_t* region, degree_t bottom_angle,
++	degree_t hor_range, ORIENTATION orient, warp_vector_t* vector);
++AMBA_API int fisheye_desktop_subregion_roi(warp_region_t* region,
++	fpoint_t* roi_in_fisheye,
++	warp_vector_t* vector, pantilt_angle_t* angle);
++AMBA_API int fisheye_desktop_subregion_angle(warp_region_t* region,
++	pantilt_angle_t* angle, warp_vector_t* vector, fpoint_t* roi_in_fisheye);
++
++// Fisheye Point Mapping APIs : xxx to fisheye
++AMBA_API int point_mapping_wall_normal_to_fisheye(warp_region_t* region,
++	fpoint_t* point_in_region, fpoint_t* point_in_fisheye);
++AMBA_API int point_mapping_wall_panorama_to_fisheye(warp_region_t* region,
++	degree_t hor_range, fpoint_t* point_in_region, fpoint_t* point_in_fisheye);
++AMBA_API int point_mapping_wall_subregion_to_fisheye(warp_region_t* region,
++	fpoint_t* roi_in_fisheye, fpoint_t* point_in_region,
++	fpoint_t* point_in_fisheye, pantilt_angle_t* angle);
++
++AMBA_API int point_mapping_ceiling_normal_to_fisheye(warp_region_t* region,
++	degree_t top_angle, ORIENTATION orient, fpoint_t* point_in_region,
++	fpoint_t* point_in_fisheye);
++AMBA_API int point_mapping_ceiling_panorama_to_fisheye(warp_region_t* region,
++	degree_t top_angle, degree_t hor_range, ORIENTATION orient,
++	fpoint_t* point_in_region, fpoint_t* fpoint_in_fisheye);
++AMBA_API int point_mapping_ceiling_subregion_to_fisheye(warp_region_t* region,
++	fpoint_t* roi_in_fisheye, fpoint_t* point_in_region,
++	fpoint_t* point_in_fisheye, pantilt_angle_t* angle);
++
++AMBA_API int point_mapping_desktop_normal_to_fisheye(warp_region_t* region,
++	degree_t bottom_angle, ORIENTATION orient, fpoint_t* point_in_region,
++	fpoint_t* point_in_fisheye);
++AMBA_API int point_mapping_desktop_panorama_to_fisheye(warp_region_t* region,
++	degree_t bottom_angle, degree_t hor_range, ORIENTATION orient,
++	fpoint_t* point_in_region, fpoint_t* point_in_fisheye);
++AMBA_API int point_mapping_desktop_subregion_to_fisheye(warp_region_t* region,
++	fpoint_t* roi_in_fisheye, fpoint_t* point_in_region,
++	fpoint_t* point_in_fisheye, pantilt_angle_t* angle);
++
++// Fisheye Point Mapping APIs : fisheye to xxx
++AMBA_API int point_mapping_fisheye_to_wall_normal(warp_region_t* region,
++	fpoint_t* point_in_fisheye, fpoint_t* point_in_region);
++AMBA_API int point_mapping_fisheye_to_wall_panorama(warp_region_t* region,
++	degree_t hor_range, fpoint_t* point_in_fisheye, fpoint_t* point_in_region);
++AMBA_API int point_mapping_fisheye_to_wall_subregion(warp_region_t* region,
++	fpoint_t* roi_in_fisheye, fpoint_t* point_in_fisheye,
++	fpoint_t* point_in_region);
++
++AMBA_API int point_mapping_fisheye_to_ceiling_normal(warp_region_t* region,
++	degree_t top_angle, ORIENTATION orient, fpoint_t* point_in_fisheye,
++	fpoint_t* point_in_region);
++AMBA_API int point_mapping_fisheye_to_ceiling_panorama(warp_region_t* region,
++	degree_t top_angle, degree_t hor_range, ORIENTATION orient,
++	fpoint_t* point_in_fisheye, fpoint_t* point_in_region);
++AMBA_API int point_mapping_fisheye_to_ceiling_subregion(warp_region_t* region,
++	fpoint_t* roi_in_fisheye, fpoint_t* point_in_fisheye,
++	fpoint_t* point_in_region);
++
++AMBA_API int point_mapping_fisheye_to_desktop_normal(warp_region_t* region,
++	degree_t bottom_angle, ORIENTATION orient, fpoint_t* point_in_fisheye,
++	fpoint_t* point_in_region);
++AMBA_API int point_mapping_fisheye_to_desktop_panorama(warp_region_t* region,
++	degree_t bottom_angle, degree_t hor_range, ORIENTATION orient,
++	fpoint_t* point_in_fisheye, fpoint_t* point_in_region);
++AMBA_API int point_mapping_fisheye_to_desktop_subregion(warp_region_t* region,
++	fpoint_t* roi_in_fisheye, fpoint_t* point_in_fisheye,
++	fpoint_t* point_in_region);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif	/* _LIB_DEWARP_H_ */
++
+diff --git a/library/dewarp/include/arch_s2l/lib_dewarp_header.h b/library/dewarp/include/arch_s2l/lib_dewarp_header.h
+new file mode 100644
+index 0000000..126ad6b
+--- /dev/null
++++ b/library/dewarp/include/arch_s2l/lib_dewarp_header.h
+@@ -0,0 +1,81 @@
++/*******************************************************************************
++ * lib_dewarp_header.h
++ *
++ * History:
++ *  Oct 16, 2013 2013 - [qianshen] created file
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef LIB_DEWARP_HEADER_H_
++#define LIB_DEWARP_HEADER_H_
++
++#include <basetypes.h>
++#include "utils.h"
++
++#ifndef NO_GLIBC
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <math.h>
++#include <string.h>
++#include <sys/ioctl.h>
++#include <sys/types.h>
++
++#define ATTR_UNUSED __attribute__((unused))
++
++#else
++
++#define NULL        0
++#define ATTR_UNUSED
++
++typedef unsigned long size_t ;
++
++// math.h
++extern float logf(float x);
++extern float expf(float x);
++extern float sqrtf(float x);
++extern float asinf(float x);
++extern float acosf(float x);
++extern float atanf(float x);
++extern float sinf(float x);
++extern float cosf(float x);
++extern float tanf(float x);
++
++// stdlib.h
++extern void* malloc(size_t size);
++extern void free(void *ptr);
++
++// string.h
++extern void* memcpy(void* dest, const void* src, size_t n);
++extern void* memset(void* s, int c, size_t n);
++
++#endif
++
++
++#endif /* LIB_DEWARP_HEADER_H_ */
+diff --git a/library/dewarp/lib/arch_s2l/libdewarp.so b/library/dewarp/lib/arch_s2l/libdewarp.so
+new file mode 120000
+index 0000000..177d163
+--- /dev/null
++++ b/library/dewarp/lib/arch_s2l/libdewarp.so
+@@ -0,0 +1 @@
++libdewarp.so.1
+\ No newline at end of file
+diff --git a/library/dewarp/lib/arch_s2l/libdewarp.so.1 b/library/dewarp/lib/arch_s2l/libdewarp.so.1
+new file mode 120000
+index 0000000..c47dce2
+--- /dev/null
++++ b/library/dewarp/lib/arch_s2l/libdewarp.so.1
+@@ -0,0 +1 @@
++libdewarp.so.1.4.2
+\ No newline at end of file
+diff --git a/library/dewarp/make.inc b/library/dewarp/make.inc
+new file mode 100644
+index 0000000..0a5bc76
+--- /dev/null
++++ b/library/dewarp/make.inc
+@@ -0,0 +1,57 @@
++##
++## prebuild/ambarella/library/dewarp/make.inc
++##
++## History:
++##    2016/07/22 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_DEWARP_LIBRARY), y)
++
++.PHONY: pre_dewarp_lib
++
++pre_dewarp_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_dewarp_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++ifeq ($(CONFIG_ARCH_S5L), y)
++ifeq ($(CONFIG_ARMV8_AARCH32), y)
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)_aarch32/*.so* $(FAKEROOT_DIR)/usr/lib/
++else
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++endif
++else
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++endif
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_dewarp_lib)
++endif
++
+diff --git a/library/eis/include/arch_s2l/lib_eis.h b/library/eis/include/arch_s2l/lib_eis.h
+new file mode 100644
+index 0000000..9d0b49a
+--- /dev/null
++++ b/library/eis/include/arch_s2l/lib_eis.h
+@@ -0,0 +1,146 @@
++/*******************************************************************************
++ * lib_eis.h
++ *
++ * History:
++ *  Nov 6, 2013 - [qianshen] created file
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef LIB_EIS_H_
++#define LIB_EIS_H_
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#include <basetypes.h>
++#include <amba_eis.h>
++#include "iav_ioctl.h"
++
++#define EIS_GYRO_STAT_MAX_NUM    (GYRO_DATA_ENTRY_MAX_NUM)
++#define EIS_WARP_ROW_MAX_NUM     (48)
++#define EIS_WARP_COL_MAX_NUM     (32)
++#define EIS_WARP_COL_STITCH_MAX_NUM     (EIS_WARP_COL_MAX_NUM * 2)
++
++typedef double radian_t;
++typedef double degree_t;
++
++typedef enum {
++	AXIS_Z = 0,
++	AXIS_Y,
++	AXIS_X,
++	AXIS_TOTAL_NUM,
++} AXIS;
++
++typedef enum {
++	EIS_DISABLE = 0,
++	EIS_PITCH = 1,
++	EIS_ROTATE = 2,
++	EIS_YAW = 3,
++	EIS_PITCH_ROTATE = 4,
++	EIS_FULL = 5,
++	EIS_MODE_NUM = 6,
++} EIS_FLAG;
++
++typedef struct {
++	int major;
++	int minor;
++	int patch;
++	unsigned int mod_time;
++	char description[64];
++} version_t;
++
++typedef enum {
++	EIS_AVG_MA = 0, // Moving Average
++	EIS_AVG_ABSOLUTE = 1,
++	EIS_AVG_NUM,
++	EIS_AVG_FIRST = EIS_AVG_MA,
++} EIS_AVG_MODE;
++
++typedef int (*eis_apply_warp_func_t)(const struct iav_warp_main*);
++typedef int (*eis_get_stat_func_t)(amba_eis_stat_t*);
++
++typedef struct eis_setup_s {
++	// gyro
++	double accel_full_scale_range;
++	double accel_lsb;
++	double gyro_full_scale_range;
++	double gyro_lsb;
++	int gyro_sample_rate_in_hz;   // hz
++	gyro_data_t gyro_shift;
++	AXIS gravity_axis;
++
++	// vin
++	int vin_width;
++	int vin_height;
++	int vin_col_bin;
++	int vin_row_bin;
++	double vin_cell_width_in_um;          // um
++	double vin_cell_height_in_um;         // um
++	double vin_frame_rate_in_hz;          // hz
++	double vin_vblank_in_ms;              // ms
++
++	// premain
++	int premain_input_width;
++	int premain_input_height;
++	int premain_input_offset_x;
++	int premain_input_offset_y;
++
++	int premain_width;
++	int premain_height;
++
++	// main
++	int output_width;
++	int output_height;
++
++	// lens
++	int lens_focal_length_in_um;         // um
++
++	double threshhold;
++	int frame_buffer_num;
++
++	// Warp table address info
++	s16 *h_table_addr;
++	s16 *v_table_addr;
++	s16 *me1_v_table_addr;
++
++	// Average Mode
++	EIS_AVG_MODE avg_mode;
++} eis_setup_t;
++
++AMBA_API int eis_setup(const eis_setup_t* setup, eis_apply_warp_func_t apply_warp_func, eis_get_stat_func_t get_stat_func);
++AMBA_API int eis_open(void);
++AMBA_API int eis_close(void);
++AMBA_API int eis_enable(const EIS_FLAG flag);
++
++AMBA_API int eis_version(version_t* version);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* LIB_EIS_H_ */
+diff --git a/library/eis/lib/arch_s2l/libeis.so b/library/eis/lib/arch_s2l/libeis.so
+new file mode 120000
+index 0000000..ce1dbfe
+--- /dev/null
++++ b/library/eis/lib/arch_s2l/libeis.so
+@@ -0,0 +1 @@
++libeis.so.1
+\ No newline at end of file
+diff --git a/library/eis/lib/arch_s2l/libeis.so.1 b/library/eis/lib/arch_s2l/libeis.so.1
+new file mode 120000
+index 0000000..a870ef7
+--- /dev/null
++++ b/library/eis/lib/arch_s2l/libeis.so.1
+@@ -0,0 +1 @@
++libeis.so.1.0.9
+\ No newline at end of file
+diff --git a/library/eis/make.inc b/library/eis/make.inc
+new file mode 100644
+index 0000000..f8d3a0e
+--- /dev/null
++++ b/library/eis/make.inc
+@@ -0,0 +1,52 @@
++##
++## prebuild/ambarella/library/eis/make.inc
++##
++## History:
++##    2016/07/22 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifneq ($(CONFIG_ARCH_S5), y)
++ifeq ($(CONFIG_AMBARELLA_EIS_LIBRARY), y)
++
++.PHONY: pre_eis_lib
++
++pre_eis_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_eis_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_eis_lib)
++endif
++endif
++
++
+diff --git a/library/preanalysis/include_priv/preanalysis.h b/library/preanalysis/include_priv/preanalysis.h
+new file mode 100644
+index 0000000..119c479
+--- /dev/null
++++ b/library/preanalysis/include_priv/preanalysis.h
+@@ -0,0 +1,335 @@
++/*******************************************************************************
++ * \file preanalysis.h
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _PREANALYSIS_H_
++#define _PREANALYSIS_H_
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++#ifndef AMBA_API
++#ifdef __GNUC__
++#define AMBA_API __attribute__((visibility("default")))
++#else
++#define AMBA_API
++#endif
++#endif
++
++#define AMBA_PREANALYSIS_MAX_NUM_LTRS           2   // maximum number of long-term references
++#define AMBA_PREANALYSIS_MAX_NUM_BUFFERS        32  // maximum number of buffers in the input buffer pool
++
++/**
++ * this definition MUST match ucode header file
++ */
++typedef enum amba_preanalysis_frame_type_s
++{
++  AMBA_PREANALYSIS_INVALID_PICT   = 0,
++  AMBA_PREANALYSIS_IDR_PICT       = 1,
++  AMBA_PREANALYSIS_I_PICT         = 2,
++  AMBA_PREANALYSIS_P_PICT         = 3,
++  AMBA_PREANALYSIS_B_PICT         = 4,
++  AMBA_PREANALYSIS_JPG_PICT       = 5,
++  AMBA_PREANALYSIS_FS_P_PICT      = 6       // fast-seek P type
++} amba_preanalysis_frame_type_t;
++
++typedef enum amba_preanalysis_engine_s
++{
++  AMBA_PREANALYSIS_VDSP_ENGINE    = 0,
++  AMBA_PREANALYSIS_IDSP_ENGINE    = 1,
++  AMBA_PREANALYSIS_NUM_DSP_ENGINES
++} amba_preanalysis_engine_t;
++
++typedef enum amba_preanalysis_debug_level_s
++{
++  AMBA_PREANALYSIS_DEBUG_LEVEL_ERROR          = 0,
++  AMBA_PREANALYSIS_DEBUG_LEVEL_WARNING        = 1,
++  AMBA_PREANALYSIS_DEBUG_LEVEL_INFO           = 2,
++  AMBA_PREANALYSIS_DEBUG_LEVEL_DEBUG          = 3,
++} amba_preanalysis_debug_level_t;
++
++typedef enum amba_preanalysis_ret_s
++{
++  AMBA_PREANALYSIS_OK             = 0,
++  AMBA_PREANALYSIS_INVALID_ARG    = -1,
++  AMBA_PREANALYSIS_NO_BUF         = -2,
++  AMBA_PREANALYSIS_NONEXISTENT    = -3,
++  AMBA_PREANALYSIS_UNKNOWN        = -4,
++} amba_preanalysis_ret_t;
++
++typedef enum amba_preanalysis_enable_flags_s
++{
++  AMBA_PREANALYSIS_FLAG_UNCOVERED_AREA        = (1 << 0),
++  AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND    = (1 << 1),
++  AMBA_PREANALYSIS_FLAG_STATIC_AREA           = (1 << 2),
++  AMBA_PREANALYSIS_FLAG_WEIGHTED_PREDICTION   = (1 << 3),
++} amba_preanalysis_enable_flags_t;
++
++typedef struct amba_preanalysis_buf_info_s
++{
++  uint16_t width;
++  uint16_t height;
++  uint16_t pitch;
++  uint16_t reserved0;
++} amba_preanalysis_buf_info_t;
++
++typedef struct amba_preanalysis_buf_s
++{
++  void     *base;
++  void     *pool;
++} amba_preanalysis_buf_t;
++
++typedef struct amba_preanalysis_weighted_prediction_out_s
++{
++  uint8_t frame_avg_brightness;
++  int8_t  luma_log2_weight_denom;
++  uint8_t reserved0[2];
++
++  uint8_t wp_enable[2][4]; //[list][ref]
++  int8_t  wp_weight[2][4]; //[list][ref] valid value -128 to 127
++  int8_t  wp_offset[2][4]; //[list][ref] valid value -128 to 127
++} amba_preanalysis_weighted_prediction_out_t;
++
++typedef struct amba_preanalysis_buf_func_s
++{
++  void *(*create_bufpool)(amba_preanalysis_buf_info_t *info, int size);
++  int (*request_buf)(amba_preanalysis_buf_t *buf);
++  int (*release_buf)(amba_preanalysis_buf_t *buf);
++  int (*get_buf_info)(void *buf_pool, amba_preanalysis_buf_info_t *info);
++  void (*destroy_bufpool)(void *buf_pool);
++} amba_preanalysis_buf_func_t;
++
++typedef struct amba_preanalysis_input_s
++{
++  uint64_t frame_no;                          // frame identifier
++
++  uint8_t  frame_type;                        // frame type, must be the same as defined in ucode
++  uint8_t  flag_long_term;                    // frame is a long-term reference flag
++  uint8_t  flag_output;                       // frame is output flag (perfect-background frame is not output)
++  uint8_t  reserved0;
++
++  amba_preanalysis_buf_t buf;                 // the input buffer, contains downscaled monochrome picture
++} amba_preanalysis_input_t;
++
++typedef struct amba_preanalysis_idsp_output_s
++{
++  uint64_t frame_no;                          // frame identifier carried over from the corresponding input buffer
++  uint32_t output_flags;                      // bit-wise output flag for different modules
++
++  amba_preanalysis_buf_t alpha_index;         // alpha index map, NULL if unset
++} amba_preanalysis_idsp_output_t;
++
++typedef struct amba_preanalysis_vdsp_output_s
++{
++  uint64_t frame_no;                          // frame identifier carried over from the corresponding input buffer
++  uint32_t output_flags;                      // bit-wise output flag for different modules
++
++  uint8_t  noise_level;                       // the output noise level
++  uint8_t  frame_type;                        // frame type carried over from the corresponding output buffer
++  uint8_t  reserved0[2];
++
++  amba_preanalysis_buf_t uncovered_area;      // uncovered area map, NULL if unset
++  amba_preanalysis_buf_t motion_map;          // motion map, NULL if unset
++  amba_preanalysis_buf_t static_area;         // static area map, NULL if unset
++  amba_preanalysis_weighted_prediction_out_t weighted_prediction; // weighted prediction output
++} amba_preanalysis_vdsp_output_t;
++
++typedef struct amba_preanalysis_status_s
++{
++  uint64_t frame_no;                          // frame identifier the last input/output buffer, -1 upon initialization
++  uint8_t  num_buffers_used;                  // number of internally used input buffers
++  uint8_t  reserved0[3];
++
++  amba_preanalysis_input_t ltr[AMBA_PREANALYSIS_MAX_NUM_LTRS]; // the internally used long-term reference (LTR) buffers
++  amba_preanalysis_input_t str[AMBA_PREANALYSIS_MAX_NUM_BUFFERS]; // the internally used short-term reference buffers
++} amba_preanalysis_status_t;
++
++typedef struct amba_preanalysis_configuration_s
++{
++  uint32_t enable_flags;                      // bit-wise enable flag for different modules
++  uint16_t image_width;                       // source image width, same as the encoder
++  uint16_t image_height;                      // source image height, same as the encoder
++
++  uint8_t  input_bufpool_size[AMBA_PREANALYSIS_NUM_DSP_ENGINES]; // the minimum number of buffers needed for VDSP input buffer pool, set by the library
++  uint8_t  output_bufpool_size;               // the output buffer pool size, set by the caller
++  uint8_t  dummy_latency;                     // the encoder dummy latency in number of frames set by the caller
++
++  uint8_t  enable_ltr;                        // enable long-term reference (LTR)
++  uint8_t  ltr_option;                        // 0: use the closest LTR against current picture for processing
++                                              // 1: use the LTR before the closest LTR against current picture for processing
++                                              // set to 1 if Q pictures are used as LTRs, otherwise set to 0
++  uint8_t  gop_m;                             // P picture period, same as the encoder
++  uint8_t  reserved1;
++  uint32_t reserved2[7];
++} amba_preanalysis_configuration_t;
++
++/**
++ * \struct typedef struct amba_preanalysis_context_s amba_preanalysis_context_t
++   \brief the opaque context returned by calling amba_preanalysis_open()
++ */
++typedef struct amba_preanalysis_context_s amba_preanalysis_context_t;
++
++/**
++ * \fn int amba_preanalysis_get_version(void)
++ * \brief get the SVN revision number of the release.
++ *
++ * \return return SVN revision number, -1 for unofficial release.
++ */
++AMBA_API int amba_preanalysis_get_version(void);
++
++/**
++ * \fn int amba_preanalysis_create_default_config(amba_preanalysis_configuration_t *cfg)
++ * \brief create default configuration to be used to initialize the library
++ *
++ * this function must be called prior to calling amba_preanalysis_open(). the returned configuration
++ * is meant to be used in that call.
++ *
++ * \param cfg       the generated output configuration
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_create_default_config(amba_preanalysis_configuration_t *cfg);
++
++/**
++ * \fn int amba_preanalysis_get_config(amba_preanalysis_context_t *ctx, amba_preanalysis_configuration_t *cfg)
++ * \brief get the current configuration of an instance of the library
++ *
++ * \param ctx       the handle to the instance
++ * \param cfg       the received output configuration
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_get_config(amba_preanalysis_context_t *ctx, amba_preanalysis_configuration_t *cfg);
++
++/**
++ * \fn int amba_preanalysis_set_config(amba_preanalysis_context_t *ctx, amba_preanalysis_configuration_t *cfg)
++ * \brief get the current configuration of an instance of the library
++ *
++ * \param ctx       the handle to the instance
++ * \param cfg       the input configuration
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_set_config(amba_preanalysis_context_t *ctx, amba_preanalysis_configuration_t *cfg);
++
++/**
++ * \fn int amba_preanalysis_get_debug_level(amba_preanalysis_context_t *ctx)
++ * \brief get the current debug level of an instance of the library
++ *
++ * \param ctx       the handle to the instance
++ * \return debug level
++ */
++AMBA_API int amba_preanalysis_get_debug_level(amba_preanalysis_context_t *ctx);
++
++/**
++ * \fn int amba_preanalysis_set_debug_level(amba_preanalysis_context_t *ctx, int dbg_level)
++ * \brief set the debug level of an instance of the library
++ *
++ * \param ctx       the handle to the instance
++ * \param dbg_level the debug level
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_set_debug_level(amba_preanalysis_context_t *ctx, int dbg_level);
++
++/**
++ * \fn int amba_preanalysis_get_status(amba_preanalysis_context_t *ctx, amba_preanalysis_engine_t di, amba_preanalysis_status_t *status)
++ * \brief get the current status of an instance of the library
++ *
++ * \param ctx       the handle to the instance
++ * \param di        the DSP index
++ * \param status    the received output configuration
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_get_status(amba_preanalysis_context_t *ctx, amba_preanalysis_engine_t di, amba_preanalysis_status_t *status);
++
++/**
++ * \fn amba_preanalysis_context_t *amba_preanalysis_open(amba_preanalysis_configuration_t *cfg)
++ * \brief initialize the library and create one instance, returns a handle to the caller
++ *
++ * \param cfg       the input configuration
++ * \return the context handle, NULL if failure
++ */
++AMBA_API amba_preanalysis_context_t *amba_preanalysis_open(amba_preanalysis_configuration_t *cfg);
++
++/**
++ * \fn int amba_preanalysis_register_buf_callback(amba_preanalysis_context_t *ctx, amba_preanalysis_buf_func_t *cb)
++ * \brief register buffer management callback functions provided by the caller
++ *
++ * this function must be called prior to processing pictures, otherwise, the error is returned upon calling
++ * amba_preanalysis_process_picture(). when this function is called, the library will allocate private and output
++ * buffer pools using the callback functions.
++ *
++ * \param ctx       the handle to the instance
++ * \param cb        the buffer management callback functions
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_register_buf_callback(amba_preanalysis_context_t *ctx, amba_preanalysis_buf_func_t *cb);
++
++/**
++ * \fn int amba_preanalysis_process_idsp(amba_preanalysis_context_t *ctx, amba_preanalysis_input_t *in, amba_preanalysis_idsp_output_t *out)
++ * \brief accept input buffer, and produce output buffers
++ *
++ * the caller cannot assume the input buffer is unused when the function returns. the function is responsible for releasing the
++ * input buffer. the caller does not need to allocate output buffers, the function is responsible for allocating the output
++ * buffers. the caller is responsible for releasing the output buffers.
++ *
++ * \param ctx       the handle to the instance
++ * \param in        the input
++ * \param out       the output
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_process_idsp(amba_preanalysis_context_t *ctx, amba_preanalysis_input_t *in, amba_preanalysis_idsp_output_t *out);
++
++/**
++ * \fn int amba_preanalysis_process_vdsp(amba_preanalysis_context_t *ctx, amba_preanalysis_input_t *in, amba_preanalysis_vdsp_output_t *out)
++ * \brief accept input buffer, and produce output buffers
++ *
++ * the caller cannot assume the input buffer is unused when the function returns. the function is responsible for releasing the
++ * input buffer. the caller does not need to allocate output buffers, the function is responsible for allocating the output
++ * buffers. the caller is responsible for releasing the output buffers.
++ *
++ * \param ctx       the handle to the instance
++ * \param in        the input
++ * \param out       the output
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_process_vdsp(amba_preanalysis_context_t *ctx, amba_preanalysis_input_t *in, amba_preanalysis_vdsp_output_t *out);
++
++/**
++ * \fn int amba_preanalysis_close(amba_preanalysis_context_t *ctx)
++ * \brief clean up internal resources and close the instance.
++ *
++ * \param ctx       the handle to the instance
++ * \return return code
++ */
++AMBA_API int amba_preanalysis_close(amba_preanalysis_context_t *ctx);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* _PREANALYSIS_H_ */
+diff --git a/library/preanalysis/include_priv/version.h b/library/preanalysis/include_priv/version.h
+new file mode 100644
+index 0000000..7913440
+--- /dev/null
++++ b/library/preanalysis/include_priv/version.h
+@@ -0,0 +1,42 @@
++/*******************************************************************************
++ * \file version.h
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++/* THIS FILE IS AUTOMATICALLY GENERATED, DO NOT EDIT. */
++
++#ifndef _VERSION_H_
++#define _VERSION_H_
++
++#define REVISION 274048
++#define LAST_CHANGED_REV 274048
++#define LAST_CHANGED_DATE_YEAR 2017
++#define LAST_CHANGED_DATE_MONTH 07
++#define LAST_CHANGED_DATE_DAY 07
++
++#endif /* _VERSION_H_ */
++
+diff --git a/library/preanalysis/make.inc b/library/preanalysis/make.inc
+new file mode 100644
+index 0000000..705dbb8
+--- /dev/null
++++ b/library/preanalysis/make.inc
+@@ -0,0 +1,72 @@
++##
++## prebuild/ambarella/library/preanalysis/make.inc
++##
++## History:
++##    2016/08/23 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++ifeq ($(CONFIG_AMBARELLA_PREANALYSIS_PACKAGE), y)
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++include $(CLEAR_VARS)
++
++.PHONY: pre_analysis_lib
++
++pre_analysis_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_analysis_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_analysis_lib)
++
++###
++ifeq ($(BUILD_AMBARELLA_PREANALYSIS_PACKAGE_UT), y)
++
++include $(CLEAR_VARS)
++
++LOCAL_TARGET	:= patest
++LOCAL_SRCS	:= $(wildcard ${LOCAL_PATH}/unit_test_priv/*.c)
++LOCAL_CFLAGS	:= -I$(LOCAL_PATH)/include_priv
++LOCAL_LDFLAGS	+= -L$(LOCAL_PATH)/lib/arch_$(AMBARELLA_ARCH) -lpreanalysis -lpreanalysis_core
++
++include $(BUILD_APP)
++
++.PHONY: $(LOCAL_TARGET)
++
++$(LOCAL_TARGET): $(LOCAL_MODULE)
++	@mkdir -p $(UNIT_TEST_PATH)/
++	@cp -dpRf $< $(UNIT_TEST_PATH)/
++	@echo "Build $@ Done."
++
++$(call add-target-into-build, $(LOCAL_TARGET))
++
++endif
++
++endif
+\ No newline at end of file
+diff --git a/library/preanalysis/unit_test_priv/bufpool.c b/library/preanalysis/unit_test_priv/bufpool.c
+new file mode 100644
+index 0000000..12baae1
+--- /dev/null
++++ b/library/preanalysis/unit_test_priv/bufpool.c
+@@ -0,0 +1,182 @@
++/*******************************************************************************
++ * \file bufpool.c
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdint.h>
++#include <assert.h>
++#include "preanalysis.h"
++#include "bufpool.h"
++
++void *create_bufpool(amba_preanalysis_buf_info_t *info, int size)
++{
++  int i;
++  bufpool_t *pool = NULL;
++
++  assert(info);
++
++  if (32 < size)
++  {
++    fprintf(stderr, "%s(): current implementation does not supports pool size %d > 32\n", __func__, size);
++    return (void *)pool;
++  }
++
++  pool = (bufpool_t *)malloc(sizeof(bufpool_t));
++  if (NULL == pool)
++  {
++    fprintf(stderr, "%s(): error calling malloc()\n", __func__);
++    return NULL;
++  }
++
++  pool->base = (uint8_t *)malloc(info->pitch * info->height * size);
++  if (NULL == pool->base)
++  {
++    fprintf(stderr, "%s(): error calling malloc()\n", __func__);
++    free(pool);
++    return NULL;
++  }
++
++  pool->width = info->width;
++  pool->height = info->height;
++  pool->pitch = info->pitch;
++  pool->in_use_pattern = 0;
++  pool->total_num = size;
++  pool->used_num = 0;
++
++  for (i = 0; i < size; ++i)
++  {
++    pool->offset[i] = &pool->base[pool->pitch * pool->height * i];
++  }
++
++  return (void *)pool;
++}
++
++int request_buf(amba_preanalysis_buf_t *buf)
++{
++  bufpool_t *pool = NULL;
++  int index;
++
++  assert(buf);
++
++  pool = (bufpool_t *)buf->pool;
++  assert(pool);
++
++  if (pool->total_num == pool->used_num)
++  {
++    fprintf(stderr, "%s(): buffer pool full\n", __func__);
++    return -1;
++  }
++
++  for (index = 0; index < pool->total_num; ++index)
++  {
++    if (0 == (pool->in_use_pattern & (1 << index)))
++    {
++      break;
++    }
++  }
++
++  if (index == pool->total_num)
++  {
++    fprintf(stderr, "%s(): cannot find free buffer 0x%08x\n", __func__, pool->in_use_pattern);
++    return -1;
++  }
++
++  pool->in_use_pattern |= 1 << index;
++  pool->used_num += 1;
++  buf->base = pool->offset[index];
++  //fprintf(stdout, "%s(): buffer[%d] %p is allocated, in_use_pattern=0x%08x, used_num=%d\n", __func__, index, buf->base, pool->in_use_pattern, pool->used_num);
++
++  return 0;
++}
++
++int release_buf(amba_preanalysis_buf_t *buf)
++{
++  bufpool_t *pool = NULL;
++  int index;
++
++  assert(buf);
++
++  pool = (bufpool_t *)buf->pool;
++  assert(pool);
++
++  for (index = 0; index < pool->total_num; ++index)
++  {
++    if (buf->base == pool->offset[index])
++    {
++      break;
++    }
++  }
++
++  if (index == pool->total_num)
++  {
++    fprintf(stderr, "%s(): buffer %p does not belong to buffer pool %p\n", __func__, buf->base, buf->pool);
++    return -1;
++  }
++
++  if (0 == (pool->in_use_pattern & (1 << index)) || !pool->used_num)
++  {
++    fprintf(stderr, "%s(): buffer[%d] %p is unused, in_use_pattern=0x%08x, used_num=%d\n", __func__, index, buf->base, pool->in_use_pattern, pool->used_num);
++    return -1;
++  }
++
++  pool->in_use_pattern &= ~(1 << index);
++  pool->used_num -= 1;
++  //fprintf(stdout, "%s(): buffer[%d] %p is freed, in_use_pattern=0x%08x, used_num=%d\n", __func__, index, buf->base, pool->in_use_pattern, pool->used_num);
++
++
++  return 0;
++}
++
++int get_buf_info(void *buf_pool, amba_preanalysis_buf_info_t *info)
++{
++  bufpool_t *pool = (bufpool_t *)buf_pool;
++
++  assert(buf_pool && info);
++
++  info->width = pool->width;
++  info->pitch = pool->pitch;
++  info->height = pool->height;
++
++  return 0;
++}
++
++void destroy_bufpool(void *buf_pool)
++{
++  bufpool_t *pool = (bufpool_t *)buf_pool;
++
++  assert(pool);
++
++  if (pool->used_num || pool->in_use_pattern)
++  {
++    fprintf(stderr, "%s(): there are still buffers in use, num=%d, pattern=0x%08x\n", __func__, pool->used_num, pool->in_use_pattern);
++  }
++
++  free(pool->base);
++  free(pool);
++}
+diff --git a/library/preanalysis/unit_test_priv/bufpool.h b/library/preanalysis/unit_test_priv/bufpool.h
+new file mode 100644
+index 0000000..2107b98
+--- /dev/null
++++ b/library/preanalysis/unit_test_priv/bufpool.h
+@@ -0,0 +1,55 @@
++/*******************************************************************************
++ * \file bufpool.h
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _BUFPOOL_H_
++#define _BUFPOOL_H_
++
++typedef struct bufpool_s
++{
++  uint16_t width;
++  uint16_t height;
++  uint16_t pitch;
++  uint32_t in_use_pattern;
++  uint8_t total_num;
++  uint8_t used_num;
++  uint8_t *base;
++  uint8_t *offset[AMBA_PREANALYSIS_MAX_NUM_BUFFERS];
++} bufpool_t;
++
++void *create_bufpool(amba_preanalysis_buf_info_t *info, int size);
++
++int request_buf(amba_preanalysis_buf_t *buf);
++
++int release_buf(amba_preanalysis_buf_t *buf);
++
++int get_buf_info(void *buf_pool, amba_preanalysis_buf_info_t *info);
++
++void destroy_bufpool(void *buf_pool);
++
++#endif /* _BUFPOOL_H_ */
+diff --git a/library/preanalysis/unit_test_priv/patest.c b/library/preanalysis/unit_test_priv/patest.c
+new file mode 100644
+index 0000000..f720646
+--- /dev/null
++++ b/library/preanalysis/unit_test_priv/patest.c
+@@ -0,0 +1,998 @@
++/*******************************************************************************
++ * \file patest.c
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdint.h>
++#include <assert.h>
++
++#ifdef _WIN32
++#include "getopt.h"
++#else
++#include <unistd.h>
++#include <getopt.h>
++#endif //_WIN32
++
++#include "preanalysis.h"
++#include "bufpool.h"
++#include "utils.h"
++
++#ifdef _WIN32
++#define f_seek _fseeki64
++#define f_tell _ftelli64
++#else
++#define f_seek fseeko
++#define f_tell ftello
++#endif
++
++#define BUFFER_ALIGNMENT_SHIFT 4
++
++typedef struct amba_preanalysis_static_area_config_s
++{
++  uint8_t  str_distance[2];                   // short-term reference (STR) distance from current picture,
++                                              // str_distance[0]>str_distance[1], str_distance[1]=0 if there is only one STR
++  uint8_t  adaptive_threshold;                // 0: fixed threshold, 1: adaptive threshold based on noise-level
++  uint8_t  motion_threshold;                  // motion detected when short-term difference>=motion_threshold
++                                              // larger value leads to less motion area
++} amba_preanalysis_static_area_config_t;
++
++typedef struct amba_preanalysis_uncovered_area_config_s
++{
++  uint8_t  str_distance[2];                   // short-term reference (STR) distance from current picture,
++                                              // str_distance[0]>str_distance[1], str_distance[1]=0 if there is only one STR
++  uint8_t  adaptive_threshold;                // 0: fixed threshold, 1: adaptive threshold based on noise-level
++  uint8_t  motion_threshold;                  // motion detected when short-term difference>=motion_threshold
++                                              // larger value leads to less motion area
++  uint8_t  static_threshold;                  // static area detected when short-term difference<static_threshold after motion is detected
++                                              // larger value leads to more uncovered area
++  uint8_t  ltr_similarity_threshold;          // LTR considered as good reference when long-term difference<ltr_similarity_threshold
++                                              // larger value leads to less uncovered area
++  uint8_t  ltr_difference_threshold;          // LTR considered as bad reference when long-term difference>=ltr_difference_threshold
++                                              // larger value leads to less uncovered area
++  uint8_t  counter_threshold;                 // update uncovered area after motion is detected and then being static for counter_threshold frames
++                                              // larger value leads to less uncovered area
++} amba_preanalysis_uncovered_area_config_t;
++
++typedef struct amba_preanalysis_weighted_prediction_config_s
++{
++  amba_preanalysis_uncovered_area_config_t ua;
++  uint8_t  p_slice_mode;                      // P slice analysis mode, 0: LMS model, 1: DC model
++  uint8_t  b_slice_mode;                      // B slice analysis mode, 0: simple distance calculation, 1: DC model with some candidates and bi-weighted prediction
++  uint8_t  distortion_shift;                  // additional downscaling shift for distortion evaluation
++  uint8_t  add_offset_candidate;              // 0: disable, 1: add an offset-based candidate, 2: substitute a repeated candidate with an offset-based candidate
++  uint8_t  use_motion_threshold;              // the threshold (in static area percentage) to include motion area information in brightness calculation
++  uint8_t  num_region_horizontal;             // number of horizontal regions
++  uint8_t  num_region_vertical;               // number of horizontal regions
++  uint8_t  reserved0;
++} amba_preanalysis_weighted_prediction_config_t;
++
++typedef struct amba_preanalysis_perfect_background_config_s
++{
++  uint8_t  str_distance[2];                   // short-term reference (STR) distance from current picture,
++                                              // str_distance[0]>str_distance[1], str_distance[1]=0 if there is only one STR
++  uint8_t  adaptive_threshold;                // 0: fixed threshold, 1: adaptive threshold based on noise-level
++  uint8_t  motion_threshold;                  // motion detected when short-term difference>=motion_threshold
++                                              // larger value leads to less motion area
++  uint8_t  max_static_counter;                // max_static_counter>0, when updating a static pixel in perfect-background image
++                                              // using the current image, the alpha value in the blending (portion of pixel value in the current
++                                              // image) is around (256/max_static_counter). smaller value leads to faster update and less robust result
++  uint8_t  num_motion_accumulation_frames;    // number of past frames to consider when identifying a moving pixel
++  uint8_t  alpha_output_shift;                // map_width=image_width<<alpha_output_shift, map_height=image_height<<alpha_output_shift
++  uint8_t  reserved0;
++} amba_preanalysis_perfect_background_config_t;
++
++typedef struct amba_preanalysis_config_s
++{
++  uint32_t enable_flags;                      // bit-wise enable flag for different modules
++  uint16_t image_width;                       // source image width, same as the encoder
++  uint16_t image_height;                      // source image height, same as the encoder
++
++  uint8_t  input_bufpool_size[AMBA_PREANALYSIS_NUM_DSP_ENGINES]; // the minimum number of buffers needed for VDSP input buffer pool, set by the library
++  uint8_t  output_bufpool_size;               // the output buffer pool size, set by the caller
++  uint8_t  dummy_latency;                     // the encoder dummy latency in number of frames set by the caller
++
++  uint8_t  enable_ltr;                        // enable long-term reference (LTR)
++  uint8_t  ltr_option;                        // 0: use the closest LTR against current picture for processing
++                                              // 1: use the LTR before the closest LTR against current picture for processing
++                                              // set to 1 if Q pictures are used as LTRs, otherwise set to 0
++  uint8_t  gop_m;                             // P picture period, same as the encoder
++  uint8_t  reserved1;
++  amba_preanalysis_perfect_background_config_t pb;
++  amba_preanalysis_static_area_config_t sa;
++  union
++  {
++    amba_preanalysis_uncovered_area_config_t ua;
++    amba_preanalysis_weighted_prediction_config_t wp;
++  };
++} amba_preanalysis_config_t;
++
++int num_frames = 0;
++uint16_t image_width = 1920;
++uint16_t image_height = 1080;
++uint8_t downscaling_shift = 4;
++
++char *yuv_in = NULL;
++char *yuv_out = NULL;
++char *motion_out = NULL;
++char *uncovered_out = NULL;
++char *pbg_out = NULL;
++char *alpha_out = NULL;
++char *static_out = NULL;
++char *wp_out = NULL;
++
++void print_help(void)
++{
++  printf("\nAMBA preanalysis library unit-test utility:\n");
++  printf("Usage: patest [options] input\n");
++  printf("  -h,  --help                     this help text\n");
++  printf("  -o,  --output                   downscaled YUV input [optional]\n");
++  printf("  -m,  --motion                   motion map [optional]\n");
++  printf("  -u,  --uncovered                uncovered area map [optional]\n");
++  printf("  -s,  --static-area              static area map [optional]\n");
++  printf("  -p,  --perfect-background       perfect-background output [optional]\n");
++  printf("  -a,  --alpha-map                alpha map [optional]\n");
++  printf("  -w,  --weighted-prediction      weighted prediction [optional]\n");
++  printf("  -n,  --num-frames               number of frames to process [optional,default=0]\n");
++  printf("                                  0 means all frames in sequence\n");
++  printf("       --dummy-latency            encoder dummy latency [optional,default=5]\n");
++  printf("       --width                    YUV input width [optional,default=1920]\n");
++  printf("       --height                   YUV input height [optional,default=1080]\n");
++  printf("       --downscaling-shift        downscaling right-shift ratio [optional,default=4]\n");
++  printf("       --gop-n                    GOP_N [optional,default=960]\n");
++  printf("       --gop-m                    GOP_M [optional,default=3]\n");
++  printf("       --gop-q                    GOP_Q [optional,default=60]\n");
++  printf("                                  0 means Q frames unused\n");
++  printf("       --ua-str0-distance         uncovered area 1st short-term reference distance [optional,default=2]\n");
++  printf("       --ua-str1-distance         uncovered area 2nd short-term reference distance [optional,default=4]\n");
++  printf("                                  0 means 2nd short-term reference is unused\n");
++  printf("       --ltr-period               long-term reference period [optional,default=960]\n");
++  printf("       --ltr-option               [optional,default=0]\n");
++  printf("                                  0 means nearest long-term reference is used\n");
++  printf("                                  1 means 2nd-nearest long-term reference is used\n");
++  printf("                                  if long-term reference is from Q frames, set to 1, else 0\n");
++  printf("       --ua-motion-t              uncovered area motion threshold [optional,default=8]\n");
++  printf("       --static-t                 static threshold [optional,default=2]\n");
++  printf("       --ltr-similarity-t         long-term reference similarity threshold [optional,default=2]\n");
++  printf("       --ltr-difference-t         long-term reference difference threshold [optional,default=16]\n");
++  printf("       --uncover-counter-t        uncover update threshold [optional,default=3]\n");
++  printf("       --ua-adaptive              0: fixed, 1: adaptive based on noise level [optional,default=1]\n");
++  printf("       --max-static-counter       maximum static counter for perfect background [optional,default=4]\n");
++  printf("       --num-motion-acc           number of motion accumulated frames [optional,default=4]\n");
++  printf("       --alpha-shift              alpha output left-shift [optional,default=0]\n");
++  printf("       --pb-str0-distance         perfect background 1st short-term reference distance [optional,default=8]\n");
++  printf("       --pb-str1-distance         perfect background 2nd short-term reference distance [optional,default=15]\n");
++  printf("                                  0 means 2nd short-term reference is unused\n");
++  printf("       --pb-motion-t              perfect background motion threshold [optional,default=4]\n");
++  printf("       --pb-adaptive              0: fixed, 1: adaptive based on noise level [optional,default=1]\n");
++  printf("       --sa-str0-distance         static area 1st short-term reference distance [optional,default=2]\n");
++  printf("       --sa-str1-distance         static area 2nd short-term reference distance [optional,default=4]\n");
++  printf("                                  0 means 2nd short-term reference is unused\n");
++  printf("       --sa-motion-t              static area motion threshold [optional,default=4]\n");
++  printf("       --sa-adaptive              0: fixed, 1: adaptive based on noise level [optional,default=1]\n");
++  printf("       --b-slice-mode             weighted prediction B slice analysis mode [optional,default=1]\n");
++  printf("                                  0: simple distance calculation, 1: DC model with some candidates and bi-weighted prediction\n");
++  printf("       --distortion-shift         weighted prediction additional downscaling shift for distortion evaluation [optional,default=3]\n");
++  printf("       --add-offset-candidate     0: disable, 1: add an offset-based candidate, 2: substitute a repeated candidate with an offset-based candidate [optional,default=2]\n");
++  printf("       --use-motion-t             the threshold (in static area percentage) to include motion area information in brightness calculation [optional,default=60]\n");
++  printf("       --num-region-horizontal    number of horizontal regions in brightness calculation [optional,default=1]\n");
++  printf("       --num-region-vertical      number of vertical regions in brightness calculation [optional,default=1]\n");
++  printf("       --use-lms-model            computation model for weighted prediction candidates generation [optional,default=1]\n");
++  printf("                                  0: use DC model, 1: use LMS model\n");
++}
++
++static void open_file(FILE **f, const char *path, const char *attr)
++{
++  if (NULL == path) return;
++
++  assert(f);
++  assert(attr);
++
++  *f = fopen(path, attr);
++  if (NULL == *f)
++  {
++    fprintf(stderr, "%s(): cannot open file %s\n", __func__, path);
++    exit(-1);
++  }
++}
++
++static void write_file(FILE *f, amba_preanalysis_buf_t *buf)
++{
++  uint8_t *base;
++  amba_preanalysis_buf_info_t info;
++
++  if (NULL == f)
++  {
++    return;
++  }
++
++  assert(buf);
++
++  if (0 != get_buf_info(buf->pool, &info))
++  {
++    fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++    exit(-1);
++  }
++
++  base = (uint8_t *)buf->base;
++
++  if (info.pitch == info.width)
++  {
++    int len = info.pitch * info.height;
++
++    if (len != fwrite(base, sizeof(uint8_t), len, f))
++    {
++      fprintf(stderr, "%s(): error calling fwrite()\n", __func__);
++      exit(-1);
++    }
++  }
++  else
++  {
++    int i;
++    for (i = 0; i < info.height; ++i)
++    {
++      if (info.width != fwrite(&base[i * info.pitch], sizeof(uint8_t), info.width, f))
++      {
++        fprintf(stderr, "%s(): error calling fwrite()\n", __func__);
++        exit(-1);
++      }
++    }
++  }
++}
++
++static void get_num_frames(FILE *f, int frame_size)
++{
++  int64_t f_len = 0;
++  int frames_in_file = 0;
++
++  assert(f);
++
++  f_seek(f, 0L, SEEK_END);
++  f_len = f_tell(f);
++  rewind(f);
++
++  frames_in_file = (int)(f_len / frame_size);
++
++  if (0 == num_frames || frames_in_file < num_frames)
++  {
++    num_frames = frames_in_file;
++    fprintf(stdout, "%s(): %d frames will be processed\n", __func__, num_frames);
++  }
++}
++
++static void derive_input_metadata(amba_preanalysis_config_t *cfg, amba_preanalysis_input_t *input, uint16_t gop_n, uint16_t ltr_period)
++{
++  assert(cfg && input);
++
++  if (input->frame_no % gop_n)
++  {
++    input->frame_type = input->frame_no % cfg->gop_m ? (uint8_t)AMBA_PREANALYSIS_B_PICT : (uint8_t)AMBA_PREANALYSIS_P_PICT;
++
++    input->flag_long_term = cfg->enable_ltr && (0 == input->frame_no % ltr_period) ? 1 : 0;
++
++    input->flag_output = 1;
++  }
++  else
++  {
++    input->frame_type = (uint8_t)AMBA_PREANALYSIS_IDR_PICT;
++
++    input->flag_long_term = cfg->enable_ltr;
++
++    input->flag_output = cfg->enable_flags & AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND ? 0 : 1;
++  }
++}
++
++int main(int argc, char *argv[])
++{
++  FILE *f_in = NULL;
++  FILE *f_out = NULL;
++  FILE *f_motion = NULL;
++  FILE *f_uncovered = NULL;
++  FILE *f_pbg = NULL;
++  FILE *f_alpha = NULL;
++  FILE *f_static = NULL;
++  FILE *f_wp = NULL;
++  bufpool_t *input_pool[AMBA_PREANALYSIS_NUM_DSP_ENGINES] = { NULL };
++  amba_preanalysis_buf_info_t buf_info;
++  amba_preanalysis_context_t *ctx = NULL;
++  amba_preanalysis_status_t status;
++
++  amba_preanalysis_config_t config;
++  amba_preanalysis_ret_t ret_value;
++  amba_preanalysis_buf_func_t fp;
++
++  amba_preanalysis_idsp_output_t output_idsp;
++  amba_preanalysis_vdsp_output_t output_vdsp;
++
++  uint16_t ltr_period = 960;
++  uint16_t gop_n = 960;
++  uint16_t gop_q = 60;
++
++  int frame_size = 0;
++  int frame_no = 0;
++  uint8_t *src_image = NULL;
++  int i;
++
++  fprintf(stdout, "preanalysis library version: %d\n", amba_preanalysis_get_version());
++
++  assert(sizeof(amba_preanalysis_configuration_t) == sizeof(amba_preanalysis_config_t));
++
++  ret_value = amba_preanalysis_create_default_config((amba_preanalysis_configuration_t *)&config);
++  if (AMBA_PREANALYSIS_OK != ret_value)
++  {
++    fprintf(stderr, "%s(): error calling amba_preanalysis_create_default_config(): %d\n", __func__, ret_value);
++    exit(-1);
++  }
++
++  while (1)
++  {
++    int c;
++    int option_index = 0;
++    static struct option long_options[] =
++    {
++      {"width",                 required_argument,  0,    0},
++      {"height",                required_argument,  0,    0},
++      {"downscaling-shift",     required_argument,  0,    0},
++      {"dummy-latency",         required_argument,  0,    0},
++      {"gop-n",                 required_argument,  0,    0},
++      {"gop-m",                 required_argument,  0,    0},
++      {"gop-q",                 required_argument,  0,    0},
++      {"ua-str0-distance",      required_argument,  0,    0},
++      {"ua-str1-distance",      required_argument,  0,    0},
++      {"ltr-period",            required_argument,  0,    0},
++      {"ltr-option",            required_argument,  0,    0},
++      {"ua-motion-t",           required_argument,  0,    0},
++      {"static-t",              required_argument,  0,    0},
++      {"ltr-similarity-t",      required_argument,  0,    0},
++      {"ltr-difference-t",      required_argument,  0,    0},
++      {"uncover-counter-t",     required_argument,  0,    0},
++      {"ua-adaptive",           required_argument,  0,    0},
++      {"max-static-counter",    required_argument,  0,    0},
++      {"num-motion-acc",        required_argument,  0,    0},
++      {"alpha-shift",           required_argument,  0,    0},
++      {"pb-str0-distance",      required_argument,  0,    0},
++      {"pb-str1-distance",      required_argument,  0,    0},
++      {"pb-motion-t",           required_argument,  0,    0},
++      {"pb-adaptive",           required_argument,  0,    0},
++      {"sa-str0-distance",      required_argument,  0,    0},
++      {"sa-str1-distance",      required_argument,  0,    0},
++      {"sa-motion-t",           required_argument,  0,    0},
++      {"sa-adaptive",           required_argument,  0,    0},
++      {"p-slice-mode",          required_argument,  0,    0},
++      {"b-slice-mode",          required_argument,  0,    0},
++      {"distortion-shift",      required_argument,  0,    0},
++      {"add-offset-candidate",  required_argument,  0,    0},
++      {"use-motion-t",          required_argument,  0,    0},
++      {"num-region-horizontal", required_argument,  0,    0},
++      {"num-region-vertical",   required_argument,  0,    0},
++      {"help",                  no_argument,        0,  'h'},
++      {"num-frames",            required_argument,  0,  'n'},
++      {"output",                required_argument,  0,  'o'},
++      {"motion",                required_argument,  0,  'm'},
++      {"uncovered",             required_argument,  0,  'u'},
++      {"perfect-background",    required_argument,  0,  'p'},
++      {"alpha-map",             required_argument,  0,  'a'},
++      {"static-area",           required_argument,  0,  's'},
++      {"weighted-prediction",   required_argument,  0,  'w'},
++      {0, 0, 0, 0}
++    };
++
++    c = getopt_long(argc, argv, "hn:o:m:u:p:a:s:w:", long_options, &option_index);
++    if (-1 == c) break;
++
++    switch (c)
++    {
++    case 0:
++      switch (option_index)
++      {
++      case 0:
++        image_width = atoi(optarg);
++        break;
++      case 1:
++        image_height = atoi(optarg);
++        break;
++      case 2:
++        downscaling_shift = atoi(optarg);
++        break;
++      case 3:
++        config.dummy_latency = atoi(optarg);
++        break;
++      case 4:
++        gop_n = atoi(optarg);
++        break;
++      case 5:
++        config.gop_m = atoi(optarg);
++        break;
++      case 6:
++        gop_q = atoi(optarg);
++        break;
++      case 7:
++        config.ua.str_distance[0] = atoi(optarg);
++        break;
++      case 8:
++        config.ua.str_distance[1] = atoi(optarg);
++        break;
++      case 9:
++        ltr_period = atoi(optarg);
++        config.enable_ltr = !!ltr_period;
++        break;
++      case 10:
++        config.ltr_option = atoi(optarg);
++        break;
++      case 11:
++        config.ua.motion_threshold = atoi(optarg);
++        break;
++      case 12:
++        config.ua.static_threshold = atoi(optarg);
++        break;
++      case 13:
++        config.ua.ltr_similarity_threshold = atoi(optarg);
++        break;
++      case 14:
++        config.ua.ltr_difference_threshold = atoi(optarg);
++        break;
++      case 15:
++        config.ua.counter_threshold = atoi(optarg);
++        break;
++      case 16:
++        config.ua.adaptive_threshold = atoi(optarg);
++        break;
++      case 17:
++        config.pb.max_static_counter = atoi(optarg);
++        break;
++      case 18:
++        config.pb.num_motion_accumulation_frames = atoi(optarg);
++        break;
++      case 19:
++        config.pb.alpha_output_shift = atoi(optarg);
++        break;
++      case 20:
++        config.pb.str_distance[0] = atoi(optarg);
++        break;
++      case 21:
++        config.pb.str_distance[1] = atoi(optarg);
++        break;
++      case 22:
++        config.pb.motion_threshold = atoi(optarg);
++        break;
++      case 23:
++        config.pb.adaptive_threshold = atoi(optarg);
++        break;
++      case 24:
++        config.sa.str_distance[0] = atoi(optarg);
++        break;
++      case 25:
++        config.sa.str_distance[1] = atoi(optarg);
++        break;
++      case 26:
++        config.sa.motion_threshold = atoi(optarg);
++        break;
++      case 27:
++        config.sa.adaptive_threshold = atoi(optarg);
++        break;
++      case 28:
++        config.wp.p_slice_mode = atoi(optarg);
++        break;
++      case 29:
++        config.wp.b_slice_mode = atoi(optarg);
++        break;
++      case 30:
++        config.wp.distortion_shift = atoi(optarg);
++        break;
++      case 31:
++        config.wp.add_offset_candidate = atoi(optarg);
++        break;
++      case 32:
++        config.wp.use_motion_threshold = atoi(optarg);
++        break;
++      case 33:
++        config.wp.num_region_horizontal = atoi(optarg);
++        break;
++      case 34:
++        config.wp.num_region_vertical = atoi(optarg);
++        break;
++      }
++      break;
++    case 'h':
++      print_help();
++      exit(0);
++      break;
++    case 'n':
++      num_frames = atoi(optarg);
++      break;
++    case 'o':
++      yuv_out = optarg;
++      break;
++    case 'm':
++      motion_out = optarg;
++      break;
++    case 'u':
++      uncovered_out = optarg;
++      break;
++    case 'p':
++      pbg_out = optarg;
++      break;
++    case 'a':
++      alpha_out = optarg;
++      break;
++    case 's':
++      static_out = optarg;
++      break;
++    case 'w':
++      wp_out = optarg;
++      break;
++    case '?':
++      break;
++    default:
++      fprintf(stderr, "?? getopt returned char code 0%o ??\n", c);
++    }
++  }
++
++  if (optind < argc)
++  {
++    yuv_in = argv[optind];
++  }
++
++  if (NULL == yuv_in)
++  {
++    fprintf(stderr, "%s(): no input file\n", __func__);
++    exit(-1);
++  }
++  else
++  {
++    open_file(&f_in, yuv_in, "rb");
++  }
++
++  open_file(&f_out, yuv_out, "wb");
++  open_file(&f_motion, motion_out, "wb");
++
++  if (uncovered_out)
++  {
++    open_file(&f_uncovered, uncovered_out, "wb");
++    config.enable_flags |= AMBA_PREANALYSIS_FLAG_UNCOVERED_AREA;
++  }
++
++  if (alpha_out)
++  {
++    open_file(&f_alpha, alpha_out, "wb");
++    open_file(&f_pbg, pbg_out, "wb");
++    config.enable_flags |= AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND;
++  }
++
++  if (static_out)
++  {
++    open_file(&f_static, static_out, "wb");
++    config.enable_flags |= AMBA_PREANALYSIS_FLAG_STATIC_AREA;
++  }
++
++  if (wp_out)
++  {
++    open_file(&f_wp, wp_out, "wb");
++    config.enable_flags |= AMBA_PREANALYSIS_FLAG_WEIGHTED_PREDICTION;
++  }
++
++  /* calculate the input image size */
++  config.image_width = (image_width + (1 << downscaling_shift) - 1) >> downscaling_shift;
++  config.image_height = (image_height + (1 << downscaling_shift) - 1) >> downscaling_shift;
++  config.output_bufpool_size = 2;
++
++  if(config.ltr_option)
++  {
++    assert(gop_q);
++  }
++
++  ctx = amba_preanalysis_open((amba_preanalysis_configuration_t *)&config);
++  if (AMBA_PREANALYSIS_OK != ret_value)
++  {
++    fprintf(stderr, "%s(): error calling amba_preanalysis_open(): %d\n", __func__, ret_value);
++    exit(-1);
++  }
++
++  buf_info.width = config.image_width;
++  buf_info.pitch = ((config.image_width + (1 << BUFFER_ALIGNMENT_SHIFT) - 1) >> BUFFER_ALIGNMENT_SHIFT) << BUFFER_ALIGNMENT_SHIFT;
++  buf_info.height = config.image_height;
++  for (i = 0; i < AMBA_PREANALYSIS_NUM_DSP_ENGINES; ++i)
++  {
++    if (0 == config.input_bufpool_size[i])
++    {
++      continue;
++    }
++
++    input_pool[i] = (bufpool_t *)create_bufpool(&buf_info, config.input_bufpool_size[i]);
++    if (NULL == input_pool)
++    {
++      fprintf(stderr, "%s(): error calling create_bufpool()\n", __func__);
++      exit(-1);
++    }
++  }
++
++  ret_value = amba_preanalysis_set_debug_level(ctx, AMBA_PREANALYSIS_DEBUG_LEVEL_INFO);
++  if (AMBA_PREANALYSIS_OK != ret_value)
++  {
++    fprintf(stderr, "%s(): error calling amba_preanalysis_set_debug_level(): %d\n", __func__, ret_value);
++    exit(-1);
++  }
++
++  fp.create_bufpool = create_bufpool;
++  fp.destroy_bufpool = destroy_bufpool;
++  fp.get_buf_info = get_buf_info;
++  fp.request_buf = request_buf;
++  fp.release_buf = release_buf;
++  ret_value = amba_preanalysis_register_buf_callback(ctx, &fp);
++  if (AMBA_PREANALYSIS_OK != ret_value)
++  {
++    fprintf(stderr, "%s(): error calling amba_preanalysis_register_buf_callback(): %d\n", __func__, ret_value);
++    exit(-1);
++  }
++
++  frame_size = (image_width * image_height * 3) >> 1; // assume YUV 4:2:0 format
++  get_num_frames(f_in, frame_size);
++
++  src_image = malloc(frame_size * sizeof(uint8_t));
++  if (!src_image)
++  {
++    fprintf(stderr, "%s(): error calling malloc()\n", __func__);
++    exit(-1);
++  }
++
++  memset(&output_idsp, 0, sizeof(output_idsp));
++  memset(&output_vdsp, 0, sizeof(output_vdsp));
++
++  for (frame_no = 0; frame_no < num_frames; ++frame_no)
++  {
++    amba_preanalysis_input_t input[AMBA_PREANALYSIS_NUM_DSP_ENGINES];
++
++    for (i = 0; i < AMBA_PREANALYSIS_NUM_DSP_ENGINES; ++i)
++    {
++      memset(&input[i], 0, sizeof(amba_preanalysis_input_t));
++      input[i].frame_no = frame_no;
++      input[i].buf.pool = (void *)input_pool[i];
++
++      if (NULL == input_pool[i])
++      {
++        continue;
++      }
++
++      if (AMBA_PREANALYSIS_VDSP_ENGINE == i)
++      {
++        derive_input_metadata(&config, &input[i], gop_n, ltr_period);
++      }
++
++      if (0 != request_buf(&input[i].buf))
++      {
++        fprintf(stderr, "%s(): error calling request_buf()\n", __func__);
++        exit(-1);
++      }
++    }
++
++    fprintf(stdout, "%s(): read frame %d\n", __func__, frame_no);
++
++    if (frame_size != fread(src_image, sizeof(uint8_t), frame_size, f_in))
++    {
++      fprintf(stderr, "%s(): error calling fread()\n", __func__);
++      exit(-1);
++    }
++
++    if (input[AMBA_PREANALYSIS_VDSP_ENGINE].buf.base && input[AMBA_PREANALYSIS_IDSP_ENGINE].buf.base)
++    {
++      if (0 != get_buf_info(input[AMBA_PREANALYSIS_VDSP_ENGINE].buf.pool, &buf_info))
++      {
++        fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++        exit(-1);
++      }
++
++      down_sample(src_image, input[AMBA_PREANALYSIS_VDSP_ENGINE].buf.base, image_width, image_height, buf_info.pitch, downscaling_shift);
++      memcpy(input[AMBA_PREANALYSIS_IDSP_ENGINE].buf.base, input[AMBA_PREANALYSIS_VDSP_ENGINE].buf.base, sizeof(uint8_t) * buf_info.pitch * buf_info.height);
++      write_file(f_out, &input[AMBA_PREANALYSIS_VDSP_ENGINE].buf);
++    }
++    else
++    {
++      for (i = 0; i < AMBA_PREANALYSIS_NUM_DSP_ENGINES; ++i)
++      {
++        if (NULL == input[i].buf.base)
++        {
++          continue;
++        }
++
++        if (0 != get_buf_info(input[i].buf.pool, &buf_info))
++        {
++          fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++          exit(-1);
++        }
++
++        down_sample(src_image, input[i].buf.base, image_width, image_height, buf_info.pitch, downscaling_shift);
++        write_file(f_out, &input[i].buf);
++      }
++    }
++
++    if (config.enable_flags)
++    {
++      if (config.enable_flags & AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND)
++      {
++        ret_value = amba_preanalysis_process_idsp(ctx, &input[AMBA_PREANALYSIS_IDSP_ENGINE], &output_idsp);
++        if (AMBA_PREANALYSIS_OK != ret_value)
++        {
++          fprintf(stderr, "%s(): error calling amba_preanalysis_process_idsp(): %d\n", __func__, ret_value);
++          exit(-1);
++        }
++      }
++
++      if (config.enable_flags & ~AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND)
++      {
++        ret_value = amba_preanalysis_process_vdsp(ctx, &input[AMBA_PREANALYSIS_VDSP_ENGINE], &output_vdsp);
++        if (AMBA_PREANALYSIS_OK != ret_value)
++        {
++          fprintf(stderr, "%s(): error calling amba_preanalysis_process_vdsp(): %d\n", __func__, ret_value);
++          exit(-1);
++        }
++      }
++    }
++    else
++    {
++      for (i = 0; i < AMBA_PREANALYSIS_NUM_DSP_ENGINES; ++i)
++      {
++        if (NULL == input[i].buf.base)
++        {
++          continue;
++        }
++
++        if (0 != release_buf(&input[i].buf))
++        {
++          fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++          exit(-1);
++        }
++      }
++    }
++
++    if (output_vdsp.output_flags & AMBA_PREANALYSIS_FLAG_UNCOVERED_AREA)
++    {
++      if (output_vdsp.motion_map.base && f_motion)
++      {
++        if (0 != get_buf_info(output_vdsp.motion_map.pool, &buf_info))
++        {
++          fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++          exit(-1);
++        }
++        assert(buf_info.pitch == buf_info.width);
++
++        f_seek(f_motion, output_vdsp.frame_no * buf_info.width * buf_info.height, SEEK_SET);
++
++        write_file(f_motion, &output_vdsp.motion_map);
++        if (0 != release_buf(&output_vdsp.motion_map))
++        {
++          fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++          exit(-1);
++        }
++      }
++
++      if (output_vdsp.uncovered_area.base)
++      {
++        if (0 != get_buf_info(output_vdsp.uncovered_area.pool, &buf_info))
++        {
++          fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++          exit(-1);
++        }
++        assert(buf_info.pitch == buf_info.width);
++
++        scale_result(output_vdsp.uncovered_area.base, buf_info.width, buf_info.height, buf_info.pitch);
++
++        f_seek(f_uncovered, output_vdsp.frame_no * buf_info.width * buf_info.height, SEEK_SET);
++
++        fprintf(stdout, "%s(): output frame %d\n", __func__, (uint32_t)output_vdsp.frame_no);
++
++        write_file(f_uncovered, &output_vdsp.uncovered_area);
++        if (0 != release_buf(&output_vdsp.uncovered_area))
++        {
++          fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++          exit(-1);
++        }
++      }
++    }
++
++    if (output_vdsp.output_flags & AMBA_PREANALYSIS_FLAG_STATIC_AREA)
++    {
++      if (output_vdsp.static_area.base)
++      {
++        if (0 != get_buf_info(output_vdsp.static_area.pool, &buf_info))
++        {
++          fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++          exit(-1);
++        }
++        assert(buf_info.pitch == buf_info.width);
++
++        scale_result(output_vdsp.static_area.base, buf_info.width, buf_info.height, buf_info.pitch);
++
++        f_seek(f_static, output_vdsp.frame_no * buf_info.width * buf_info.height, SEEK_SET);
++
++        write_file(f_static, &output_vdsp.static_area);
++        if (0 != release_buf(&output_vdsp.static_area))
++        {
++          fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++          exit(-1);
++        }
++      }
++    }
++
++    if (output_idsp.output_flags & AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND)
++    {
++      if (output_idsp.alpha_index.base)
++      {
++        if (0 != get_buf_info(output_idsp.alpha_index.pool, &buf_info))
++        {
++          fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++          exit(-1);
++        }
++        assert(buf_info.pitch == buf_info.width);
++
++        create_alpha(output_idsp.alpha_index.base, buf_info.width, buf_info.height);
++
++        write_file(f_alpha, &output_idsp.alpha_index);
++        if (0 != release_buf(&output_idsp.alpha_index))
++        {
++          fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++          exit(-1);
++        }
++      }
++    }
++
++    if (output_vdsp.output_flags & AMBA_PREANALYSIS_FLAG_WEIGHTED_PREDICTION)
++    {
++      f_seek(f_wp, output_vdsp.frame_no * sizeof(output_vdsp.weighted_prediction), SEEK_SET);
++
++      if (sizeof(output_vdsp.weighted_prediction) != fwrite(&output_vdsp.weighted_prediction, sizeof(uint8_t), sizeof(output_vdsp.weighted_prediction), f_wp))
++      {
++        fprintf(stderr, "%s(): error calling fwrite()\n", __func__);
++        exit(-1);
++      }
++    }
++  }
++
++  /* no more input, process until no more output */
++  do
++  {
++    if (config.enable_flags & ~AMBA_PREANALYSIS_FLAG_PERFECT_BACKGROUND)
++    {
++      /*
++       * use the NULL pointer for input to indicate we are in the flushing stage to push out results
++       * because of internally delayed processing pipeline
++       */
++      ret_value = amba_preanalysis_process_vdsp(ctx, NULL, &output_vdsp);
++      if (AMBA_PREANALYSIS_OK != ret_value)
++      {
++        fprintf(stderr, "%s(): error calling amba_preanalysis_process_picture(): %d\n", __func__, ret_value);
++        exit(-1);
++      }
++
++      if (output_vdsp.output_flags & AMBA_PREANALYSIS_FLAG_UNCOVERED_AREA)
++      {
++        if (output_vdsp.motion_map.base && f_motion)
++        {
++          if (0 != get_buf_info(output_vdsp.motion_map.pool, &buf_info))
++          {
++            fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++            exit(-1);
++          }
++          assert(buf_info.pitch == buf_info.width);
++
++          f_seek(f_motion, output_vdsp.frame_no * buf_info.width * buf_info.height, SEEK_SET);
++
++          write_file(f_motion, &output_vdsp.motion_map);
++          if (0 != release_buf(&output_vdsp.motion_map))
++          {
++            fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++            exit(-1);
++          }
++        }
++
++        if (output_vdsp.uncovered_area.base)
++        {
++          if (0 != get_buf_info(output_vdsp.uncovered_area.pool, &buf_info))
++          {
++            fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++            exit(-1);
++          }
++          assert(buf_info.pitch == buf_info.width);
++
++          scale_result(output_vdsp.uncovered_area.base, buf_info.width, buf_info.height, buf_info.pitch);
++
++          fprintf(stdout, "%s(): output frame %d\n", __func__, (uint32_t)output_vdsp.frame_no);
++          f_seek(f_uncovered, output_vdsp.frame_no * buf_info.width * buf_info.height, SEEK_SET);
++
++          write_file(f_uncovered, &output_vdsp.uncovered_area);
++          if (0 != release_buf(&output_vdsp.uncovered_area))
++          {
++            fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++            exit(-1);
++          }
++        }
++      }
++
++      if (output_vdsp.output_flags & AMBA_PREANALYSIS_FLAG_STATIC_AREA)
++      {
++        if (output_vdsp.static_area.base)
++        {
++          if (0 != get_buf_info(output_vdsp.static_area.pool, &buf_info))
++          {
++            fprintf(stderr, "%s(): error calling get_buf_info()\n", __func__);
++            exit(-1);
++          }
++          assert(buf_info.pitch == buf_info.width);
++
++          scale_result(output_vdsp.static_area.base, buf_info.width, buf_info.height, buf_info.pitch);
++
++          f_seek(f_static, output_vdsp.frame_no * buf_info.width * buf_info.height, SEEK_SET);
++
++          write_file(f_static, &output_vdsp.static_area);
++          if (0 != release_buf(&output_vdsp.static_area))
++          {
++            fprintf(stderr, "%s(): error calling release_buf()\n", __func__);
++            exit(-1);
++          }
++        }
++      }
++    }
++  } while(output_vdsp.motion_map.base || output_vdsp.uncovered_area.base || output_vdsp.static_area.base);
++
++  for (i = 0; i < AMBA_PREANALYSIS_NUM_DSP_ENGINES; ++i)
++  {
++    ret_value = amba_preanalysis_get_status(ctx, i, &status);
++    if (AMBA_PREANALYSIS_OK != ret_value)
++    {
++      fprintf(stderr, "%s(): error calling amba_preanalysis_get_status(): %d\n", __func__, ret_value);
++      exit(-1);
++    }
++    fprintf(stdout, "%s(): %d buffers still held by engine context %d\n", __func__, status.num_buffers_used, i);
++  }
++
++  ret_value = amba_preanalysis_close(ctx);
++  if (AMBA_PREANALYSIS_OK != ret_value)
++  {
++    fprintf(stderr, "%s(): error calling amba_preanalysis_close(): %d\n", __func__, ret_value);
++    exit(-1);
++  }
++
++  for (i = 0; i < AMBA_PREANALYSIS_NUM_DSP_ENGINES; ++i)
++  {
++    if (input_pool[i])
++    {
++      destroy_bufpool(input_pool[i]);
++    }
++  }
++
++  if (f_in) fclose(f_in);
++  if (f_out) fclose(f_out);
++  if (f_motion) fclose(f_motion);
++  if (f_uncovered) fclose(f_uncovered);
++  if (f_pbg) fclose(f_pbg);
++  if (f_alpha) fclose(f_alpha);
++  if (f_static) fclose(f_static);
++  if (f_wp) fclose(f_wp);
++
++  return 0;
++}
+diff --git a/library/preanalysis/unit_test_priv/utils.c b/library/preanalysis/unit_test_priv/utils.c
+new file mode 100644
+index 0000000..62ba1c0
+--- /dev/null
++++ b/library/preanalysis/unit_test_priv/utils.c
+@@ -0,0 +1,122 @@
++/*******************************************************************************
++ * \file utils.c
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#include <stdlib.h>
++#include <stdint.h>
++#include <assert.h>
++#include "utils.h"
++
++#define ALPHA_TABLE_8B_MAX                    64
++
++void create_alpha(uint8_t *buf, int width, int height)
++{
++  int i, j;
++  uint8_t alpha_table[ALPHA_TABLE_8B_MAX + 1];
++
++  /*
++   * we do not really need to initialize this table during every call, but this
++   * is just a unit-test utility
++   */
++  for(i = 0; i <= ALPHA_TABLE_8B_MAX; ++i)
++  {
++    uint16_t tmp;
++
++    if (0 == i)
++    {
++      alpha_table[i] = 0;
++      continue;
++    }
++
++    tmp = 256 / i;
++    if (tmp < 256)
++    {
++      tmp += 1;
++    }
++    if (256 == tmp)
++    {
++      tmp = 255;
++    }
++    alpha_table[i] = (uint8_t)tmp;
++  }
++
++  for (i = 0; i < height; ++i)
++  {
++    for (j = 0; j < width; ++j)
++    {
++      buf[i * width + j] = alpha_table[buf[i * width + j]];
++    }
++  }
++}
++
++void down_sample(uint8_t *src, uint8_t *dst, int width, int height, int out_pitch, int shift)
++{
++  const int step = 1 << shift;
++  int in_x, in_y, out_x, out_y;
++
++  assert(src);
++  assert(dst);
++
++  for (in_y = 0, out_y = 0; in_y < height; in_y += step, out_y += 1)
++  {
++    for (in_x = 0, out_x = 0; in_x < width; in_x += step, out_x += 1)
++    {
++      int x, y;
++      int end_x = min(width, in_x + step);
++      int end_y = min(height, in_y + step);
++      int counter = 0;
++      int sum = 0;
++
++      for (y = in_y; y < end_y; ++y)
++      {
++        for (x = in_x; x < end_x; ++x)
++        {
++          sum += src[y * width + x];
++          counter += 1;
++        }
++      }
++
++      dst[out_y * out_pitch + out_x] = (sum + (counter >> 1)) / counter;
++    }
++  }
++}
++
++void scale_result(uint8_t *buf, int width, int height, int pitch)
++{
++  int i, j;
++
++  for (j = 0; j < height; ++j)
++  {
++    for (i = 0; i < width; ++i)
++    {
++      buf[i] *= 255;
++    }
++
++    buf += pitch;
++  }
++}
+diff --git a/library/preanalysis/unit_test_priv/utils.h b/library/preanalysis/unit_test_priv/utils.h
+new file mode 100644
+index 0000000..bf9a6ff
+--- /dev/null
++++ b/library/preanalysis/unit_test_priv/utils.h
+@@ -0,0 +1,45 @@
++/*******************************************************************************
++ * \file utils.h
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _UTILS_H_
++#define _UTILS_H_
++
++#ifndef max
++#define max(a,b) (((a) > (b)) ? (a) : (b))
++#endif
++
++#ifndef min
++#define min(a,b) (((a) < (b)) ? (a) : (b))
++#endif
++
++void create_alpha(uint8_t *buf, int width, int height);
++void down_sample(uint8_t *src, uint8_t *dst, int width, int height, int out_pitch, int shift);
++void scale_result(uint8_t *buf, int width, int height, int pitch);
++
++#endif /* _UTILS_H_ */
+diff --git a/library/smartcam/fdet/include/fdet_lib.h b/library/smartcam/fdet/include/fdet_lib.h
+new file mode 100644
+index 0000000..a054419
+--- /dev/null
++++ b/library/smartcam/fdet/include/fdet_lib.h
+@@ -0,0 +1,102 @@
++/*******************************************************************************
++ *  fdet_lib.h
++ *
++ * History:
++ *    2015/03/26 - [Zhenwu Xue] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef __FDET_LIB_H__
++#define __FDET_LIB_H__
++
++typedef struct {
++	int		left;
++	int		right;
++	int		low;
++	int		high;
++	double  score;
++	int		valid;
++} fdet_rect_t;
++
++typedef struct {
++	/* Input Argument */
++	int		w;
++	int		h;
++	int		p;
++
++	double		s;
++	int		n;
++
++	/* Output Argument */
++	fdet_rect_t	*rects;
++
++	/* Internal Buffer */
++	unsigned int	*sum0;
++	unsigned int	*sum1;
++	double		*square;
++	unsigned char	*frame;
++} fdet_data_t;
++
++typedef struct {
++	unsigned short major;
++	unsigned char minor;
++	unsigned char patch;
++	unsigned short year;
++	unsigned char month;
++	unsigned char day;
++} fdet_version;
++
++
++typedef struct {
++	unsigned int* tsum;
++	int nw;
++	int nh;
++	fdet_data_t *d;
++	int begin_row;
++	int end_row;
++	int step;
++} fdet_context_t;
++
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int fdet_init(fdet_data_t *d, int w, int h, int p, double _scale, int min_num);
++int fdet_do(fdet_data_t *d, unsigned char *in, int min_rects_per_face);
++
++int S5L_fdet_do(fdet_data_t *d, unsigned char *in);
++
++int fdet_exit(fdet_data_t *d);
++
++void fdet_get_version(fdet_version *version);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+diff --git a/library/smartcam/fdet/make.inc b/library/smartcam/fdet/make.inc
+new file mode 100644
+index 0000000..1025fbb
+--- /dev/null
++++ b/library/smartcam/fdet/make.inc
+@@ -0,0 +1,49 @@
++##
++## prebuild/ambarella/library/smartcam/fdet/make.inc
++##
++## History:
++##    2017/01/05 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_FDET_LIBRARY), y)
++ifneq ($(BUILD_AMBARELLA_PACKAGES_PROPRIETARY_SOURCES),y)
++.PHONY: pre_fdet_lib
++pre_fdet_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_fdet_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_fdet_lib)
++endif
++endif
++
+diff --git a/library/smartcam/fdet2/include/fdet2_lib.h b/library/smartcam/fdet2/include/fdet2_lib.h
+new file mode 100644
+index 0000000..60350e5
+--- /dev/null
++++ b/library/smartcam/fdet2/include/fdet2_lib.h
+@@ -0,0 +1,73 @@
++/*******************************************************************************
++ *  fdet2_lib.h
++ *
++ * History:
++ *    2017/02/2 - [Richard Ren] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++#ifndef	_AMBA_FDET_H
++#define  _AMBA_FDET_H
++
++
++#include<stdio.h>
++
++typedef struct _ROI_t{
++	int x;
++	int y;
++	int w;
++	int h;
++}t_roi;
++
++typedef struct winsz_t{
++	int w;
++	int h;
++}t_winsz;
++
++
++
++typedef struct _fdet_rect_t{
++	int y;
++	int x;
++	int h;
++	int w;
++	int v;
++	double sc;
++	double sl;
++}t_fdet_rect;
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int ini_amba_fdet(int w, int  h,int  p,double s );
++int do_amba_fdet(unsigned char* d, t_fdet_rect* frr,int mxn, int mrh, double ratt,double mslo);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+diff --git a/library/smartcam/fdet2/make.inc b/library/smartcam/fdet2/make.inc
+new file mode 100644
+index 0000000..4f8f6c6
+--- /dev/null
++++ b/library/smartcam/fdet2/make.inc
+@@ -0,0 +1,49 @@
++##
++## prebuild/ambarella/library/smartcam/fdet2/make.inc
++##
++## History:
++##    2017/02/24 - [Ming Wen] Created file
++##
++## Copyright (c) 2017 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_FDET2_LIBRARY), y)
++ifneq ($(BUILD_AMBARELLA_SMARTCAM_PACKAGE_FDET2),y)
++.PHONY: pre_fdet2_lib
++pre_fdet2_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_fdet2_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_fdet2_lib)
++endif
++endif
++
+diff --git a/library/smartcam/lens_mask_det/include/api_lens_mask_det.h b/library/smartcam/lens_mask_det/include/api_lens_mask_det.h
+new file mode 100644
+index 0000000..935554b
+--- /dev/null
++++ b/library/smartcam/lens_mask_det/include/api_lens_mask_det.h
+@@ -0,0 +1,56 @@
++/*******************************************************************************
++ *  api_lens_mask_det.h
++ *
++ * History:
++ *    2016/11/6 - [Richard Ren] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++
++#ifndef	_API_LENS_MASK_DET_H
++#define  	_API_LENS_MASK_DET_H
++
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <math.h>
++
++typedef 	enum _LENS_MASK_DET_STATE{
++	e_mask_yes=0,
++	e_mask_no,
++	e_mask_unknown
++}e_lens_mask_det_state;
++
++
++extern	int 	API_lens_mask_det_initial(const unsigned int im_w,const unsigned int im_h, const double  det_sen_k, const unsigned int det_frames);
++//extern	int 		API_lens_full_mask_alarm(unsigned char* y_buf);
++extern	int 		API_lens_partially_mask_alarm(unsigned char* y_buf,int is_print_values);
++//extern	e_lens_mask_det_state  API_lens_full_mask_state_det(unsigned char* y_buf);
++extern	e_lens_mask_det_state  API_lens_partial_mask_state_det(unsigned char* y_buf,int is_print_values);
++extern	int iso_noise_filt(unsigned char* y_buf, unsigned char* f_buf,int f_w,int f_h);
++#endif
++
+diff --git a/library/smartcam/lens_mask_det/include/image_color.h b/library/smartcam/lens_mask_det/include/image_color.h
+new file mode 100644
+index 0000000..50b576b
+--- /dev/null
++++ b/library/smartcam/lens_mask_det/include/image_color.h
+@@ -0,0 +1,55 @@
++/*******************************************************************************
++ *  image_color.h
++ *
++ * History:
++ *    2016/11/6 - [Richard Ren] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _IMAGE_COLOR_H
++#define _IMAGE_COLOR_H
++
++
++
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <math.h>
++
++
++
++
++
++extern	int 		YUV2Y(char* yuvbuf, char* ybuf, const unsigned int pic_w,const  unsigned int pic_h, const unsigned int pic_pitch);
++extern	int 		YUV2RGB(const int *y, const int*u, const int*v, const int im_h, const int im_w, int *r, int *g, int *b);
++extern	void 	pYUV2RGB(const int y, const int u, const int v,  int *r, int *g, int *b);
++extern	int 		RGB2HSV(const int *r, const int*g, const int*b, const int im_h, const int im_w, double *h, double *s, double *v);
++extern	void 	pRGB2HSV(const int r, const int g, const int b, double *h, double *s, double *v);
++extern	int 		YUV2HSV(const int *y, const int*u, const int*v, const int im_h, const int im_w, double *hh, double *ss, double *vv);
++extern	void 	pYUV2HSV(const int y, const int u, const int v, double *hh, double *ss, double *vv);
++#endif
++
+diff --git a/library/smartcam/lens_mask_det/make.inc b/library/smartcam/lens_mask_det/make.inc
+new file mode 100644
+index 0000000..897c8ea
+--- /dev/null
++++ b/library/smartcam/lens_mask_det/make.inc
+@@ -0,0 +1,49 @@
++##
++## prebuild/ambarella/library/smartcam/lens_mask_det/make.inc
++##
++## History:
++##    2016/11/08 - [Ming Wen] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_LENS_MASK_DET_LIBRARY), y)
++ifneq ($(BUILD_AMBARELLA_SMARTCAM_PACKAGE_LENS_MASK_DET),y)
++.PHONY: pre_lens_mask_det_lib
++pre_lens_mask_det_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_lens_mask_det_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_lens_mask_det_lib)
++endif
++endif
++
+diff --git a/library/smartcam/mdet/include/mdet_lib.h b/library/smartcam/mdet/include/mdet_lib.h
+new file mode 100644
+index 0000000..e988ad4
+--- /dev/null
++++ b/library/smartcam/mdet/include/mdet_lib.h
+@@ -0,0 +1,132 @@
++/*******************************************************************************
++ *  mdet_lib.h
++ *
++ * History:
++ *    2013/12/18 - [Zhenwu Xue] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef __MDET_H__
++#define __MDET_H__
++
++#include "basetypes.h"
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <config.h>
++
++#define	MDET_MAX_ROIS		4
++#define MDET_MAX_POINTS_PER_ROI	8
++
++typedef enum {
++	MDET_REGION_POLYGON	= 0,
++	MDET_REGION_LINE,
++} mdet_region_t;
++
++typedef struct {
++	u32			pitch;
++	u32			width;
++	u32			height;
++} mdet_dimension_t;
++
++typedef struct {
++	int			x;
++	int			y;
++} mdet_point_t;
++
++typedef struct {
++	mdet_region_t		type;
++	u32			num_points;
++	mdet_point_t		points[MDET_MAX_POINTS_PER_ROI];
++} mdet_roi_t;
++
++typedef struct {
++	u32			num_roi;
++	mdet_roi_t		roi[MDET_MAX_ROIS];
++} mdet_roi_info_t;
++
++typedef struct {
++	/* Output Result to App */
++	float			motion[MDET_MAX_ROIS];
++	int			*fg;
++	/* Internal Use for Library Only */
++	int			fn;
++	int			len;
++	void			*data;
++	u32			fg_pxls[MDET_MAX_ROIS];
++	u32			pixels[MDET_MAX_ROIS];
++} mdet_session_t;
++
++typedef struct {
++	mdet_dimension_t	fm_dim;
++	mdet_roi_info_t		roi_info;
++	int			threshold;
++} mdet_cfg;
++
++typedef enum {
++	MDET_ALGO_DIFF		= 0,
++	MDET_ALGO_MEDIAN	= 1,
++	MDET_ALGO_MOG2		= 2,
++	MDET_ALGO_DIFF_RGB	= 3,
++	MDET_ALGO_AWS		= 4,
++	MDET_ALGO_NUM
++} mdet_algo_t;
++
++typedef struct {
++	mdet_algo_t algo_type;
++	int (*md_start)(mdet_session_t*);
++	int (*md_update_frame)(mdet_session_t*, const u8*, u32);
++	int (*md_stop)(mdet_session_t*);
++	int (*md_set_config)(mdet_cfg*);
++	int (*md_get_config)(mdet_cfg*);
++} mdet_instance;
++
++typedef struct {
++	u16	major;
++	u8	minor;
++	u8	patch;
++	u16	year;
++	u8	month;
++	u8	day;
++} mdet_version;
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++mdet_instance *mdet_create_instance(mdet_algo_t algo_type);
++int mdet_destroy_instance(mdet_instance *instance);
++int mdet_is_roi(mdet_point_t pt, mdet_roi_t *r);
++
++void mdet_get_version(mdet_version *version);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
++
+diff --git a/library/smartcam/mdet/make.inc b/library/smartcam/mdet/make.inc
+new file mode 100644
+index 0000000..f3db189
+--- /dev/null
++++ b/library/smartcam/mdet/make.inc
+@@ -0,0 +1,57 @@
++##
++## prebuild/ambarella/library/smartcam/mdet/make.inc
++##
++## History:
++##    2016/07/22 - [Qi Feng] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_MDET_LIBRARY), y)
++ifneq ($(BUILD_AMBARELLA_PACKAGES_PROPRIETARY_SOURCES),y)
++.PHONY: pre_mdet_lib
++pre_mdet_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_mdet_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++ifeq ($(CONFIG_ARCH_S5L), y)
++ifeq ($(CONFIG_ARMV8_AARCH32), y)
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/aarch32/*mdet.so* $(FAKEROOT_DIR)/usr/lib/
++else
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/aarch64/*mdet.so* $(FAKEROOT_DIR)/usr/lib/
++endif
++else
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*mdet.so* $(FAKEROOT_DIR)/usr/lib/
++endif
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_mdet_lib)
++endif
++endif
++
+diff --git a/library/smartcam/motion_profile_det/include/image_color.h b/library/smartcam/motion_profile_det/include/image_color.h
+new file mode 100644
+index 0000000..ad02f02
+--- /dev/null
++++ b/library/smartcam/motion_profile_det/include/image_color.h
+@@ -0,0 +1,54 @@
++/*******************************************************************************
++ *  image_color.h
++ *
++ * History:
++ *    2016/11/6 - [Richard Ren] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _IMAGE_COLOR_H
++#define _IMAGE_COLOR_H
++
++
++
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <math.h>
++
++
++
++
++extern	int 		YUV2Y(char* yuvbuf, char* ybuf, const unsigned int pic_w,const  unsigned int pic_h, const unsigned int pic_pitch);
++extern	int 		YUV2RGB(const int *y, const int*u, const int*v, const int im_h, const int im_w, int *r, int *g, int *b);
++extern	void 	pYUV2RGB(const int y, const int u, const int v,  int *r, int *g, int *b);
++extern	int 		RGB2HSV(const int *r, const int*g, const int*b, const int im_h, const int im_w, double *h, double *s, double *v);
++extern	void 	pRGB2HSV(const int r, const int g, const int b, double *h, double *s, double *v);
++extern	int 		YUV2HSV(const int *y, const int*u, const int*v, const int im_h, const int im_w, double *hh, double *ss, double *vv);
++extern	void 	pYUV2HSV(const int y, const int u, const int v, double *hh, double *ss, double *vv);
++#endif
++
+diff --git a/library/smartcam/motion_profile_det/include/motion_det_API.h b/library/smartcam/motion_profile_det/include/motion_det_API.h
+new file mode 100644
+index 0000000..e03f31e
+--- /dev/null
++++ b/library/smartcam/motion_profile_det/include/motion_det_API.h
+@@ -0,0 +1,50 @@
++/*******************************************************************************
++ *  motion_det_API.h
++ *
++ * History:
++ *    2016/11/6 - [Richard Ren] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++
++#ifndef _M_OBJ_DET_H
++#define _M_OBJ_DET_H
++
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <math.h>
++
++
++extern	int 	API_motion_profile_det_initial(unsigned char* y_buf,unsigned int im_w,unsigned int im_h,unsigned int thresh_edge,unsigned int det_freq);
++extern	char 	API_motion_profile_det(unsigned char* y_buf,unsigned char* f_buf,int fb_w,int fb_h,unsigned int cell_sz);
++
++
++
++
++
++#endif
+diff --git a/library/smartcam/motion_profile_det/make.inc b/library/smartcam/motion_profile_det/make.inc
+new file mode 100644
+index 0000000..2ae3495
+--- /dev/null
++++ b/library/smartcam/motion_profile_det/make.inc
+@@ -0,0 +1,49 @@
++##
++## prebuild/ambarella/library/smartcam/motion_profile_det/make.inc
++##
++## History:
++##    2016/11/08 - [Ming Wen] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_MOTION_PROFILE_DET_LIBRARY), y)
++ifneq ($(BUILD_AMBARELLA_SMARTCAM_PACKAGE_MOTION_PROFILE_DET),y)
++.PHONY: pre_motion_profile_det_lib
++pre_motion_profile_det_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_motion_profile_det_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_motion_profile_det_lib)
++endif
++endif
++
+diff --git a/library/smartcam/stereo_lib/include/stereo_lib.h b/library/smartcam/stereo_lib/include/stereo_lib.h
+new file mode 100644
+index 0000000..3d7e11a
+--- /dev/null
++++ b/library/smartcam/stereo_lib/include/stereo_lib.h
+@@ -0,0 +1,73 @@
++/*******************************************************************************
++ *  stereo_lib.h
++ *
++ * History:
++ *    2015/07/21 - [Zhenwu Xue] Create
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ( "Software" ) are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _STEREO_LIB_H_
++#define _STEREO_LIB_H_
++
++#include "basetypes.h"
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++typedef struct {
++	u32	width;
++	u32	height;
++
++	int	mind;
++	int	maxd;
++
++	char	*calib;
++
++	u32	debug;
++
++	int	ft;		// Returned by the library
++} stereo_config_t;
++
++typedef struct {
++	u8	*L;
++	u8	*R;
++	u8	*D;
++} stereo_addr_t;
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++void * stereo_start(stereo_config_t *cfg);
++int stereo_frame(void *stereo, stereo_addr_t *addr);
++int stereo_stop(void *stereo);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+diff --git a/library/smartcam/stereo_lib/make.inc b/library/smartcam/stereo_lib/make.inc
+new file mode 100644
+index 0000000..f4b3f05
+--- /dev/null
++++ b/library/smartcam/stereo_lib/make.inc
+@@ -0,0 +1,49 @@
++##
++## prebuild/ambarella/library/smartcam/stereo_lib/make.inc
++##
++## History:
++##    2017/03/03 - [Ming Wen] Created file
++##
++## Copyright (c) 2017 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_STEREO_LIBRARY), y)
++ifneq ($(BUILD_AMBARELLA_SMARTCAM_PACKAGE_STEREO),y)
++.PHONY: pre_stereo_lib
++pre_stereo_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_stereo_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_stereo_lib)
++endif
++endif
++
+diff --git a/library/smartrc/include/lib_smartrc.h b/library/smartrc/include/lib_smartrc.h
+new file mode 100644
+index 0000000..53ffde3
+--- /dev/null
++++ b/library/smartrc/include/lib_smartrc.h
+@@ -0,0 +1,81 @@
++/*******************************************************************************
++ * lib_smartrc.h
++ *
++ * History:
++ *   2015/11/23 - [ypxu] created file
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++#ifndef _LIB_SMARTRC_H_
++#define _LIB_SMARTRC_H_
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++#include "basetypes.h"
++#include "lib_smartrc_common.h"
++#include "mdet_diff.h"
++
++AMBA_API int smartrc_init(init_t *rc_init);	//init smart rate control library with iav file handle and etc.
++AMBA_API int smartrc_param_config(param_config_t *config);	//init smart rate control library parameters, must call before auto run this library
++AMBA_API int smartrc_deinit(void);	//deinit smart rate control library
++AMBA_API int smartrc_set_base_param(u32 gop_type, base_param_t *base_param,
++		u32 quality_map, u32 param_map, u32 profile_map);
++AMBA_API int smartrc_get_base_param(u32 gop_type, base_param_t *base_param,
++		u32 quality_map, u32 param_map, u32 profile_map);
++AMBA_API int smartrc_dynamic_gop_enable(u8 enable);
++AMBA_API int smartrc_apply_sync_frame(int pts);
++/* All smartrc APIs can be called on the fly
++ * If IAV state is not right, then the IAV call will fail. but no harm
++ */
++AMBA_API int smartrc_set_stream_quality(quality_level_t quality_level, u32 stream_id);
++AMBA_API int smartrc_get_stream_quality(quality_level_t *quality_level, u32 stream_id);
++AMBA_API int smartrc_set_bitrate_target(bitrate_target_t *bitrate_target, u32 stream_id);
++AMBA_API int smartrc_get_bitrate_target(bitrate_target_t *bitrate_target, u32 stream_id);
++AMBA_API int smartrc_set_style(style_t style, u32 stream_id);	//let smartrc to setup stream size and etc.
++AMBA_API int smartrc_get_style(style_t *style, u32 stream_id);
++AMBA_API int smartrc_set_motion_level(motion_level_t motion_level, u32 stream_id); //update smartrc about motion level
++AMBA_API int smartrc_get_motion_level(motion_level_t *motion_level, u32 stream_id);
++AMBA_API int smartrc_set_noise_level(noise_level_t noise_level, u32 stream_id);
++AMBA_API int smartrc_get_noise_level(noise_level_t *noise_level, u32 stream_id);
++AMBA_API int smartrc_set_log_level(u32 log);
++AMBA_API int smartrc_get_log_level(u32 *plog);
++AMBA_API int smartrc_get_para_cfg(void *buffer, u32 buf_size, u32 dsp_pts, u32 stream_id);
++AMBA_API int smartrc_get_version(version_t *version);
++
++//smartrc roi APIs
++AMBA_API int smartrc_start_roi(roi_session_t *session, u32 stream_id);
++AMBA_API int smartrc_stop_roi(roi_session_t *session, u32 stream_id);
++AMBA_API int smartrc_update_roi(roi_session_t *session, u32 stream_id);
++AMBA_API int smartrc_apply_sync_frame(int pts);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* _LIB_SMARTRC_H_ */
+diff --git a/library/smartrc/include/lib_smartrc_common.h b/library/smartrc/include/lib_smartrc_common.h
+new file mode 100644
+index 0000000..da93ec8
+--- /dev/null
++++ b/library/smartrc/include/lib_smartrc_common.h
+@@ -0,0 +1,386 @@
++/*******************************************************************************
++ * lib_smartrc_common.h
++ *
++ * History:
++ *   2015/11/23 - [ypxu] created file
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _LIB_SMARTRC_COMMON_H_
++#define _LIB_SMARTRC_COMMON_H_
++
++#include <basetypes.h>
++#include <config.h>
++
++#if (defined(CONFIG_ARCH_S2) || defined(CONFIG_ARCH_S2E))
++#include <iav_encode_drv.h>
++#else
++#include <iav_ioctl.h>
++#endif
++
++#ifdef CONFIG_ARCH_S2L
++#define QP_MATRIX_SINGLE_SIZE	(IAV_MEM_QPM_SIZE)
++#elif defined CONFIG_ARCH_S3L
++#define QP_MATRIX_SINGLE_SIZE	(IAV_MEM_ROI_MATRIX_SIZE)
++#else
++//reserved
++#endif
++#define SMARTRC_MAX_STREAM_NUM		(IAV_STREAM_MAX_NUM_ALL)
++#define SMARTRC_ENCODE_WIDTH_MIN	(160)
++#define SMARTRC_ENCODE_WIDTH_MAX	(4096)
++#define SMARTRC_ENCODE_HEIGHT_MIN	(90)
++#define SMARTRC_ENCODE_HEIGHT_MAX	(3008)
++
++#ifndef AM_IOCTL
++#define AM_IOCTL(_flip, _cmd, _arg)	\
++	do {	\
++		if (ioctl(_flip, _cmd, _arg) < 0) {	\
++			perror(#_cmd);	\
++			return -1;	\
++		}	\
++	} while(0);
++#endif
++
++#ifndef VERIFY_STREAM_ID
++#define VERIFY_STREAM_ID(x) \
++	do {	\
++		if ((x) < 0 || (x) >= SMARTRC_MAX_STREAM_NUM) {	\
++			printf("stream id out of range\n");	\
++			return -1;	\
++		}	\
++	} while(0);
++#endif
++
++#ifndef VERIFY_ENCODE_RESOLUTION
++#define VERIFY_ENCODE_RESOLUTION(w, h) \
++	do {	\
++		if ((w) < SMARTRC_ENCODE_WIDTH_MIN ||	\
++			(w) > SMARTRC_ENCODE_WIDTH_MAX ||	\
++			(h) < SMARTRC_ENCODE_HEIGHT_MIN ||	\
++			(h) > SMARTRC_ENCODE_HEIGHT_MAX) {	\
++			printf("encode resolution invalid\n");	\
++			return -1;	\
++		}	\
++	} while (0);
++#endif
++
++#ifndef ROUND_UP
++#define ROUND_UP(size, align) (((size) + ((align) - 1)) & ~((align) - 1))
++#endif
++#ifndef ROUND_DOWN
++#define ROUND_DOWN(size, align) ((size) & ~((align) - 1))
++#endif
++
++extern int g_smartrc_log_level;
++
++typedef enum motion_level_e
++{
++	MOTION_NONE	= 0,
++	MOTION_LOW 	= 1,
++	MOTION_MID	= 2,
++	MOTION_HIGH = 3, //worst case is default
++	MOTION_NUM,
++	MOTION_FIRST = MOTION_NONE,
++	MOTION_LAST = MOTION_NUM,
++} motion_level_t;
++
++typedef enum noise_level_e
++{
++	NOISE_NONE	= 0,
++	NOISE_LOW 	= 1,
++	NOISE_HIGH	= 2,//worst case is default
++	NOISE_NUM,
++	NOISE_FIRST = NOISE_NONE,
++	NOISE_LAST = NOISE_NUM,
++} noise_level_t;
++
++typedef enum quality_level_e
++{
++	QUALITY_LOW = 0,	//default setting, bitrate ceiling 1Mbps for 1080p
++	QUALITY_MEDIUM = 1,	//bitrate ceiling 2Mbps for 1080p
++	QUALITY_HIGH = 2,	//bitrate ceiling 4Mbps for 1080p
++	QUALITY_ULTIMATE = 3,	//bitrate ceiling 6Mbps for 1080p
++	QUALITY_RESERVED_1 = 4,	//leaved for customers to design
++	QUALITY_RESERVED_2 = 5,
++	QUALITY_RESERVED_3 = 6,
++	QUALITY_RESERVED_4 = 7,
++	QUALITY_RESERVED_5 = 8,
++	QUALITY_RESERVED_6 = 9,
++	QUALITY_NUM,
++	QUALITY_FIRST = QUALITY_LOW,
++	QUALITY_LAST = QUALITY_NUM,
++} quality_level_t;
++
++typedef enum style_e
++{
++	STYLE_FPS_KEEP_BITRATE_AUTO = 0, //try to keep max fps, bitrate auto drop when possible (default, consumer style)
++	STYLE_QUALITY_KEEP_FPS_AUTO_DROP = 1, //similar to default, but fps can auto drop when no budget to keep quality(Quality keeping)
++	STYLE_FPS_KEEP_CBR_ALIKE = 2, //FPS keep, CBR alike. (traditional professional IPCAM style)
++	STYLE_NUM,
++	STYLE_FIRST = STYLE_FPS_KEEP_BITRATE_AUTO,
++	STYLE_LAST = STYLE_NUM,
++} style_t;
++
++typedef enum profile_e
++{
++	PROFILE_STATIC 						= 0,
++	PROFILE_SMALL_MOTION 				= 1,
++	PROFILE_MID_MOTION					= 2,
++	PROFILE_BIG_MOTION					= 3,
++	PROFILE_LOW_LIGHT					= 4,
++	PROFILE_BIG_MOTION_WITH_FRAME_DROP	= 5,
++	PROFILE_SECURITY_IPCAM_CBR 			= 6,
++	PROFILE_NUM,
++	PROFILE_FIRST = PROFILE_STATIC,
++	PROFILE_LAST = PROFILE_NUM,
++} profile_t;
++
++typedef struct version_s
++{
++	int major;
++	int minor;
++	int patch;
++	unsigned int mod_time;
++	char description[64];
++} version_t;
++
++typedef struct threshold_s
++{
++	u32 motion_low;
++	u32 motion_mid;
++	u32 motion_high;
++	u16 noise_low;
++	u16 noise_high;
++} threshold_t;
++
++typedef struct qp_limit_s
++{
++	u32 I_qp_limit_min;
++	u32 I_qp_limit_max;
++	u32 P_qp_limit_min;
++	u32 P_qp_limit_max;
++
++	u32 B_qp_limit_min;
++	u32 B_qp_limit_max;
++	u32 Q_qp_limit_min;
++	u32 Q_qp_limit_max;
++
++	u32 I_qp_reduce;
++	u32 P_qp_reduce;
++	u32 Q_qp_reduce;
++
++	u32 adapt_qp;
++
++}qp_param_t;
++
++typedef enum qp_param_num_s
++{
++	I_QP_LIMIT_MIN = 0,
++	I_QP_LIMIT_MAX = 1,
++	P_QP_LIMIT_MIN = 2,
++	P_QP_LIMIT_MAX = 3,
++
++	B_QP_LIMIT_MIN = 4,
++	B_QP_LIMIT_MAX = 5,
++	Q_QP_LIMIT_MIN = 6,
++	Q_QP_LIMIT_MAX = 7,
++
++	I_QP_REDUCE = 8,
++	P_QP_REDUCE = 9,
++	Q_QP_REDUCE = 10,
++
++	ADAPT_QP = 11,
++
++	QP_PARAM_NUM,
++	QP_FIRST = I_QP_LIMIT_MIN,
++	QP_LAST = Q_QP_REDUCE,
++
++}qp_param_num_t;
++
++typedef struct bitrate_param_case_target_s
++{
++	u32 bitrate_per_MB[SMARTRC_MAX_STREAM_NUM];
++	u32 bitrate_per_MB_ref;	//bitrate for every Macroblock
++} bitrate_param_case_target_t;
++
++typedef struct roi_s
++{
++	s8 static_qp_adjust;
++	s8 dynamic_qp_adjust;
++	s8 reserved[2];
++} roi_t;
++
++typedef struct base_param_s
++{
++	bitrate_param_case_target_t bitrate_t[QUALITY_NUM][PROFILE_NUM];
++	u32 skip_frame_mode[PROFILE_NUM];
++	qp_param_t qp_param[PROFILE_NUM];
++	u32 gop_N[PROFILE_NUM];
++	roi_t roi_params[PROFILE_NUM];
++}base_param_t;
++
++typedef enum param_flag_s
++{
++	BITRATE_FLAG = 0,
++	GOP_FLAG = 1,
++	QP_FLAG =2,
++	SKIP_MODE_FLAG = 3,
++	ROI_PARAM = 4,
++	FLAG_NUM,
++	PARAM_FLAG_FIRST = BITRATE_FLAG,
++	PARAM_FLAG_NUM = FLAG_NUM,
++}param_flag_t;
++
++typedef enum roi_flag_s
++{
++	STATIC_ROI_PARAM = 0,
++	DYNAMIC_ROI_PARAM = 1,
++	ROI_NUM,
++	ROI_FLAG_NUM = ROI_NUM,
++}roi_flag_t;
++
++typedef enum gop_type_s
++{
++	IPPP = 0,
++	IBBP = 1,
++	NUM,
++	GOP_TYPE_NUM = NUM,
++}gop_type_t;
++
++typedef struct delay_s
++{
++	u32 motion_indicator;
++	u16 motion_none;
++	u16 motion_low;
++	u16 motion_mid;
++	u16 motion_high;
++	u16 noise_none;
++	u16 noise_low;
++	u16 noise_high;
++	u16 reserved;
++} delay_t;
++
++typedef struct encode_config_s
++{
++	u32 param_inited;
++	u32 src_buf_id;
++	u32 codec_type;
++	u32 fps;
++	u32 pitch;
++	u32 width;
++	u32 height;
++	u32 x;
++	u32 y;
++	u32 M;
++	u32 N;
++	u32 is_2_ref;
++	u32 roi_width;
++	u32 roi_height;
++} encode_config_t;
++
++typedef struct init_s
++{
++	int fd_iav;
++	int fd_vin;
++} init_t;
++
++typedef struct param_config_s
++{
++	encode_config_t enc_cfg;
++	u32 stream_id;
++	u32 bitrate_gap_adj;
++} param_config_t;
++
++typedef struct bitrate_target_s
++{
++	u32 auto_target;		//if auto is 1, ignore other fields
++	u32 bitrate_ceiling;	//useful when auto is 0
++} bitrate_target_t;
++
++typedef struct roi_session_s
++{
++	u32 roi_started;
++	u32 dsp_pts;
++	u32 count;
++	u8 *tmpdata;
++	u8 *motion_matrix;
++	u8 *prev1;
++	u8 *prev2;
++	u8 *daddr[QP_FRAME_TYPE_NUM]; //qp roi param daddr, used by s2/s2e
++} roi_session_t;
++
++#ifndef VERIFY_MOTION_LEVEL
++#define VERIFY_MOTION_LEVEL(x)	\
++	do {	\
++		if ((x) < MOTION_FIRST || (x) >= MOTION_LAST) {	\
++			printf("invalid motion level\n");	\
++			return -1;	\
++		}	\
++	} while (0);
++#endif
++
++#ifndef VERIFY_NOISE_LEVEL
++#define VERIFY_NOISE_LEVEL(x) \
++	do {	\
++		if ((x) < NOISE_FIRST || (x) >= NOISE_LAST) {	\
++			printf("invalid noise level\n");	\
++			return -1;	\
++		}	\
++	} while (0);
++#endif
++
++#ifndef VERIFY_QUALITY_LEVEL
++#define VERIFY_QUALITY_LEVEL(x) \
++	do {	\
++		if ((x) < QUALITY_FIRST || (x) >= QUALITY_LAST) {	\
++			printf("invalid quality level\n");	\
++			return -1;	\
++		}	\
++	} while (0);
++#endif
++
++#ifndef VERIFY_STYLE
++#define VERIFY_STYLE(x)	\
++	do {	\
++		if ((x) < STYLE_FIRST || (x) >= STYLE_LAST) {	\
++			printf("invalid style\n");	\
++			return -1;	\
++		}	\
++	} while (0);
++#endif
++
++#ifndef VERIFY_PROFILE
++#define VERIFY_PROFILE(x)	\
++	do {	\
++		if ((x) < PROFILE_FIRST || (x) >= PROFILE_LAST) {	\
++			printf("invalid profile\n");	\
++			return -1;	\
++		}	\
++	} while (0);
++#endif
++
++#endif /* _LIB_SMARTRC_COMMON_H_ */
+diff --git a/library/smartrc/include/mdet_diff.h b/library/smartrc/include/mdet_diff.h
+new file mode 100644
+index 0000000..9f7361e
+--- /dev/null
++++ b/library/smartrc/include/mdet_diff.h
+@@ -0,0 +1,105 @@
++/*******************************************************************************
++ * mdet_diff.h
++ *
++ * History:
++ *   2016/5/16 - ypxu created file
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++#ifndef _MDET_DIFF_H_
++#define _MDET_DIFF_H_
++
++#include "basetypes.h"
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <config.h>
++
++#ifndef AMBA_API
++#define AMBA_API __attribute__((visibility("default")))
++#endif
++
++#define	MDET_MAX_ROIS			(4)
++#define MDET_MAX_POINTS_PER_ROI	(8)
++
++typedef enum {
++	MDET_REGION_POLYGON = 0,
++	MDET_REGION_LINE,
++} mdet_region_t;
++
++typedef struct {
++	u32 pitch;
++	u32 width;
++	u32 height;
++} mdet_dimension_t;
++
++typedef struct {
++	int x;
++	int y;
++} mdet_point_t;
++
++typedef struct {
++	mdet_region_t type;
++	u32 num_points;
++	mdet_point_t points[MDET_MAX_POINTS_PER_ROI];
++} mdet_roi_t;
++
++typedef struct {
++	u32 num_roi;
++	mdet_roi_t roi[MDET_MAX_ROIS];
++} mdet_roi_info_t;
++
++typedef struct {
++	int mdet_inited;
++	/* Output Result to App */
++	float motion[MDET_MAX_ROIS];
++	u8 *fg;
++	/* Internal Use for Library Only */
++	int fn;
++	int len;
++	void *data;
++	u32 fg_pxls[MDET_MAX_ROIS];
++	u32 pixels[MDET_MAX_ROIS];
++} mdet_session_t;
++
++typedef struct {
++	mdet_dimension_t fm_dim;
++	mdet_roi_info_t roi_info;
++	int threshold;
++} mdet_cfg;
++
++typedef struct {
++	int num_rois;
++	int is_roi[MDET_MAX_ROIS];
++	u8 bg;
++} mdet_per_pixel_diff_t;
++
++//MDET APIs
++AMBA_API int mdet_start_diff(mdet_cfg *config, mdet_session_t* ms);
++AMBA_API int mdet_stop_diff(mdet_cfg *config, mdet_session_t *ms);
++AMBA_API int mdet_update_frame_diff(mdet_cfg *config, mdet_session_t *ms, const u8 *fm_ptr, u32 T);
++
++#endif /* _MDET_DIFF_H_ */
+diff --git a/library/smartrc/lib/arch_s2l/libsmartrc.so b/library/smartrc/lib/arch_s2l/libsmartrc.so
+new file mode 120000
+index 0000000..b3d8d16
+--- /dev/null
++++ b/library/smartrc/lib/arch_s2l/libsmartrc.so
+@@ -0,0 +1 @@
++libsmartrc.so.1
+\ No newline at end of file
+diff --git a/library/smartrc/lib/arch_s2l/libsmartrc.so.1 b/library/smartrc/lib/arch_s2l/libsmartrc.so.1
+new file mode 120000
+index 0000000..34ae226
+--- /dev/null
++++ b/library/smartrc/lib/arch_s2l/libsmartrc.so.1
+@@ -0,0 +1 @@
++libsmartrc.so.1.5.5
+\ No newline at end of file
+diff --git a/library/smartrc/make.inc b/library/smartrc/make.inc
+new file mode 100644
+index 0000000..8183182
+--- /dev/null
++++ b/library/smartrc/make.inc
+@@ -0,0 +1,52 @@
++##
++## prebuild/ambarella/library/smartrc/make.inc
++##
++## History:
++##    2016/07/22 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifneq ($(CONFIG_ARCH_S5), y)
++ifeq ($(CONFIG_AMBARELLA_SMARTRC_LIBRARY), y)
++
++.PHONY: pre_smartrc_lib
++
++pre_smartrc_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_smartrc_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_smartrc_lib)
++endif
++endif
++
++
+diff --git a/library/smartrc2/include/lib_smartrc.h b/library/smartrc2/include/lib_smartrc.h
+new file mode 100644
+index 0000000..4ceff56
+--- /dev/null
++++ b/library/smartrc2/include/lib_smartrc.h
+@@ -0,0 +1,66 @@
++/*******************************************************************************
++ * lib_smartrc.h
++ *
++ * History:
++ *   2016/09/08 - [Hao Qian] created file
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++#ifndef _LIB_SMARTRC_H_
++#define _LIB_SMARTRC_H_
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++#include "basetypes.h"
++#include "lib_smartrc_common.h"
++
++#ifndef AMBA_API
++#define AMBA_API __attribute__((visibility("default")))
++#endif
++
++AMBA_API int smartrc_init_lib(u32 qp_matrix_single_size);
++AMBA_API int smartrc_deinit_lib(void);
++
++AMBA_API int smartrc_cfg_param(smartrc_param_t *smartrc_params);
++
++AMBA_API int smartrc_thread_start(void);
++AMBA_API int smartrc_thread_stop(void);
++
++AMBA_API int smartrc_cfg_debug_param(smartrc_debug_info_t *debug_info);
++AMBA_API int smartrc_get_debug_map(void);
++AMBA_API int smartrc_set_log_level(smartrc_log_level_t log_level);
++AMBA_API int smartrc_get_log_level(void);
++AMBA_API int smartrc_get_version(version_t *version);
++AMBA_API int smartrc_show_cfg_param(void);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /* _LIB_SMARTRC_H_ */
+diff --git a/library/smartrc2/include/lib_smartrc_common.h b/library/smartrc2/include/lib_smartrc_common.h
+new file mode 100644
+index 0000000..d6e9229
+--- /dev/null
++++ b/library/smartrc2/include/lib_smartrc_common.h
+@@ -0,0 +1,154 @@
++/*******************************************************************************
++ * lib_smartrc_common.h
++ *
++ * History:
++ *   2016/09/08 - [Hao Qian] created file
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
++#ifndef _LIB_SMARTRC_COMMON_H_
++#define _LIB_SMARTRC_COMMON_H_
++
++#include <basetypes.h>
++#include <config.h>
++#include <iav_ioctl.h>
++
++#define SMARTRC_MAX_STREAM_NUM		(IAV_STREAM_MAX_NUM_ALL)
++#define SMARTRC_ENCODE_WIDTH_MIN	(320)
++#define SMARTRC_ENCODE_WIDTH_MAX	(3840)
++#define SMARTRC_ENCODE_HEIGHT_MIN	(240)
++#define SMARTRC_ENCODE_HEIGHT_MAX	(2160)
++#define SMARTRC_ENCODE_DUMMY_MAX	(5)
++#define SMARTRC_ENCODE_DUMMY_MIN	(1)
++#define SMARTRC_MAX_FILE_PATH_LENGTH	(128)
++#define SMARTRC_MAX_FILE_NAME_LENGTH	(128)
++#define SMARTRC_MAX_GOP_Q		(63)
++#define SMARTRC_MAX_UC_COUNT_THRESHOLD	(10)
++#define SMARTRC_MAX_DIRECT_BIAS		(65535)
++#define SMARTRC_MAX_INTRA_BIAS		(65535)
++#define SMARTRC_MAX_ZMV_THRESHOLD	(255)
++
++/* FixMe: To be supported in frame level control */
++typedef enum profile_e {
++	PROFILE_STATIC = 0,
++	PROFILE_NUM,
++	PROFILE_FIRST = PROFILE_STATIC,
++	PROFILE_LAST = PROFILE_NUM,
++} profile_t;
++
++typedef enum smartrc_cfg_flag_e {
++	SPECIFY_REF_MAP_FLAG = (1 << 0),
++	SPECIFY_LTR_OPTION_FLAG = (1 << 1),
++	SPECIFY_UA_CNT_THRESHOLD_FLAG = (1 << 2),
++	SPECIFY_DUMMY_LATENCY_FLAG = (1 << 3),
++	SPECIFY_ZMV_THRESHOLD_FLAG = (1 << 4),
++	SPECIFY_INTRA_BIAS_FLAG = (1 << 5),
++	SPECIFY_DIRECT_BIAS_FLAG = (1 << 6),
++	SPECIFY_FORCE_ZMV_FLAG = (1 << 7),
++	SPECIFY_WP_ENABLE_FLAG = (1 << 8),
++} smartrc_cfg_flag_t;
++
++typedef enum smartrc_ref_map_e {
++	SPECIFY_REF_MAP_NONE = 0,
++	SPECIFY_UC_REF,
++	SPECIFY_MOTION_REF,
++	SPECIFY_STATIC_REF,
++	SPECIFY_UC_STATIC_REF,
++	SPECIFY_UC_MOTION_REF,
++	SPECIFY_MOTION_STATIC_REF, /* This one is NOT supported in current version. */
++	SPECIFY_ALL_REF_MAP,
++	SPECIFY_REF_MAP_MAX_NUM,
++	SPECIFY_REF_MAP_FIRST = SPECIFY_REF_MAP_NONE,
++	SPECIFY_REF_MAP_LAST = SPECIFY_REF_MAP_MAX_NUM,
++} smartrc_ref_map_t;
++
++typedef enum smartrc_debug_flag_e {
++	SPECIFY_PERFORMANCE_FLAG = (1 << 0),
++	SPECIFY_ME_FLAG = (1 << 1),
++	SPECIFY_UC_FLAG = (1 << 2),
++	SPECIFY_MOTION_FLAG = (1 << 3),
++	SPECIFY_STATIC_FLAG = (1 << 4),
++	SPECIFY_MARK_FLAG = (1 << 5),
++	SPECIFY_FILE_PATH_FLAG = (1 << 6),
++} smartrc_debug_flag_t;
++
++typedef struct smartrc_debug_info_s {
++	u32 debug_flag_map;
++	char file_path[SMARTRC_MAX_FILE_PATH_LENGTH];
++} smartrc_debug_info_t;
++
++typedef enum smartrc_log_level_e
++{
++	LOG_ERR = 0,
++	LOG_MSG = 1,
++	LOG_INFO = 2,
++	LOG_DBG = 3,
++	LOG_NUM,
++	LOG_LEVEL_FIRST = LOG_ERR,
++	LOG_LEVEL_LAST = LOG_NUM,
++} smartrc_log_level_t;
++
++typedef struct version_s {
++	int major;
++	int minor;
++	int patch;
++	unsigned int mod_time;
++	char description[64];
++} version_t;
++
++typedef struct smartrc_h264_param_s {
++	u8 zmv_threshold;
++	u8 force_zmv_enable;
++	u8 reserved1[2];
++	u16 user1_intra_bias;
++	u16 user1_direct_bias;
++	u32 reserved2[2];
++} smartrc_h264_param_t;
++
++typedef struct smartrc_h265_param_s {
++	u32 reserved[4];
++} smartrc_h265_param_t;
++
++typedef struct smartrc_stream_param_s {
++	u32 cfg_flag_map;
++	u8 ref_map;
++	u8 ltr_option;				// 0: use the closest LTR against current picture for processing
++								// 1: use the LTR before the closest LTR against current picture for processing
++								// set to 1 if Q pictures are used as LTRs, otherwise set to 0
++	u8 uc_counter_threshold;	// update uncovered area after motion is detected and then being static for counter_threshold frames
++								// larger value leads to less uncovered area
++	u8 dummy_latency;			// encoder dummy latency in number of frames set by the caller
++	smartrc_h264_param_t h264;
++	smartrc_h265_param_t h265;
++} smartrc_stream_param_t;
++
++typedef struct smartrc_param_s {
++	u32 stream_map;
++	smartrc_stream_param_t stream[SMARTRC_MAX_STREAM_NUM];
++} smartrc_param_t;
++
++#endif /* _LIB_SMARTRC_COMMON_H_ */
+diff --git a/library/smartrc2/make.inc b/library/smartrc2/make.inc
+new file mode 100644
+index 0000000..d223e89
+--- /dev/null
++++ b/library/smartrc2/make.inc
+@@ -0,0 +1,50 @@
++##
++## prebuild/ambarella/library/smartrc2/make.inc
++##
++## History:
++##    2016/09/09 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_SMARTRC2_LIBRARY), y)
++
++.PHONY: pre_smartrc2_lib
++
++pre_smartrc2_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_smartrc2_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_smartrc2_lib)
++endif
++
++
+diff --git a/library/stitch_algo/make.inc b/library/stitch_algo/make.inc
+new file mode 100644
+index 0000000..9cf1d3e
+--- /dev/null
++++ b/library/stitch_algo/make.inc
+@@ -0,0 +1,49 @@
++##
++## make.inc
++##
++## History:
++##    2016/07/22 - [Hao Qian] Created file
++##
++## Copyright (c) 2016 Ambarella, Inc.
++##
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++LOCAL_PATH	:= $(call my-dir)
++
++###
++
++include $(CLEAR_VARS)
++ifeq ($(CONFIG_AMBARELLA_STITCH_LIBRARY), y)
++
++.PHONY: pre_stitch_lib
++
++pre_stitch_lib: PRIVATE_PATH:=$(LOCAL_PATH)
++pre_stitch_lib:
++	@mkdir -p $(FAKEROOT_DIR)/usr/lib/
++	@cp -dpRf $(PRIVATE_PATH)/lib/arch_$(AMBARELLA_ARCH)/*.so* $(FAKEROOT_DIR)/usr/lib/
++	@echo "Copy $@ Done."
++
++$(call add-target-into-build, pre_stitch_lib)
++endif
++

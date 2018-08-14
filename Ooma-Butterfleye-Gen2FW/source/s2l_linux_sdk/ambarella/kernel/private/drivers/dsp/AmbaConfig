@@ -1,0 +1,76 @@
+##
+## kernel/private/drivers/dsp/AmbaConfig
+##
+## History:
+##    2008/01/16 - [Jian Tang] Create
+##
+## Copyright (c) 2015 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+menuconfig BUILD_AMBARELLA_DSP
+	depends on BUILD_AMBARELLA_PRIVATE_MODULES
+	bool "Build Ambarella private DSP module"
+	default n
+	help
+		Build Ambarella private DSP module for Linux.
+
+if BUILD_AMBARELLA_DSP
+
+config CONFIG_PRINT_DSP_CMD
+	bool "Print all commands sent to DSP by printk"
+	default n
+	help
+		Print all commands sent to DSP by printk
+
+config CONFIG_PRINT_DSP_CMD_MORE
+	depends on CONFIG_PRINT_DSP_CMD
+	bool "Print dsp commands in detailed."
+	default n
+	help
+		Print dsp commands in detailed.
+
+config CONFIG_PRINT_DSP_CMD_RAW
+	depends on CONFIG_PRINT_DSP_CMD_MORE
+	bool "Print dsp commands in hex."
+	default n
+	help
+		Print dsp commands in hex.
+
+choice
+prompt "Choose DSP log start address"
+default CONFIG_DSP_LOG_START_0X80000
+help
+	Reset DSP log start address to 0x80000
+
+config CONFIG_DSP_LOG_START_0X80000
+	bool "Start from 0x80000"
+
+config CONFIG_DSP_LOG_START_IAVMEM
+	bool "Start from IAV mem end"
+
+endchoice
+
+endif
+

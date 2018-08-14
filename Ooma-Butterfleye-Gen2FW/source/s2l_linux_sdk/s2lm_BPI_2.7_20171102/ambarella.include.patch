@@ -1,0 +1,3010 @@
+diff --git a/amba_crypto.h b/amba_crypto.h
+index 8684cc6..9c96898 100644
+--- a/amba_crypto.h
++++ b/amba_crypto.h
+@@ -5,12 +5,29 @@
+  * History:
+  *	2011/05/03 - [Jian Tang] created file
+  *
+- * Copyright (C) 2007-2011, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/amba_debug.h b/amba_debug.h
+index 25f8efd..ba18b0d 100644
+--- a/amba_debug.h
++++ b/amba_debug.h
+@@ -4,12 +4,29 @@
+  * History:
+  *    2008/04/10 - [Anthony Ginger] Create
+  *
+- * Copyright (C) 2004-2008, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/amba_eis.h b/amba_eis.h
+index e472e85..94ab09c 100644
+--- a/amba_eis.h
++++ b/amba_eis.h
+@@ -5,12 +5,29 @@
+  * History:
+  *	2013/09/25 - [Louis Sun] created file
+  *
+- * Copyright (C) 2007-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/amba_fdet.h b/amba_fdet.h
+index 8aef9bd..6839385 100644
+--- a/amba_fdet.h
++++ b/amba_fdet.h
+@@ -1,3 +1,36 @@
++/*
++ * amba_fdet.h
++ *
++ * History:
++ *	2013/03/12 - [Cao Rongrong] Created file
++ *	2013/12/12 - [Jian Tang] Modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef __AMBA_FDET_H__
+ #define __AMBA_FDET_H__
+ 
+diff --git a/amba_lens_interface.h b/amba_lens_interface.h
+index 1f2e256..bae371f 100644
+--- a/amba_lens_interface.h
++++ b/amba_lens_interface.h
+@@ -4,12 +4,29 @@
+  * History:
+  *	2014/10/10 - [Peter Jiao] Mod base on amba_piris.h
+  *
+- * Copyright (C) 2007-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/amba_usb.h b/amba_usb.h
+index 43f6da7..d17e9fb 100644
+--- a/amba_usb.h
++++ b/amba_usb.h
+@@ -4,12 +4,29 @@
+  * History:
+  *	2008/7/10 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2007-2008, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/arch_s2l/AmbaDSP_Img3aStatistics.h b/arch_s2l/AmbaDSP_Img3aStatistics.h
+index ce2a930..c7f8591 100644
+--- a/arch_s2l/AmbaDSP_Img3aStatistics.h
++++ b/arch_s2l/AmbaDSP_Img3aStatistics.h
+@@ -1,23 +1,34 @@
+-/*-------------------------------------------------------------------------------------------------------------------*\
+- *  @FileName       :: AmbaDSP_Img3aStatistics.h
++/*
++ * include/arch_s2l/AmbaDSP_Img3aStatistics.h
+  *
+- *  @Copyright      :: Copyright (C) 2012 Ambarella Corporation. All rights reserved.
++ * History:
++ *	12/12/2012  - [Steve Chen] created file
+  *
+- *                     No part of this file may be reproduced, stored in a retrieval system,
+- *                     or transmitted, in any form, or by any means, electronic, mechanical, photocopying,
+- *                     recording, or otherwise, without the prior consent of Ambarella Corporation.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- *  @Description    :: Definitions & Constants for Ambarella DSP Image Kernel Aaa Stat APIs
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
+  *
+- *  @History        ::
+- *      Date        Name        Comments
+- *      12/12/2012  Steve Chen  Created
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+- *  $LastChangedDate: 2013-10-22 17:05:12 +0800 (?变?, 22 ?佹? 2013) $
+- *  $LastChangedRevision: 6855 $
+- *  $LastChangedBy: hfwang $
+- *  $HeadURL: http://ambtwsvn2/svn/DSC_Platform/trunk/SoC/A9/DSP/inc/AmbaDSP_Img3aStatistics.h $
+-\*-------------------------------------------------------------------------------------------------------------------*/
++ */
+ 
+ #ifndef _AMBA_DSP_IMG_AAA_STAT_H_
+ #define _AMBA_DSP_IMG_AAA_STAT_H_
+@@ -158,6 +169,40 @@ typedef struct _AMBA_DSP_IMG_AAA_FLOAT_TILE_INFO_s_ {
+     AMBA_DSP_IMG_FLOAT_TILE_CONFIG_s    FloatTileConfig[32];
+ } AMBA_DSP_IMG_AAA_FLOAT_TILE_INFO_s;
+ 
++typedef struct amba_img_dsp_aaa_histogram_s
++{
++    UINT32 Mode;
++    UINT16 AeFileMask[8];
++}amba_img_dsp_aaa_histogram_t;
++
++typedef struct amba_img_dsp_aaa_pseudo_y_s
++{
++    UINT32 Mode;
++    UINT32 SumShift;
++    UINT8  PixelWeight[4];
++    UINT8  ToneCurve[32];
++	UINT8  Reserved0;
++	UINT8  Reserved1;
++}amba_img_dsp_aaa_pseudo_y_t;
++
++
++typedef struct amba_img_dsp_aaa_early_wb_gain_s
++{
++    UINT32 RedMultiplier;
++    UINT32 GreenMultiplierEven;
++    UINT32 GreenMultiplierOdd;
++    UINT32 BlueMultiplier;
++    UINT8  EnableAeWbGain;
++    UINT8  EnableAfWbGain;
++    UINT8  EnableHistogramWbGain;
++    UINT8  Reserved;
++    UINT32 RedWbMultiplier;
++    UINT32 GreenWbMultiplierEven;
++    UINT32 GreenWbMultiplierOdd;
++    UINT32 BlueWbMultiplier;
++}amba_img_dsp_aaa_early_wb_gain_t;
++
++
+ typedef struct _AMBA_DSP_TRANSFER_AAA_STATISTIC_DATA_s_ {
+     UINT32  RgbAaaDataAddr;
+     UINT32  CfaAaaDataAddr;
+@@ -228,6 +273,33 @@ int amba_dsp_img_3a_set_af_stat_ex_info(int fd_iav, amba_img_dsp_mode_cfg_t *pMo
+ /* Get tile advanced configuration for AF statistics calculation.          */
+ int amba_dsp_img_3a_get_af_stat_ex_info(int fd_iav, amba_img_dsp_mode_cfg_t *pMode, amba_dsp_img_af_stat_ex_info_t *pAfStatEx);
+ 
++int   amba_dsp_img_set_3a_pseudo_y(
++                    int fd_iav,
++                    amba_img_dsp_mode_cfg_t         *pMode,
++                    amba_img_dsp_aaa_pseudo_y_t     *pPseudoY);
++int   amba_dsp_img_get_3a_pseudo_y(
++                    int fd_iav,
++                    amba_img_dsp_mode_cfg_t         *pMode,
++                    amba_img_dsp_aaa_pseudo_y_t     *pPseudoY);
++
++int   amba_dsp_img_set_3a_histogram(
++                    int fd_iav,
++                    amba_img_dsp_mode_cfg_t         *pMode,
++                    amba_img_dsp_aaa_histogram_t     *pHistogram);
++int   amba_dsp_img_get_3a_histogram(
++                    int fd_iav,
++                    amba_img_dsp_mode_cfg_t         *pMode,
++                    amba_img_dsp_aaa_histogram_t     *pHistogram);
++int   amba_dsp_img_set_3a_early_wb_gain(
++                    int fd_iav,
++                    amba_img_dsp_mode_cfg_t              *pMode,
++                    amba_img_dsp_aaa_early_wb_gain_t     *pEarlyWbGain);
++int   amba_dsp_img_get_3a_early_wb_gain(
++                    int fd_iav,
++                    amba_img_dsp_mode_cfg_t              *pMode,
++                    amba_img_dsp_aaa_early_wb_gain_t     *pEarlyWbGain);
++
++
+ 
+ 
+ #if 0
+diff --git a/arch_s2l/AmbaDSP_ImgDef.h b/arch_s2l/AmbaDSP_ImgDef.h
+index a537268..9a3a6d6 100644
+--- a/arch_s2l/AmbaDSP_ImgDef.h
++++ b/arch_s2l/AmbaDSP_ImgDef.h
+@@ -1,23 +1,34 @@
+-/*-------------------------------------------------------------------------------------------------------------------*\
+- *  @FileName       :: AmbaDSP_ImgDef.h
++/*
++ * include/arch_s2l/AmbaDSP_ImgDef.h
+  *
+- *  @Copyright      :: Copyright (C) 2012 Ambarella Corporation. All rights reserved.
++ * History:
++ *	12/12/2012  - [Steve Chen] created file
+  *
+- *                     No part of this file may be reproduced, stored in a retrieval system,
+- *                     or transmitted, in any form, or by any means, electronic, mechanical, photocopying,
+- *                     recording, or otherwise, without the prior consent of Ambarella Corporation.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- *  @Description    :: Definitions & Constants for Ambarella DSP Image Kernel Common APIs
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
+  *
+- *  @History        ::
+- *      Date        Name        Comments
+- *      12/12/2012  Steve Chen  Created
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+- *  $LastChangedDate: 2013-12-18 11:42:06 +0800 (?变?, 18 ?佷???2013) $
+- *  $LastChangedRevision: 8010 $
+- *  $LastChangedBy: pchuang $
+- *  $HeadURL: http://ambtwsvn2/svn/DSC_Platform/trunk/SoC/A9/DSP/inc/AmbaDSP_ImgDef.h $
+-\*-------------------------------------------------------------------------------------------------------------------*/
++ */
+ 
+ #ifndef _AMBA_DSP_IMG_DEF_H_
+ #define _AMBA_DSP_IMG_DEF_H_
+diff --git a/arch_s2l/AmbaDSP_ImgFilter.h b/arch_s2l/AmbaDSP_ImgFilter.h
+index cf2e243..b624618 100644
+--- a/arch_s2l/AmbaDSP_ImgFilter.h
++++ b/arch_s2l/AmbaDSP_ImgFilter.h
+@@ -1,23 +1,34 @@
+-/*-------------------------------------------------------------------------------------------------------------------*\
+- *  @FileName       :: AmbaDSP_ImgFilter.h
++/*
++ * include/arch_s2l/img_abs_filter.h
+  *
+- *  @Copyright      :: Copyright (C) 2012 Ambarella Corporation. All rights reserved.
++ * History:
++ *	12/12/2012  - [Steve Chen] created file
+  *
+- *                     No part of this file may be reproduced, stored in a retrieval system,
+- *                     or transmitted, in any form, or by any means, electronic, mechanical, photocopying,
+- *                     recording, or otherwise, without the prior consent of Ambarella Corporation.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- *  @Description    :: Definitions & Constants for Ambarella DSP Image Kernel Normal Filter APIs
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
+  *
+- *  @History        ::
+- *      Date        Name        Comments
+- *      12/12/2012  Steve Chen  Created
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+- *  $LastChangedDate: 2013-11-20 15:28:50 +0800 (?变?, 20 ?佷???2013) $
+- *  $LastChangedRevision: 7498 $
+- *  $LastChangedBy: ychuanga $
+- *  $HeadURL: http://ambtwsvn2/svn/DSC_Platform/trunk/SoC/A9/DSP/inc/AmbaDSP_ImgFilter.h $
+-\*-------------------------------------------------------------------------------------------------------------------*/
++ */
+ 
+ #ifndef _AMBA_DSP_IMG_FILTER_H_
+ #define _AMBA_DSP_IMG_FILTER_H_
+diff --git a/arch_s2l/AmbaDSP_ImgUtility.h b/arch_s2l/AmbaDSP_ImgUtility.h
+index 1c07af3..f7134bd 100644
+--- a/arch_s2l/AmbaDSP_ImgUtility.h
++++ b/arch_s2l/AmbaDSP_ImgUtility.h
+@@ -1,23 +1,34 @@
+-/*-------------------------------------------------------------------------------------------------------------------*\
+- *  @FileName       :: AmbaDSP_ImgUtility.h
++/*
++ * include/arch_s2l/AmbaDSP_ImgUtility.h
+  *
+- *  @Copyright      :: Copyright (C) 2012 Ambarella Corporation. All rights reserved.
++ * History:
++ *	12/12/2012  - [Steve Chen] created file
+  *
+- *                     No part of this file may be reproduced, stored in a retrieval system,
+- *                     or transmitted, in any form, or by any means, electronic, mechanical, photocopying,
+- *                     recording, or otherwise, without the prior consent of Ambarella Corporation.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- *  @Description    :: Definitions & Constants for Ambarella DSP Liveview APIs
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
+  *
+- *  @History        ::
+- *      Date        Name        Comments
+- *      12/12/2012  Steve Chen  Created
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+- *  $LastChangedDate: 2013-11-08 18:21:53 +0800 (?变?, 08 ?佷???2013) $
+- *  $LastChangedRevision: 7252 $
+- *  $LastChangedBy: hfwang $
+- *  $HeadURL: http://ambtwsvn2/svn/DSC_Platform/trunk/SoC/A9/DSP/inc/AmbaDSP_ImgUtility.h $
+-\*-------------------------------------------------------------------------------------------------------------------*/
++ */
+ 
+ #ifndef _AMBA_DSP_IMG_UTIL_H_
+ #define _AMBA_DSP_IMG_UTIL_H_
+diff --git a/arch_s2l/AmbaDataType.h b/arch_s2l/AmbaDataType.h
+index 09a1cca..2ca1ed5 100644
+--- a/arch_s2l/AmbaDataType.h
++++ b/arch_s2l/AmbaDataType.h
+@@ -1,3 +1,36 @@
++/*
++ * include/arch_s2l/AmbaDataType.h
++ *
++ * History:
++ *	2012/10/10 - [Cao Rongrong] created file
++ *	2013/12/12 - [Jian Tang] modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef _AMBA_DATA_TYPES_H_
+ #define _AMBA_DATA_TYPES_H_
+ #ifndef NULL
+diff --git a/arch_s2l/ambas_imgproc_arch.h b/arch_s2l/ambas_imgproc_arch.h
+index 121175d..0dcc0d9 100644
+--- a/arch_s2l/ambas_imgproc_arch.h
++++ b/arch_s2l/ambas_imgproc_arch.h
+@@ -5,12 +5,29 @@
+  *	2012/10/10 - [Cao Rongrong] created file
+  *	2013/12/12 - [Jian Tang] modified file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/arch_s2l/ambas_imgproc_ioctl_arch.h b/arch_s2l/ambas_imgproc_ioctl_arch.h
+index 1cca698..dc20954 100644
+--- a/arch_s2l/ambas_imgproc_ioctl_arch.h
++++ b/arch_s2l/ambas_imgproc_ioctl_arch.h
+@@ -1,3 +1,36 @@
++/*
++ * include/arch_s2l/ambas_imgproc_ioctl_arch.h
++ *
++ * History:
++ *	2012/10/10 - [Cao Rongrong] created file
++ *	2013/12/12 - [Jian Tang] modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef AMBAS_IMGPROC_IOCTL_ARCH_H
+ #define AMBAS_IMGPROC_IOCTL_ARCH_H
+ 
+diff --git a/arch_s2l/iav_fastboot.h b/arch_s2l/iav_fastboot.h
+new file mode 100644
+index 0000000..ec7b2c4
+--- /dev/null
++++ b/arch_s2l/iav_fastboot.h
+@@ -0,0 +1,127 @@
++/*
++ * iav_fastboot.h
++ *
++ * History:
++ *	2016/03/9 - [Xu Liang] Created file
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
++#ifndef __IAV_SMART_3A_H__
++#define __IAV_SMART_3A_H__
++
++/* defined for mode 4 support in fastboot mode */
++/* Note:
++ * 1. SIZE_IDSP_CFG_ADV_ISO corresponds to the total size of the idsp config
++ *    binaries that 3A middleware dumped under advanced ISO mode, except liso_cfg.bin
++ * 2. SIZE_LISO_CFG_ADV_ISO corresponds to the size of a12_low_iso_param_t structure
++ * 3. COLOR_UPDATE_FLAG_OFFSET represents the relative offset of
++ *    a12_low_iso_param_t.color.update_all to the beginning of the structure
++ *    a12_low_iso_param_t
++ * 4. user can store user specified data beginning from FASTBOOT_USER_DATA_OFFSET
++ *    but size must NOT exceed 3 KB. see FBDATA layout in amba_arch_mem.h
++ */
++
++#define PRELOAD_AWB_FILE		"/tmp/idsp_awb"
++#define PRELOAD_AE_FILE		"/tmp/idsp_ae"
++#define IDSP_LISO_DUMP_DIR		"/tmp"
++#define IDSP_LISO_DUMP_FILE		"liso_cfg.bin"
++#define PRELOAD_TONE_CURVE		"/tmp/idsp_tone_curve"
++#define PRELOAD_RGB2YUV_MAT		"/tmp/idsp_rgb2yuv"
++#define PRELOAD_LOCAL_EXPO		"/tmp/idsp_local_expo"
++
++#define IMAGE_NAME_SIZE			(48)
++#define MAX_IMAGE_BINARY_NUM		(32)
++
++#if defined(CONFIG_ISO_TYPE_ADVANCED)
++#define SIZE_IDSP_CFG_ADV_ISO		(26192)
++#else
++#define SIZE_IDSP_CFG_ADV_ISO		(24896)
++#endif
++
++#define SIZE_LISO_CFG_ADV_ISO		(808)
++#define IDSP_CFG_BIN_SIZE		(SIZE_LISO_CFG_ADV_ISO + SIZE_IDSP_CFG_ADV_ISO)
++
++#define COLOR_UPDATE_FLAG_OFFSET	(348)
++#define DEFAULT_BINARY_IDSPCFG_OFFSET	(8208)
++#define IDSPCFG_BINARY_HEAD_SIZE	(64)
++
++#define FASTBOOT_USER_DATA_OFFSET	(1024)
++
++struct image_binary_info { /* 48 + 4 + 4 + 4 + 4 = 64 */
++	char		name[IMAGE_NAME_SIZE];
++	unsigned int	size;
++	unsigned int	src_offset;
++	unsigned int	dest_offset;
++	unsigned int	cfg_offset;
++}__attribute__((packed));
++
++struct  idsp_cfg_file_info {
++	char	name[IMAGE_NAME_SIZE];
++	unsigned int	size;
++};
++
++enum iav_fb_bin_id {
++	IAV_FB_VIN_VIDEO_FORMAT = 0,
++	IAV_FB_VIN_DSP_CONFIG = 1,
++	IAV_FB_ENC_CONFIG = 2,
++	IAV_FB_AAA_TONE_CURVE = 3,
++	IAV_FB_AAA_RGB2YUV_MAT = 4,
++	IAV_FB_AAA_LOCAL_EXPO = 5,
++	IAV_FB_DATA_MAX_NUM,
++	IAV_FB_DATA_FIRST = IAV_FB_VIN_VIDEO_FORMAT,
++	IAV_FB_DATA_LAST = IAV_FB_DATA_MAX_NUM,
++};
++
++struct iav_fb_aeb {
++	/* AWB */
++	unsigned int	r_gain;
++	unsigned int	b_gain;
++	/* AE */
++	unsigned int	d_gain;
++	unsigned int	shutter;
++	unsigned int	agc;
++};
++
++struct iav_fb_node {
++	unsigned int offset;
++	unsigned int size;
++};
++
++struct iav_fb_hdr {  /*  4 + 20 + 8 + 8 * 6 + 48 = 128  */
++	unsigned int			dsp_status;
++	struct iav_fb_aeb 		pre_aeb;
++	unsigned char			fast_thaw : 1;
++	unsigned char			night_mode : 1;
++	unsigned char			reserve0 : 6;
++	unsigned char			shutter_max; 	/* unit: denominator seconds */
++	unsigned char			agc_max;		/* unit: db */
++	unsigned char			reserve1[5];
++	struct iav_fb_node		bin[IAV_FB_DATA_MAX_NUM];
++	unsigned char			reserve2[48];
++}__attribute__((packed));
++
++#endif
+diff --git a/arch_s2l/iav_types_arch.h b/arch_s2l/iav_types_arch.h
+new file mode 100644
+index 0000000..3a336b0
+--- /dev/null
++++ b/arch_s2l/iav_types_arch.h
+@@ -0,0 +1,126 @@
++/*
++ * iav_ioctl.h
++ *
++ * History:
++ *	2015/10/14 - [Zhikan Yang] Created file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
++#ifndef __IAV_TYPE_ARCH_H__
++#define __IAV_TYPE_ARCH_H__
++
++enum iav_srcbuf_id {
++	IAV_SRCBUF_MN = 0,		/* main buffer */
++	IAV_SRCBUF_PC,			/* 2nd buffer */
++	IAV_SRCBUF_PB,			/* 3rd buffer */
++	IAV_SRCBUF_PA,			/* 4th buffer */
++	IAV_SRCBUF_PMN,		/* virtual pre-main buffer, only for dewarp mode */
++	IAV_SRCBUF_EFM,		/* efm buffer */
++	IAV_SRCBUF_NUM,
++
++	/* For user space convenience */
++	IAV_SRCBUF_1 = IAV_SRCBUF_MN,
++	IAV_SRCBUF_2 = IAV_SRCBUF_PC,
++	IAV_SRCBUF_3 = IAV_SRCBUF_PB,
++	IAV_SRCBUF_4 = IAV_SRCBUF_PA,
++
++	IAV_SRCBUF_FIRST = IAV_SRCBUF_MN,
++	IAV_SRCBUF_LAST = IAV_SRCBUF_PMN,
++	IAV_SRCBUF_LAST_PMN = IAV_SRCBUF_PMN + 1,
++	IAV_SUB_SRCBUF_FIRST = IAV_SRCBUF_PC,
++	IAV_SUB_SRCBUF_LAST = IAV_SRCBUF_PMN,
++};
++
++struct iav_system_resource {
++	u8 encode_mode;
++	u8 max_num_encode;
++	u8 max_num_cap_sources;
++	u8 exposure_num;
++
++	struct iav_window buf_max_size[IAV_SRCBUF_NUM];
++	struct iav_window stream_max_size[IAV_STREAM_MAX_NUM_ALL];
++	u8 stream_max_M[IAV_STREAM_MAX_NUM_ALL];
++	u8 stream_max_N[IAV_STREAM_MAX_NUM_ALL];
++	u8 stream_max_advanced_quality_model[IAV_STREAM_MAX_NUM_ALL];
++	u8 stream_long_ref_enable[IAV_STREAM_MAX_NUM_ALL];
++
++	/* Read only */
++	u32 raw_pitch_in_bytes;
++	u32 total_memory_size : 8;
++	u32 hdr_type : 2;
++	u32 iso_type : 3;
++	u32 is_stitched : 1;
++	u32 reserved1 : 18;
++
++	/* Writable for different configuration */
++	u32 rotate_enable : 1;
++	u32 raw_capture_enable : 1;
++	u32 vout_swap_enable : 1;
++	u32 lens_warp_enable : 1;
++	u32 enc_raw_rgb : 1;
++	u32 mixer_a_enable : 1;
++	u32 mixer_b_enable : 1;
++	u32 osd_from_mixer_a : 1;
++	u32 osd_from_mixer_b : 1;
++	u32 idsp_upsample_type : 2;
++	u32 mctf_pm_enable : 1;
++	u32 me0_scale : 2;
++	u32 enc_from_mem : 1;
++	u32 enc_raw_yuv : 1;
++	u32 eis_delay_count : 2;
++	u32 vin_overflow_protection: 1;
++	u32 long_ref_b_frame : 1;
++	u32 extra_top_row_buf_enable : 1;
++	u32 reserved2 : 11;
++	u32 dsp_partition_map;
++
++	struct iav_window raw_size;	/* Only for encode from raw (RGB/YUV) feature */
++	struct iav_window efm_size;	/* Only for encode from memory feature */
++	s8  extra_dram_buf[IAV_SRCBUF_NUM];
++	s8  reserved3[2];
++	u16 efm_buf_num;
++	u16 max_warp_input_width;
++	u16 max_warp_input_height;
++	u16 max_warp_output_width;
++	u16 max_padding_width; // For LDC stitching
++	u16 v_warped_main_max_width;
++	u16 v_warped_main_max_height;
++	u16 enc_dummy_latency;
++
++	/* Debug only */
++	u32 debug_enable_map;
++	u32 debug_stitched : 1;
++	u32 debug_iso_type : 3;
++	u32 debug_chip_id : 5;
++	u32 reserved4 : 23;
++
++	/* Different for ARCHs */
++	u32 arch;		/* Read only */
++	struct iav_res_s3l res;
++};
++
++#endif
+diff --git a/arch_s2l/img_abs_filter.h b/arch_s2l/img_abs_filter.h
+index a6845e6..97f41e2 100644
+--- a/arch_s2l/img_abs_filter.h
++++ b/arch_s2l/img_abs_filter.h
+@@ -1,3 +1,36 @@
++/*
++ * include/arch_s2l/img_abs_filter.h
++ *
++ * History:
++ *	2012/10/10 - [Cao Rongrong] created file
++ *	2013/12/12 - [Jian Tang] modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef IMG_ABS_FILTER_H
+ #define IMG_ABS_FILTER_H
+ 
+@@ -15,6 +48,7 @@ typedef enum {
+ 	FILTER_OFFSET_2X_HDR = (2 << 24),
+ 	FILTER_OFFSET_3X_HDR = (3 << 24),
+ 	FILTER_OFFSET_4X_HDR = (4 << 24),
++	FILTER_OFFSET_FAKE_LINEAR = (5 << 24),		/* Fake linear */
+ } filter_offset_id;
+ 
+ typedef enum{
+@@ -27,10 +61,14 @@ typedef enum{
+ 	AEB_SENSOR_CONFIG =0x6,
+ 	AEB_SHT_NL_TABLE =0x7,
+ 	AEB_GAIN_TABLE =0x8,
+-    AEB_EXPO_LINES_PIRIS_LINEAR1 =0x9,
+-    AEB_EXPO_LINES_PIRIS_LINEAR2 =0xa,
+-  	AEB_EXPO_LINES_PIRIS_HDR1 =0xb,
+-    AEB_EXPO_LINES_PIRIS_HDR2 =0xc,
++	AEB_EXPO_LINES_PIRIS_LINEAR1 =0x9,
++	AEB_EXPO_LINES_PIRIS_LINEAR2 =0xa,
++	AEB_EXPO_LINES_PIRIS_HDR1 =0xb,
++	AEB_EXPO_LINES_PIRIS_HDR2 =0xc,
++	AEB_AUTO_KNEE =0xd,
++	AEB_DIGIT_WDR = 0xe,
++	AEB_DIGIT_WDR_2X_HDR = 0xf,
++	AEB_DIGIT_WDR_3X_HDR = 0x10,
+ 	AEB_ID_NUM,
+ }img_aeb_id;
+ 
+diff --git a/arch_s2l/img_adv_struct_arch.h b/arch_s2l/img_adv_struct_arch.h
+index f82dc80..97f4a34 100644
+--- a/arch_s2l/img_adv_struct_arch.h
++++ b/arch_s2l/img_adv_struct_arch.h
+@@ -1,3 +1,36 @@
++/*
++ * include/arch_s2l/img_adv_struct_arch.h
++ *
++ * History:
++ *	2012/10/10 - [Cao Rongrong] created file
++ *	2013/12/12 - [Jian Tang] modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef	IMG_ADV_STRUCT_ARCH_H
+ #define	IMG_ADV_STRUCT_ARCH_H
+ 
+@@ -24,7 +57,8 @@
+ #define STEP57_GAIN_TABLE_SIZE 	(571)
+ #define STEP60_GAIN_TABLE_SIZE		(601)
+ #define STEP64_GAIN_TABLE_SIZE		(641)
+-#define MAX_GAIN_TABLE_SIZE               STEP64_GAIN_TABLE_SIZE
++#define STEP72_GAIN_TABLE_SIZE			(721)
++#define MAX_GAIN_TABLE_SIZE				STEP72_GAIN_TABLE_SIZE
+ #define	SHUTTER_TIME_TABLE_LENGTH	(2304)
+ #define	SHUTTER_TIME_TABLE_LENGTH_1	(SHUTTER_TIME_TABLE_LENGTH-1)
+ #define IK_MEM_SIZE		(4<<20)
+@@ -32,8 +66,11 @@
+ #define	MIN_HDR_EXPOSURE_NUM		(1)
+ #define	MAX_SLICE_NUM					(2)
+ #define	MAX_HDR_EXPOSURE_NUM		(4)
++#define	MIN_HDR_EXPOSURE_RATIO		(1)
++#define	HDR_EXPOSURE_RATIO_UNIT		(16)
+ #define   MAX_AE_LINES_NUM				(32)
+ #define	MAX_GENERAL_AEB_TBL_NUM		MAX_HDR_EXPOSURE_NUM
++#define	MAX_TONE_CURVE_DURATION		(30)
+ 
+ #define	MAX_PRE_HDR_STAT_BLK_NUM 	(MAX_SLICE_NUM * (MAX_HDR_EXPOSURE_NUM - 1) * 2)
+ 
+@@ -54,6 +91,7 @@
+ #define SHUTTER_1BY24				21333333		//(512000000 / 24)
+ #define SHUTTER_1BY25				20480000		//(512000000 / 25)
+ #define SHUTTER_1BY30				17066667		//(512000000 / 30)
++#define SHUTTER_1BY31				16516129		//(512000000 / 31)
+ #define SHUTTER_1BY33				15360000		//(512000000 / 33.3)
+ #define SHUTTER_1BY40				12800000		//(512000000 / 40)
+ #define SHUTTER_1BY50				10240000		//(512000000 / 50)
+@@ -65,6 +103,8 @@
+ #define SHUTTER_1BY480				1066667		//(512000000 / 480)
+ #define SHUTTER_1BY960				533333		//(512000000 / 960)
+ #define SHUTTER_1BY1024			500000		//(512000000 / 1024)
++#define SHUTTER_1BY2000			256000		//(512000000 / 2000)
++#define SHUTTER_1BY4000			128000		//(512000000 / 4000)
+ #define SHUTTER_1BY8000			64000		//(512000000 / 8000)
+ #define SHUTTER_1BY16000			32000		//(512000000 / 16000)
+ #define SHUTTER_1BY32000			16000		//(512000000 /32000)
+@@ -403,9 +443,11 @@ typedef struct embed_hist_stat_s{
+ }embed_hist_stat_t;
+ typedef struct img_aaa_stat_s {
+ 	aaa_tile_info_t 	tile_info;
++	aaa_tile_info_t 	rgb_tile_info;
+ 	awb_data_t		awb_info[MAX_AWB_TILE_NUM];
+ 	ae_data_t 		ae_info[MAX_AE_TILE_NUM];
+-	af_stat_t			af_info[MAX_AF_TILE_NUM];
++	af_stat_t			af_info[MAX_AF_TILE_NUM];	//for sensor RAW input
++	af_stat_t			rgb_af_info[MAX_AF_TILE_NUM];	//for decoder YUV input
+ 	cfa_histogram_stat_t	cfa_hist;
+ 	rgb_histogram_stat_t	rgb_hist;
+ 	embed_hist_stat_t 		sensor_hist_info;
+@@ -424,8 +466,8 @@ typedef struct adj_aeawb_control_s {
+ /////////awb
+ #define	AWB_UNIT_GAIN		(1024)
+ #define	AWB_UNIT_RATIO	(128)
+-#define WB_DGAIN_UNIT           (4096)
+-
++#define 	WB_DGAIN_UNIT           (4096)
++#define	WB_DGAIN_UNIT_SHIFT	(12)
+ 
+ typedef enum{
+ 	WB_ENV_INDOOR = 0,
+@@ -669,6 +711,11 @@ typedef struct lens_cali_s{
+ 	//add here
+ }lens_cali_t;
+ 
++typedef struct piris_info_s{
++	int f_number; 	//revert piris FNO value is mul with 65536 (<<16)
++	int motor_step;	//revert piris motor step filled in xxx_piris_param.c
++}piris_info_t;
++
+ typedef struct lens_dev_drv_s {
+ 	int (*set_IRCut)(u8 enable);
+ 	int (*set_shutter_speed)(u8 ex_mode, u16 ex_time);
+@@ -768,6 +815,7 @@ typedef enum {
+ 	OV_5658,
+ 	OV_4689,
+ 	OV_9718,
++	OV_2735,
+ }sensor_label;
+ 
+ typedef enum bayer_pattern {
+@@ -852,6 +900,12 @@ typedef enum{
+ }hdr_pipeline_t;
+ 
+ typedef enum{
++	MASK_FULL_HDR,			// DSP HDR
++	MASK_LINEAR_IN_HDR,	// Fake Linear
++	MASK_MODE_NUM,
++}hdr_mask_t;
++
++typedef enum{
+ 	HDR_NONE_METHOD = 0,
+ 	HDR_RATIO_VARY_LINE_METHOD,
+ 	HDR_RATIO_FIX_LINE_METHOD,
+@@ -864,6 +918,7 @@ typedef struct hdr_config_s{
+ 	hdr_expo_t 	expo_num;
+ 	hdr_pipeline_t	pipeline;
+ 	hdr_method_t	method;
++	hdr_mask_t mask;
+ }hdr_config_t;
+ 
+ typedef struct hdr_shutter_gp_s{
+@@ -1046,6 +1101,31 @@ typedef struct cali_badpix_setup_s {
+ 	u8 reserved[3];
+ } cali_badpix_setup_t;
+ 
++#define MAX_AUTO_KNEE_ROI 16
++typedef struct auto_knee_roi_histo_level_s{
++	int min;
++	int mid;
++	int max;
++}auto_knee_roi_histo_level_t;
++
++typedef struct img_auto_knee_config_info_s{
++	int enable;
++	int src_mode;//0:cfa, 1: rgb
++	int roi_low;
++	int roi_high;
++	int histo_min_no;
++	int histo_mid_min_no;
++	int histo_mid_max_no;
++	int histo_max_no;
++	auto_knee_roi_histo_level_t level[MAX_AUTO_KNEE_ROI];
++}img_auto_knee_config_info_t;
++
++#define MAX_DIGIT_WDR_ENTRY	(16)
++typedef struct img_digit_wdr_config_info_s {
++	int enable;
++	int strength[MAX_DIGIT_WDR_ENTRY];
++}img_digit_wdr_config_info_t;
++
+ typedef struct img_aeb_header_s{
+ 	int img_aeb_id;
+ 	int total_tbl_num;
+@@ -1086,6 +1166,24 @@ typedef struct img_aeb_gain_table_s{
+     u32  gain_table[MAX_GAIN_TABLE_SIZE];
+ }img_aeb_gain_table_t;
+ 
++typedef struct img_aeb_auto_knee_param_s{
++    img_aeb_header_t header;
++    img_auto_knee_config_info_t auto_knee_config;
++}img_aeb_auto_knee_param_t;
++
++typedef struct img_aeb_digit_wdr_param_s {
++	img_aeb_header_t header;
++	img_digit_wdr_config_info_t digit_wdr_config;
++}img_aeb_digit_wdr_param_t;
++
++typedef struct wdr_luma_config_info_s{
++	u8 radius;
++	u8 luma_weight_red;
++	u8 luma_weight_green;
++	u8 luma_weight_blue;
++	u8 luma_weight_shift;
++}wdr_luma_config_info_t;
++
+ typedef enum{
+ 	ISP_PIPELINE_LISO = 0,//liso
+ 	ISP_PIPELINE_MID_LISO,//liso+TA+CNF
+@@ -1123,25 +1221,6 @@ typedef struct sharpen_property_s{
+ 	int sharpen_CoringidxScale_ratio;
+ 	int sharpen_fractionalBits;
+ }sharpen_property_t;
+-#define MAX_AUTO_KNEE_ROI 16
+-typedef struct auto_knee_roi_histo_level_s{
+-
+-	int min;
+-	int mid;
+-	int max;
+-}auto_knee_roi_histo_level_t;
+-typedef struct img_auto_knee_config_info_s{
+-	int enable;
+-	int src_mode;//0:cfa, 1: rgb
+-	int roi_low;
+-	int roi_high;
+-	int histo_min_no;
+-	int histo_mid_min_no;
+-	int histo_mid_max_no;
+-	int histo_max_no;
+-	auto_knee_roi_histo_level_t level[MAX_AUTO_KNEE_ROI];
+-
+-}img_auto_knee_config_info_t;
+ typedef struct aaa_api_s{
+ 	int (*p_ae_flow_control_init)();
+ 	int (*p_ae_flow_control)(img_aaa_stat_t* p_aaa_data,ae_output_t *p_ae_output);
+@@ -1158,6 +1237,13 @@ typedef struct ae_flow_func_s{
+ 	int  (*p_ae_flow_dc_iris_cntl)(int flag,int luma_diff,int* stat);
+ }ae_flow_func_t;
+ #define MAX_AE_SPEED_LEVEL (8)
++
++typedef struct adj_pre_config_s{
++	amba_img_dsp_tone_curve_t tone_curve;
++	amba_img_dsp_rgb_to_yuv_t r2y;
++	amba_img_dsp_local_exposure_t le;
++}adj_pre_config_t;
++
+ #endif
+ 
+ 
+diff --git a/arch_s2l/img_api_adv_arch.h b/arch_s2l/img_api_adv_arch.h
+index 40df3fe..169b3e8 100644
+--- a/arch_s2l/img_api_adv_arch.h
++++ b/arch_s2l/img_api_adv_arch.h
+@@ -1,3 +1,36 @@
++/*
++ * include/arch_s2l/img_api_adv_arch.h
++ *
++ * History:
++ *	2012/10/10 - [Cao Rongrong] created file
++ *	2013/12/12 - [Jian Tang] modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef	IMG_API_ADV_ARCH_H
+ #define	IMG_API_ADV_ARCH_H
+ 
+@@ -66,9 +99,9 @@ int img_get_ae_stable(u8* ae_stable_flag);//return 0: AE adjusting; 1: AE stable
+ int img_get_ae_cursor(u8* ae_cursor);
+ int img_get_ae_target_ratio(u16* ae_target_ratio);
+ int img_get_ae_target(u16* ae_target);
+-
++int img_get_ae_piris_info(piris_info_t* piris_info); //success: return 0, failed: return -1
+ int img_format_ae_line(int fd_iav, line_t* ae_lines,int line_num, u32 db_step);//shutter_index to shutter_row used in ae algo
+-int img_config_auto_knee_info(img_auto_knee_config_info_t* config);
++int img_config_auto_knee_info(img_aeb_auto_knee_param_t* config);
+ 
+ //awb
+ int img_get_awb_manual_gain(wb_gain_t* p_wb_gain);
+@@ -83,6 +116,9 @@ int img_get_awb_method(awb_work_method_t *p_awb_method);
+ int img_set_awb_method(awb_work_method_t *p_awb_method);
+ int img_get_awb_env(awb_environment_t *p_awb_env);
+ int img_set_awb_env(awb_environment_t *p_awb_env);
++int img_set_awb_manual_meter_roi(int* roi);
++
++
+ //af
+ int img_register_lens_drv(lens_dev_drv_t custom_lens_drv);
+ int img_lens_init(void);
+@@ -119,12 +155,17 @@ int img_set_hdr_threshold(hdr_threshold_t * p_thresh);
+ int img_get_hdr_threshold(hdr_threshold_t * p_thresh);
+ int img_set_hdr_batch(int fd_iav,amba_img_dsp_mode_cfg_t * p_ik_mode,img_config_info_t * p_img_cfg,hdr_proc_data_t * p_hdr_proc);
+ int img_get_hdr_batch(int fd_iav, hdr_proc_data_t * p_hdr_proc);
++int img_set_hdr_quick_switch(int fd_iav, hdr_mask_t *p_mask);
++int img_get_hdr_quick_switch(hdr_mask_t * p_mask);
+ 
+ //wdr
+ int img_set_wdr_enable(int enable);
+ int img_get_wdr_enable(void);
+ int img_set_wdr_strength(int strength);
+ int img_get_wdr_strength(void);
++int img_set_wdr_luma_config(wdr_luma_config_info_t *p_config);
++int img_get_wdr_luma_config(wdr_luma_config_info_t *p_config);
++int img_config_digit_wdr_info(img_aeb_digit_wdr_param_t * config);
+ 
+ //calibartion
+ int img_cal_vignette(vignette_cal_t *vig_detect_setup);
+@@ -139,6 +180,7 @@ int img_set_auto_color_contrast(int enable); //0 : disable, 1 : enable
+ int img_set_auto_color_contrast_strength(int strength); // strength: 0 ~ 128
+ int img_set_color_saturation(int saturation);	//unit = 64
+ int img_set_bw_mode(u8 mode);// 0: diable, 1: enable
++int img_get_bw_mode();
+ int img_set_sharpening_strength(u8 str_level);//default =6, 0-11
+ int img_get_img_property(image_property_t *p_img_prop);
+ int img_set_mctf_strength(u8 str_level);//default = 6 ,0 ~11
+diff --git a/arch_s2l/img_customer_interface_arch.h b/arch_s2l/img_customer_interface_arch.h
+index 4945835..f0cd46a 100644
+--- a/arch_s2l/img_customer_interface_arch.h
++++ b/arch_s2l/img_customer_interface_arch.h
+@@ -1,3 +1,36 @@
++/*
++ * include/arch_s2l/img_customer_interface_arch.h
++ *
++ * History:
++ *	2012/10/10 - [Cao Rongrong] created file
++ *	2013/12/12 - [Jian Tang] modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef __IMG_CUSTOMER_INTERFACE_H__
+ #define __IMG_CUSTOMER_INTERFACE_H__
+ 
+@@ -37,6 +70,7 @@ int awb_flow_get_mode(awb_control_mode_t* p_mode);
+ int awb_flow_set_mode(awb_control_mode_t* p_mode);
+ int awb_flow_get_environment(awb_environment_t* p_env);
+ int awb_flow_set_environment(awb_environment_t* p_env);
++int awb_flow_set_meter_roi(int* roi);
+ 
+ //adj
+ 
+@@ -66,6 +100,7 @@ int adj_set_contrast(int contrast);
+ int adj_set_brightness(int bright);
+ int adj_set_hue(int hue);
+ int adj_set_bw_mode(int enble);
++int adj_get_bw_mode();
+ int adj_set_sharpening_level(int level);
+ int adj_set_mctf_level(int level);
+ void adj_set_cc_reset();
+@@ -73,11 +108,27 @@ int adj_set_color_style(img_color_style style);
+ void  adj_set_mctf_property_ratio(mctf_property_t* p_mctf_property);
+ void  adj_set_sharpeness_property_ratio(sharpen_property_t* p_shp_property);
+ void adj_pre_config();
++void adj_pre_config_ex(adj_pre_config_t* cfg);
++//wdr
++int light_optimise_set_enable(u8 enable);
++int light_optimise_get_enable(void);
++int light_optimise_set_strength(int strength);
++int light_optimise_get_strength(void);
++int light_optimise_control(amba_img_dsp_local_exposure_t * p_local_expo, img_aaa_stat_t * p_stat_info);
+ 
+ // hdr
+ int hdr_proc_init(img_config_info_t * p_img_cfg,raw_offset_config_t * p_raw_offset_cfg,hdr_proc_data_t * p_hdr_proc);
+ int hdr_proc_control(hdr_proc_data_t * p_hdr_proc, awb_gain_t * p_awb_gain, ae_output_t * p_ae_video);
++int sync_hdr_raw_offset(ae_output_t * p_ae_video, amba_img_dsp_hdr_raw_offset_t *p_video_proc );
++int set_hdr_linearization_mode(hdr_linearization_mode_t mode);
++hdr_linearization_mode_t get_hdr_linearization_mode(void);
+ int set_hdr_blend_config(hdr_blend_info_t *p_blend_cfg);
+ int get_hdr_blend_config(hdr_blend_info_t *p_blend_cfg );
++int set_hdr_alpha_value(hdr_alpha_value_t * p_alpha);
++int get_hdr_alpha_value(hdr_alpha_value_t * p_alpha);
++int set_hdr_threshold(hdr_threshold_t * p_thresh);
++int get_hdr_threshold(hdr_threshold_t * p_thresh);
++int config_hdr_bayer_interpolation(u8 enable);
++int hdr_config_sensor_info(sensor_config_t* p_sensor_cfg);
+ 
+ 
+diff --git a/basetypes.h b/basetypes.h
+index 2f29faf..85d1d2e 100644
+--- a/basetypes.h
++++ b/basetypes.h
+@@ -1,6 +1,41 @@
++/*
++ * basetypes.h
++ *
++ * History:
++ *	2013/03/12 - [Cao Rongrong] Created file
++ *	2013/12/12 - [Jian Tang] Modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #ifndef _BASE_TYPES_H_
+ #define _BASE_TYPES_H_
+ 
++#define AMBA_API __attribute__((visibility("default")))
++
+ typedef unsigned char       u8; /**< UNSIGNED  8-bit data type */
+ typedef unsigned short     u16; /**< UNSIGNED 16-bit data type */
+ typedef unsigned int       u32; /**< UNSIGNED 32-bit data type */
+diff --git a/cryptochip_ioctl.h b/cryptochip_ioctl.h
+index 60e4cb9..393b073 100644
+--- a/cryptochip_ioctl.h
++++ b/cryptochip_ioctl.h
+@@ -1,16 +1,32 @@
+-/*
++/**
+  * cryptochip_ioctl.h
+  *
+  * History:
+  *	2015/06/04 - [Zhi He] Created file
+  *
+- * Copyright (C) 2015 - 2025, Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
+  *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
+ #ifndef __CRYPTOCHIP_IOCTL_H__
+@@ -114,6 +130,10 @@ typedef enum {
+ 
+ 	IOC_BEGIN_TRANSACTION = 0x54,
+ 	IOC_END_TRANSACTION = 0x55,
++
++	//utils api
++	IOC_SET_TIMING = 0x71,
++	IOC_GET_TIMING = 0x72,
+ } CRYPTOCHIP_IOC;
+ 
+ typedef enum {
+@@ -326,6 +346,30 @@ struct cryptochip_pause {
+ 	unsigned char	reserved_2;
+ };
+ 
++struct atsha204_timing_param {
++	unsigned char max;
++	unsigned char min;
++	unsigned char cur;
++	unsigned char typical;
++};
++
++struct atsha204_timing {
++	struct atsha204_timing_param derive_key;
++	struct atsha204_timing_param dev_rev;
++	struct atsha204_timing_param gen_dig;
++	struct atsha204_timing_param hmac;
++	struct atsha204_timing_param check_mac;
++	struct atsha204_timing_param lock;
++	struct atsha204_timing_param mac;
++	struct atsha204_timing_param nonce;
++	struct atsha204_timing_param pause;
++	struct atsha204_timing_param random;
++	struct atsha204_timing_param read;
++	struct atsha204_timing_param sha;
++	struct atsha204_timing_param update_extra;
++	struct atsha204_timing_param write;
++};
++
+ #define CRYPTOCHIP_IOC_TRANSACTION_GENERATE_SIGNATURE    CRYPTOCHIP_IOWR(IOC_TRANSACTION_GENERATE_SIGNATURE, struct cryptochip_transaction_signature *)
+ #define CRYPTOCHIP_IOC_TRANSACTION_VERIFY_SIGNATURE    CRYPTOCHIP_IOWR(IOC_TRANSACTION_VERIFY_SIGNATURE, struct cryptochip_transaction_signature *)
+ #define CRYPTOCHIP_IOC_TRANSACTION_PREPARE_CRYPT_ACCESS    CRYPTOCHIP_IOWR(IOC_TRANSACTION_PREPARE_CRYPT_ACCESS, struct cryptochip_transaction_prepare_crypt_access *)
+@@ -370,5 +414,7 @@ struct cryptochip_pause {
+ #define CRYPTOCHIP_IOC_BEGIN_TRANSACTION    CRYPTOCHIP_IO(IOC_BEGIN_TRANSACTION)
+ #define CRYPTOCHIP_IOC_END_TRANSACTION    CRYPTOCHIP_IO(IOC_END_TRANSACTION)
+ 
++#define CRYPTOCHIP_IOC_SET_TIMING    CRYPTOCHIP_IOW(IOC_SET_TIMING, struct atsha204_timing)
++#define CRYPTOCHIP_IOC_GET_TIMING    CRYPTOCHIP_IOR(IOC_GET_TIMING, struct atsha204_timing)
+ #endif
+ 
+diff --git a/dsplog_drv.h b/dsplog_drv.h
+index 9fa3f15..12ac75c 100644
+--- a/dsplog_drv.h
++++ b/dsplog_drv.h
+@@ -4,12 +4,29 @@
+  * History:
+  *	2013/09/30 - [Louis Sun] created file
+  *
+- * Copyright (C) 2007-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ #ifndef __DSP_LOG_DRV_H__
+diff --git a/iav_common.h b/iav_common.h
+index bb341ee..3421d2e 100644
+--- a/iav_common.h
++++ b/iav_common.h
+@@ -4,12 +4,29 @@
+  * History:
+  *	2013/09/04 - [Cao Rongrong] Created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+@@ -119,6 +136,21 @@ enum amba_video_mode {
+ 	AMBA_VIDEO_MODE_2560_2048	= 49,		//2560x2048
+ 	AMBA_VIDEO_MODE_848_480		= 50,		//848x480
+ 	AMBA_VIDEO_MODE_3072_1728	= 51,		//3072x1728
++	AMBA_VIDEO_MODE_240_320		= 52,		//240x320
++	AMBA_VIDEO_MODE_5184_3888	= 53,		//5184x3888
++	AMBA_VIDEO_MODE_5184_2916	= 54,		//5184x2916
++	AMBA_VIDEO_MODE_1728_486		= 55,		//1728x486
++	AMBA_VIDEO_MODE_1080P_A		= 56,		//1920x1080, alias for another 1080p
++	AMBA_VIDEO_MODE_2432_2048	= 57,		//2432x2048
++	AMBA_VIDEO_MODE_2048_2048	= 58,		//2048x2048
++	AMBA_VIDEO_MODE_7680_4320	= 59,		//7680x4320
++	AMBA_VIDEO_MODE_5472_3648	= 60,		//5472x3648
++	AMBA_VIDEO_MODE_2688_1944	= 61,		//2688x1944
++	AMBA_VIDEO_MODE_640_512		= 62,		//640x512
++	AMBA_VIDEO_MODE_1920_1920	= 63,		//1920x1920
++	AMBA_VIDEO_MODE_1600_1600	= 64,		//1600x1600
++	AMBA_VIDEO_MODE_1632_1632	= 65,		//1632x1632
++
+ 	AMBA_VIDEO_MODE_MISC_MAX,
+ 
+ 	/* Video Output Standard */
+@@ -148,8 +180,16 @@ enum amba_video_mode {
+ 	AMBA_VIDEO_MODE_2160P25		= 0x00020017,	//3840x2160@25fps
+ 	AMBA_VIDEO_MODE_2160P30		= 0x00020018,	//3840x2160@30fps
+ 	AMBA_VIDEO_MODE_2160P60		= 0x00020019,	//3840x2160@60fps
++	AMBA_VIDEO_MODE_2160P12		= 0x0002001a,	//3840x2160@12fps
++	AMBA_VIDEO_MODE_2160P15		= 0x0002001b,	//3840x2160@15fps
++	AMBA_VIDEO_MODE_2560X1440P30	= 0x0002001c,	//2560x1440@30fps
++	AMBA_VIDEO_MODE_2560X1440P25	= 0x0002001d,	//2560x1440@25fps
++	AMBA_VIDEO_MODE_2560X1440P60	= 0x0002001e,	//2560x1440@60fps
+ 	AMBA_VIDEO_MODE_STANDARD_MAX,
+ 
++	/* Customized Video Output Standard */
++	AMBA_VIDEO_MODE_CUSTOM_FIRST	= 0x00040000,
++
+ 	AMBA_VIDEO_MODE_720P_PAL	= AMBA_VIDEO_MODE_720P50,
+ 	AMBA_VIDEO_MODE_1080I_PAL	= AMBA_VIDEO_MODE_1080I50,
+ 	AMBA_VIDEO_MODE_1080P_PAL	= AMBA_VIDEO_MODE_1080P50,
+diff --git a/iav_ioctl.h b/iav_ioctl.h
+index 16eb5de..c74ea97 100644
+--- a/iav_ioctl.h
++++ b/iav_ioctl.h
+@@ -5,12 +5,29 @@
+  *	2013/03/12 - [Cao Rongrong] Created file
+  *	2013/12/12 - [Jian Tang] Modified file
+  *
+- * Copyright (C) 2012-2018, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+@@ -41,14 +58,6 @@ enum {
+ 	DSP_ENCODE_MODE_LAST = DSP_ENCODE_MODE_TOTAL_NUM,
+ };
+ 
+-enum iav_chip_arch {
+-	CHIP_ARCH_UNKNOWN = 0xFFFF,
+-	CHIP_ARCH_S2L = 12000,
+-	CHIP_ARCH_S3L = 13000,
+-
+-	CHIP_ARCH_NUM = 2,
+-};
+-
+ enum iav_chip_id {
+ 	IAV_CHIP_ID_UNKNOWN = -1,
+ 
+@@ -62,6 +71,9 @@ enum iav_chip_id {
+ 	IAV_CHIP_ID_S2L_88		= 6,
+ 	IAV_CHIP_ID_S2L_99		= 7,
+ 	IAV_CHIP_ID_S2L_TEST		= 8,
++	IAV_CHIP_ID_S2L_22		= 9,
++	IAV_CHIP_ID_S2L_33MEX	= 10,
++	IAV_CHIP_ID_S2L_33EX	= 11,
+ 	IAV_CHIP_ID_S2L_LAST,
+ 	IAV_CHIP_ID_S2LM_FIRST	= IAV_CHIP_ID_S2L_22M,
+ 	IAV_CHIP_ID_S2LM_LAST	= IAV_CHIP_ID_S2L_99M + 1,
+@@ -81,6 +93,11 @@ enum iav_chip_id {
+ 	IAV_CHIP_ID_S3L_NUM		= IAV_CHIP_ID_S3L_LAST - IAV_CHIP_ID_S3LM_FIRST,
+ };
+ 
++enum {
++	DSP_CLOCK_NORMAL_STATE = 0,
++	DSP_CLOCK_OFF_STATE = 1,
++};
++
+ struct iav_window {
+ 	u32 width;
+ 	u32 height;
+@@ -118,6 +135,11 @@ struct iav_driver_dsp_info {
+ 	u8 dspin[8];
+ };
+ 
++struct iav_dsp_hash {
++	u8 input[32];
++	u8 output[4];
++};
++
+ struct iav_dsplog_setup {
+ 	int	cmd;
+ 	u32	args[8];
+@@ -141,34 +163,6 @@ enum iav_system_params {
+ 	IAV_STREAM_MAX_NUM_ALL = (IAV_STREAM_MAX_NUM_IMPL + IAV_STREAM_MAX_NUM_EXTRA),
+ };
+ 
+-enum iav_srcbuf_id {
+-	IAV_SRCBUF_MN = 0,		/* main buffer */
+-	IAV_SRCBUF_PC,			/* 2nd buffer */
+-	IAV_SRCBUF_PB,			/* 3rd buffer */
+-	IAV_SRCBUF_PA,			/* 4th buffer */
+-#ifdef CONFIG_ARCH_S3L
+-	IAV_SRCBUF_PD,			/* 5th buffer */
+-#endif
+-	IAV_SRCBUF_PMN,		/* virtual pre-main buffer, only for dewarp mode */
+-	IAV_SRCBUF_EFM,		/* efm buffer */
+-	IAV_SRCBUF_NUM,
+-
+-	/* For user space convenience */
+-	IAV_SRCBUF_1 = IAV_SRCBUF_MN,
+-	IAV_SRCBUF_2 = IAV_SRCBUF_PC,
+-	IAV_SRCBUF_3 = IAV_SRCBUF_PB,
+-	IAV_SRCBUF_4 = IAV_SRCBUF_PA,
+-#ifdef CONFIG_ARCH_S3L
+-	IAV_SRCBUF_5 = IAV_SRCBUF_PD,
+-#endif
+-
+-	IAV_SRCBUF_FIRST = IAV_SRCBUF_MN,
+-	IAV_SRCBUF_LAST = IAV_SRCBUF_PMN,
+-	IAV_SRCBUF_LAST_PMN = IAV_SRCBUF_PMN + 1,
+-	IAV_SUB_SRCBUF_FIRST = IAV_SRCBUF_PC,
+-	IAV_SUB_SRCBUF_LAST = IAV_SRCBUF_PMN,
+-};
+-
+ enum iav_hdr_type {
+ 	HDR_TYPE_OFF = 0,
+ 	HDR_TYPE_BASIC = 1,
+@@ -210,83 +204,14 @@ enum iav_debug_type {
+ 	DEBUG_TYPE_CHIP_ID = (1 << 2),
+ };
+ 
+-enum instant_mjpeg_enable {
+-	IAV_FETCH_MJPEG_INSTANT_DISABLE = 0,
+-	IAV_FETCH_MJPEG_INSTANT_ENABLE = 1,
+-};
+-
+ struct iav_res_s3l {
+-	u32 arch;
+ 	u32 num_aaa_buf : 4;
+ 	u32 num_vin_stats_buf : 4;
+ 	u32 reserved : 24;
+ };
+ 
+-struct iav_system_resource {
+-	u8 encode_mode;
+-	u8 max_num_encode;
+-	u8 max_num_cap_sources;
+-	u8 exposure_num;
+-
+-	struct iav_window buf_max_size[IAV_SRCBUF_NUM];
+-	struct iav_window stream_max_size[IAV_STREAM_MAX_NUM_ALL];
+-	u8 stream_max_M[IAV_STREAM_MAX_NUM_ALL];
+-	u8 stream_max_N[IAV_STREAM_MAX_NUM_ALL];
+-	u8 stream_max_advanced_quality_model[IAV_STREAM_MAX_NUM_ALL];
+-	u8 stream_long_ref_enable[IAV_STREAM_MAX_NUM_ALL];
+-
+-	/* Read only */
+-	u32 raw_pitch_in_bytes;
+-	u32 total_memory_size : 8;
+-	u32 hdr_type : 2;
+-	u32 iso_type : 3;
+-	u32 is_stitched : 1;
+-	u32 reserved1 : 18;
+-
+-	/* Writable for different configuration */
+-	u32 rotate_enable : 1;
+-	u32 raw_capture_enable : 1;
+-	u32 vout_swap_enable : 1;
+-	u32 lens_warp_enable : 1;
+-	u32 enc_raw_rgb : 1;
+-	u32 mixer_a_enable : 1;
+-	u32 mixer_b_enable : 1;
+-	u32 osd_from_mixer_a : 1;
+-	u32 osd_from_mixer_b : 1;
+-	u32 idsp_upsample_type : 2;
+-	u32 mctf_pm_enable : 1;
+-	u32 me0_scale : 2;
+-	u32 enc_from_mem : 1;
+-	u32 enc_raw_yuv : 1;
+-	u32 eis_delay_count : 2;
+-	u32 reserved2 : 14;
+-	u32 dsp_partition_map;
+-
+-	struct iav_window raw_size;	/* Only for encode from raw (RGB/YUV) feature */
+-	struct iav_window efm_size;	/* Only for encode from memory feature */
+-	s8  extra_dram_buf[IAV_SRCBUF_NUM];
+-	s8  reserved3[3];
+-	u16 efm_buf_num;
+-	u16 max_warp_input_width;
+-	u16 max_warp_input_height;
+-	u16 max_warp_output_width;
+-	u16 max_padding_width; // For LDC stitching
+-	u16 v_warped_main_max_width;
+-	u16 v_warped_main_max_height;
+-	u16 enc_dummy_latency;
+-
+-	/* Debug only */
+-	u32 debug_enable_map;
+-	u32 debug_stitched : 1;
+-	u32 debug_iso_type : 3;
+-	u32 debug_chip_id : 5;
+-	u32 reserved4 : 23;
+-
+-	/* Different for ARCHs */
+-	union {
+-		struct iav_res_s3l res;
+-	};
+-};
++// Do Not change the definition order
++#include <iav_types_arch.h>
+ 
+ enum iav_chroma_radius_num {
+ 	CHROMA_RADIUS_32 = 0,
+@@ -346,8 +271,9 @@ enum iav_buffer_id {
+ 	IAV_BUFFER_BPC = 10,
+ 	IAV_BUFFER_CMD_SYNC = 11,
+ 	IAV_BUFFER_PM_MCTF = 12,
+-	IAV_BUFFER_FB_DATA = 13,
+-	IAV_BUFFER_FB_AUDIO = 14,
++	IAV_BUFFER_VCA = 13,
++	IAV_BUFFER_FB_DATA = 14,
++	IAV_BUFFER_FB_AUDIO = 15,
+ 	IAV_BUFFER_NUM,
+ 	IAV_BUFFER_FIRST = IAV_BUFFER_DSP,
+ 	IAV_BUFFER_LAST = IAV_BUFFER_NUM,
+@@ -408,6 +334,7 @@ enum iav_desc_id {
+ 	IAV_DESC_ME1 = 4,
+ 	IAV_DESC_ME0 = 5,
+ 	IAV_DESC_BUFCAP = 6,
++	IAV_DESC_QP_HIST = 7,
+ 	IAV_DESC_NUM,
+ 	IAV_DESC_FIRST = IAV_DESC_FRAME,
+ 	IAV_DESC_LAST = IAV_DESC_NUM,
+@@ -448,28 +375,36 @@ struct iav_framedesc {
+ 	u32 instant_fetch 	: 1;
+ 	u32 reserved		: 3;
+ 	u32 bitrate_kbps	: 16;
++	u32 mv_data_offset;
+ 	u64 arm_pts;
+ 	u64 dsp_pts;
+ 	u32 frame_num;
+ 	u32 session_id;
+ 	u32 size;
+ 	struct iav_window reso;
++	u32 reserved1;
++	u64 enc_done_ts;
++};
++
++/* mv descriptor reported by DSP */
++struct iav_mv {
++	int x : 15;			// Bit [14:0] is the x component in signed 15-bit format
++	int y : 12;			// Bit [26:15] is the y component in signed 12-bit format
++	int reserved : 5;
+ };
+ 
+ struct iav_statisdesc {
+ 	u32 id;
++	u32 time_ms;		/* timeout in ms; -1 means non-blocking, 0 means blocking */
+ 	u32 data_addr_offset;
+-	u64 dsp_pts;
++	u32 width;
++	u32 height;
++	u32 pitch;
++	u64 arm_pts;
++	u32 dsp_pts;
+ 	u32 frame_num;
+-	u32 mvdump_pitch;
+-	u32 mvdump_unit_sz;
+-};
+-
+-/* encode statistics descriptor reported by DSP */
+-struct iav_motion_vector {
+-	int x : 14;			// Bit [13:0] is the x component in signed 14-bit format
+-	int y : 13;			// Bit [26:14] is the y component in signed 13-bit format
+-	int reserved : 5;
++	u32 session_id;
++	u32 size;
+ };
+ 
+ enum IAV_BUFCAP_FLAG {
+@@ -541,6 +476,21 @@ struct iav_bufcapdesc {
+ 	struct iav_me_cap me0[IAV_SRCBUF_NUM];
+ };
+ 
++/* Total number of bins for QP histogram */
++#define	IAV_QP_HIST_BIN_MAX_NUM	(16)
++struct iav_qp_histogram {
++	u32 id;
++	u32 PTS;
++	u8 qp[IAV_QP_HIST_BIN_MAX_NUM];	// QP value for each bin
++	u16 mb[IAV_QP_HIST_BIN_MAX_NUM];	// Macroblocks used per each bin
++};
++
++struct iav_qphistdesc {
++	struct iav_qp_histogram stream_qp_hist[IAV_STREAM_MAX_NUM_IMPL];
++	u32 stream_num;
++	u32 seq_num;
++};
++
+ struct iav_querydesc {
+ 	enum iav_desc_id qid;	/* query desc id */
+ 	union {
+@@ -551,6 +501,7 @@ struct iav_querydesc {
+ 		struct iav_mebufdesc me1;
+ 		struct iav_mebufdesc me0;
+ 		struct iav_bufcapdesc bufcap;
++		struct iav_qphistdesc qphist;
+ 	} arg;
+ };
+ 
+@@ -558,6 +509,7 @@ enum iav_srcbuf_type {
+ 	IAV_SRCBUF_TYPE_OFF = 0,
+ 	IAV_SRCBUF_TYPE_ENCODE = 1,
+ 	IAV_SRCBUF_TYPE_PREVIEW = 2,
++	IAV_SRCBUF_TYPE_VCA = 3,
+ };
+ 
+ enum iav_srcbuf_state {
+@@ -567,6 +519,8 @@ enum iav_srcbuf_state {
+ 	IAV_SRCBUF_STATE_ERROR = 255,
+ };
+ 
++#define MAX_NUM_VCA_DUMP_DURATION (32)
++
+ struct iav_srcbuf_setup {
+ 	struct iav_window size[IAV_SRCBUF_NUM];
+ 	struct iav_rect input[IAV_SRCBUF_NUM];
+@@ -574,6 +528,10 @@ struct iav_srcbuf_setup {
+ 
+ 	/* Following fields only work for dewarp mode */
+ 	u8 unwarp[IAV_SRCBUF_NUM];
++
++	/* Following fields only work for vca */
++	u8 dump_interval[IAV_SRCBUF_NUM];
++	u16 dump_duration[IAV_SRCBUF_NUM];
+ };
+ 
+ struct iav_srcbuf_format {
+@@ -592,6 +550,23 @@ struct iav_srcbuf_info {
+ 	enum iav_srcbuf_state state;
+ };
+ 
++enum iav_vcap_state {
++	IAV_VCAP_STATE_ACTIVE = 0,
++	IAV_VCAP_STATE_IDLE = 1,
++};
++
++enum iav_vcap_cfg_id {
++	IAV_VCAP_CFG_STATE = 0x0000,
++	IAV_VCAP_CFG_NUM,
++};
++
++struct iav_vcap_cfg {
++	enum iav_vcap_cfg_id cid;
++	union {
++		enum iav_vcap_state state;
++	} arg;
++};
++
+ enum iav_stream_state {
+ 	IAV_STREAM_STATE_IDLE = 0,
+ 	IAV_STREAM_STATE_STARTING,
+@@ -631,8 +606,7 @@ struct iav_stream_format {
+ 	u32 vflip : 1;
+ 	u32 rotate_cw : 1;
+ 	u32 duration : 16;
+-	u32 snapshot_enable : 1;
+-	u32 reserved : 12;
++	u32 reserved : 13;
+ };
+ 
+ struct iav_h264_gop {
+@@ -655,14 +629,18 @@ struct iav_bitrate {
+ 	u32 p_qp_reduce : 8;
+ 	u32 adapt_qp : 8;
+ 	u32 skip_flag : 8;
++	u32 log_q_num_plus_1 : 8;
++	u32 max_i_size_KB;
++	u32 qp_min_on_Q : 8;
++	u32 qp_max_on_Q : 8;
++	u32 q_qp_reduce : 8;
+ 	u32 reserved1 : 8;
+ };
+ 
+-typedef enum {
+-	QPROI_TYPE_QP_QUALITY = 0,
+-	QPROI_TYPE_QP_OFFSET,
+-} QPROI_TYPE;
+-
++struct iav_rc_strategy {
++	u32 abs_br_flag : 1;
++	u32 reserved : 31;
++};
+ 
+ typedef enum {
+ 	QP_FRAME_I = 0,
+@@ -674,7 +652,8 @@ typedef enum {
+ struct iav_qproi_data {
+ 	u8 qp_quality;
+ 	s8 qp_offset;
+-	u8 reserved[2];
++	u8 zmv_threshold;
++	u8 reserved;
+ };
+ 
+ struct iav_qpmatrix {
+@@ -684,7 +663,6 @@ struct iav_qpmatrix {
+ 	u32 qpm_no_check : 1;		/* no qp matrix check for set op */
+ 	u32 reserved : 29;
+ 	char qp_delta[QP_FRAME_TYPE_NUM][4];
+-	u32 type;					/* qp roi type */
+ 	u32 size;
+ 	u32 data_offset;			/* qp matrix data offset */
+ };
+@@ -702,6 +680,20 @@ struct iav_h264_enc_param {
+ 	u16 reserved;
+ };
+ 
++struct iav_h264_pskip {
++	u32 repeat_enable : 1;
++	u32 reserved1 : 15;
++	u32 repeat_num : 8;
++	u32 reserved2 : 8;
++};
++
++struct iav_h264_frame_drop {
++	u32 repeat_enable : 1;
++	u32 reserved1 : 15;
++	u32 drop_num : 8;
++	u32 reserved2 : 8;
++};
++
+ enum iav_streamcfg_id {
+ 	/* Stream config for H264 & H265 & MJPEG (0x0000 ~ 0x0FFF) */
+ 	IAV_STMCFG_FPS = 0x0000,
+@@ -719,9 +711,13 @@ enum iav_streamcfg_id {
+ 	IAV_H264_CFG_ENC_PARAM = 0x1004,
+ 	IAV_H264_CFG_QP_ROI = 0x1005,
+ 	IAV_H264_CFG_ZMV_THRESHOLD = 0x1006,
+-	IAV_H264_CFG_ENC_IMPROVE = 0x1007,
++	IAV_H264_CFG_FLAT_AREA_IMPROVE = 0x1007,
+ 	IAV_H264_CFG_FORCE_FAST_SEEK = 0x1008,
+ 	IAV_H264_CFG_FRAME_DROP = 0x1009,
++	IAV_H264_CFG_STATIS = 0x100A,
++	IAV_H264_CFG_LONG_REF_P = 0x100B,
++	IAV_H264_CFG_RC_STRATEGY = 0x100C,
++	IAV_H264_CFG_FORCE_PSKIP = 0x100D,
+ 	IAV_H264_CFG_NUM,
+ 	IAV_H264_CFG_FIRST = IAV_H264_CFG_GOP,
+ 	IAV_H264_CFG_LAST = IAV_H264_CFG_NUM,
+@@ -731,21 +727,6 @@ enum iav_streamcfg_id {
+ 	IAV_MJPEG_CFG_NUM,
+ 	IAV_MJPEG_CFG_FIRST = IAV_MJPEG_CFG_QUALITY,
+ 	IAV_MJPEG_CFG_LAST = IAV_MJPEG_CFG_NUM,
+-
+-	/* H265 config (0x3000 ~ 0x3FFF) */
+-	IAV_H265_CFG_GOP = 0x3000,
+-	IAV_H265_CFG_BITRATE = 0x3001,
+-	IAV_H265_CFG_FORCE_IDR = 0x3002,
+-	IAV_H265_CFG_QP_LIMIT = 0x3003,
+-	IAV_H265_CFG_ENC_PARAM = 0x3004,
+-	IAV_H265_CFG_QP_ROI = 0x3005,
+-	IAV_H265_CFG_ZMV_THRESHOLD = 0x3006,
+-	IAV_H265_CFG_ENC_IMPROVE = 0x3007,
+-	IAV_H265_CFG_FORCE_FAST_SEEK = 0x3008,
+-	IAV_H265_CFG_FRAME_DROP = 0x3009,
+-	IAV_H265_CFG_NUM,
+-	IAV_H265_CFG_FIRST = IAV_H264_CFG_GOP,
+-	IAV_H265_CFG_LAST = IAV_H264_CFG_NUM,
+ };
+ 
+ struct iav_stream_cfg {
+@@ -759,24 +740,17 @@ struct iav_stream_cfg {
+ 
+ 		struct iav_h264_gop h264_gop;
+ 		struct iav_bitrate h264_rc;
++		struct iav_rc_strategy h264_rc_strategy;
+ 		struct iav_qpmatrix h264_roi;
+ 		struct iav_h264_enc_param h264_enc;
++		struct iav_h264_pskip h264_pskip;
++		struct iav_h264_frame_drop h264_frame_drop;
+ 		int h264_force_idr;
+-		u32 h264_enc_improve;
++		u32 h264_flat_area_improve;
+ 		u32 h264_force_fast_seek;
+-		u32 h264_drop_frames;
++		u32 h264_statis;
+ 
+ 		u32 mjpeg_quality;
+-
+-		/* H265 shares same structure with H264 */
+-		struct iav_h264_gop h265_gop;
+-		struct iav_bitrate h265_rc;
+-		struct iav_qpmatrix h265_roi;
+-		struct iav_h264_enc_param h265_enc;
+-		int h265_force_idr;
+-		u32 h265_enc_improve;
+-		u32 h265_force_fast_seek;
+-		u32 h265_drop_frames;
+ 	} arg;
+ 	u32 dsp_pts;
+ };
+@@ -831,10 +805,10 @@ struct iav_h264_cfg {
+ 	u32 cpb_cmp_idc : 2;
+ 	u32 fast_rc_idc : 4;
+ 	u32 mv_threshold : 8;
+-	u32 enc_improve : 1;
++	u32 flat_area_improve : 1;
+ 	u32 multi_ref_p : 1;
+ 	u32 reserved1 : 6;
+-	u32 long_term_intvl : 8;
++	u32 fast_seek_intvl : 8;
+ 	u32 intrabias_p : 16;
+ 	u32 intrabias_b : 16;
+ 	u8 user1_intra_bias;
+@@ -843,8 +817,15 @@ struct iav_h264_cfg {
+ 	u8 user2_direct_bias;
+ 	u8 user3_intra_bias;
+ 	u8 user3_direct_bias;
+-	u16 reserved2;
++	s8 deblocking_filter_alpha;
++	s8 deblocking_filter_beta;
++	u8 deblocking_filter_enable;
++	u8 reserved2[3];
+ 	struct iav_pic_info pic_info;
++	u16 frame_crop_left_offset;
++	u16 frame_crop_right_offset;
++	u16 frame_crop_top_offset;
++	u16 frame_crop_bottom_offset;
+ };
+ 
+ /* GOP model */
+@@ -876,9 +857,13 @@ enum iav_bitrate_control_params {
+ 	H264_I_QP_REDUCE_MIN = 1,
+ 	H264_P_QP_REDUCE_MAX = 5,
+ 	H264_P_QP_REDUCE_MIN = 1,
++	H264_Q_QP_REDUCE_MAX = 10,
++	H264_Q_QP_REDUCE_MIN = 1,
+ 	/* skip frame flag */
+ 	H264_WITHOUT_FRAME_DROP = 0,
+ 	H264_WITH_FRAME_DROP = 6,
++	H264_I_SIZE_KB_MAX = 8192,
++	H264_LOG_Q_NUM_PLUS_1_MAX = 4,
+ };
+ 
+ enum {
+@@ -931,7 +916,9 @@ struct iav_overlay_area {
+ #define MAX_NUM_OVERLAY_AREA	(4)
+ struct iav_overlay_insert {
+ 	u32 id;
+-	u32 enable;
++	u32 enable: 1;
++	u32 osd_insert_always: 1;
++	u32 reserved : 30;
+ 	struct iav_overlay_area area[MAX_NUM_OVERLAY_AREA];
+ };
+ 
+@@ -1184,6 +1171,11 @@ struct iav_efm_request_frame {
+ struct iav_efm_handshake_frame {
+ 	u32 frame_idx;
+ 	u32 frame_pts;
++
++	u8 is_last_frame;
++	u8 use_hw_pts;//only apply to real time's case
++	u8 reserved1;
++	u8 reserved2;
+ };
+ 
+ struct iav_apply_frame_sync {
+@@ -1274,28 +1266,16 @@ enum {
+ 	IAV_PB_SCAN_MODE_I_ONLY = 1,
+ };
+ 
+-enum {
+-	IAV_DSP_DECODE_MODE_IDLE = 0,
+-	IAV_DSP_DECODE_MODE_RUN = 1,
+-	IAV_DSP_DECODE_MODE_IDLE_WITH_LAST_FRAME = 2,
+-	IAV_DSP_DECODE_MODE_1_to_0 = 3,
+-	IAV_DSP_DECODE_MODE_1_to_2 = 4,
+-	IAV_DSP_DECODE_MODE_STILL_JPEG = 5,
+-	IAV_DSP_DECODE_MODE_STILL_JPEG_WITH_LAST_FRAME = 6,
+-	IAV_DSP_DECODE_MODE_5_to_0 = 7,
+-	IAV_DSP_DECODE_MODE_5_to_6 = 8,
+-	IAV_DSP_DECODE_MODE_MULTI_SCENE = 9,
+-	IAV_DSP_DECODE_MODE_9_to_0 = 10,
+-};
+-
+ struct iav_decoder_config {
+ 	u8	max_frm_num;
+-	u8	reserved0;
+-	u8	reserved1;
+-	u8	reserved2;
++	u8	b_support_ff;
++	u8	b_support_fb;
++	u8	b_support_bw;
+ 
+ 	u16	max_frm_width;
+ 	u16	max_frm_height;
++
++	u32	max_bitrate;
+ };
+ 
+ struct iav_decode_vout_config {
+@@ -1317,12 +1297,20 @@ struct iav_decode_vout_config {
+ };
+ 
+ struct iav_decode_mode_config {
+-	u8	reserved0;
+-	u8	reserved1;
+-	u8	reserved2;
++	u8	b_support_ff_fb_bw;
++	u8	debug_max_frame_per_interrupt;
++	u8	debug_use_dproc;
+ 	u8	num_decoder;
+ 
+-	struct iav_decoder_config decoder_configs[DIAV_MAX_DECODER_NUMBER];
++	//for resource allocation inside dsp
++	u32	max_frm_width;
++	u32	max_frm_height;
++
++	u32	max_vout0_width;
++	u32	max_vout0_height;
++
++	u32	max_vout1_width;
++	u32	max_vout1_height;
+ };
+ 
+ struct iav_decoder_info {
+@@ -1448,6 +1436,8 @@ typedef enum {
+ 	IOC_DSP_LOG = 0x01,
+ 	IOC_DSP_CFG = 0x02,
+ 	IOC_DRV_DSP_INFO = 0x03,
++	IOC_DSP_CLOCK = 0x04,
++	IOC_GET_DSP_HASH = 0x05,
+ 
+ 	/* For system (0x10 ~ 0x2F) */
+ 	IOC_STATE = 0x10,
+@@ -1487,11 +1477,15 @@ typedef enum {
+ 	IOC_VIDEO_PROC = 0x66,
+ 	IOC_EFM_PROC = 0x67,
+ 
++	/* VCAP config ioctl (0x80 ~ 0x8F) */
++	IOC_VCAP_CFG = 0x80,
++
+ 	/* For Misc setting (0xD0 ~ 0xEF) */
+ 	IOC_TEST = 0xD0,
+ 	IOC_DEBUG = 0xD1,
+ 
+ 	/* Reserved (0xF0 ~ 0xFF) */
++	IOC_CUSTOM = 0xF0,
+ } IAV_ENC_IOC;
+ 
+ typedef enum {
+@@ -1521,6 +1515,8 @@ typedef enum {
+ #define IAV_IOC_SET_DSP_LOG			IAVENC_IOW(IOC_DSP_LOG, struct iav_dsplog_setup *)
+ #define IAV_IOC_DUMP_DSP_CFG			IAVENC_IOR(IOC_DSP_CFG)
+ #define IAV_IOC_DRV_DSP_INFO	IAVENC_IOWR(IOC_DRV_DSP_INFO, struct iav_driver_dsp_info *)
++#define IAV_IOC_SET_DSP_CLOCK_STATE	IAVENC_IOW(IOC_DSP_CLOCK, u32)
++#define IAV_IOC_GET_DSP_HASH	IAVENC_IOWR(IOC_GET_DSP_HASH, struct iav_dsp_hash *)
+ 
+ /* state ioctl */
+ #define IAV_IOC_WAIT_NEXT_FRAME		IAVENC_IOR(IOC_STATE, u8)
+@@ -1529,6 +1525,11 @@ typedef enum {
+ #define IAV_IOC_ENABLE_PREVIEW	IAVENC_IOW(IOC_SET_PREVIEW, int)
+ #define IAV_IOC_START_ENCODE			IAVENC_IOW(IOC_ENCODE_START, u32)
+ #define IAV_IOC_STOP_ENCODE			IAVENC_IOW(IOC_ENCODE_STOP, u32)
++#define IAV_IOC_ABORT_ENCODE		IAVENC_IOW(IOC_ENCODE_STOP, u8)
++
++/* vcap ioctl */
++#define IAV_IOC_SET_VCAP_CFG	IAVENC_IOW(IOC_VCAP_CFG, struct iav_vcap_cfg *)
++#define IAV_IOC_GET_VCAP_CFG	IAVENC_IOWR(IOC_VCAP_CFG, struct iav_vcap_cfg *)
+ 
+ /* system ioctl */
+ #define IAV_IOC_SET_SYSTEM_RESOURCE	IAVENC_IOW(IOC_SYSTEM_RESOURCE, struct iav_system_resource *)
+@@ -1612,6 +1613,9 @@ typedef enum {
+ #define IAV_IOC_SET_DEBUG_CONFIG			IAVENC_IOW(IOC_DEBUG, struct iav_debug_cfg *)
+ #define IAV_IOC_GET_DEBUG_CONFIG			IAVENC_IOR(IOC_DEBUG, struct iav_debug_cfg *)
+ 
++/* Customized IAV IOCTL */
++#define IAV_IOC_CUSTOM_CMDS		IAVENC_IOWR(IOC_CUSTOM, u8)
++
+ /* decode ioctl */
+ #define IAV_IOC_ENTER_DECODE_MODE    IAVDEC_IOWR(IOC_ENTER_DECODE_MODE, struct iav_decode_mode_config *)
+ #define IAV_IOC_LEAVE_DECODE_MODE    IAVDEC_IO(IOC_LEAVE_DECODE_MODE)
+diff --git a/iav_netlink.h b/iav_netlink.h
+index 816cfde..0e46d30 100644
+--- a/iav_netlink.h
++++ b/iav_netlink.h
+@@ -5,72 +5,106 @@
+  *	2014/07/25 - [Zhaoyang Chen] created file
+  *	2015/07/24 - [Jian Tang] modified file
+  *
+- * Copyright (C) 2014-2018, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+ #ifndef ___IAV_NETLINK_H__
+ #define ___IAV_NETLINK_H__
+ 
++#define MAX_NETLINK_REQUESTS	(5)
+ 
+-#define MAX_NETLINK_REQUESTS	4
+-
+-#define NL_PORT_IMAGE			20
+-#define NL_PORT_VSYNC			21
+-
+-#define MAX_NL_MSG_LEN			1024
++#define MAX_NL_MSG_LEN			(1024)
+ 
+ enum NL_OBJ_INDEX {
+ 	NL_OBJ_IMAGE = 0,
+-	NL_OBJ_VSYNC,
++	NL_OBJ_VSYNC = 1,
++	NL_OBJ_SYS = 2,
+ 	NL_OBJ_MAX_NUM,
+ };
+ 
++enum NL_PORT_INDEX {
++	NL_PORT_BASE = 20,
++	NL_PORT_IMAGE = NL_PORT_BASE + NL_OBJ_IMAGE,
++	NL_PORT_VSYNC = NL_PORT_BASE + NL_OBJ_VSYNC,
++	NL_PORT_SYS = NL_PORT_BASE + NL_OBJ_SYS,
++};
++
+ enum NL_REQUEST_IMAGE {
+ 	NL_REQ_IMG_START_AAA = 0,
+-	NL_REQ_IMG_STOP_AAA,
+-	NL_REQ_IMG_PREPARE_AAA,
++	NL_REQ_IMG_STOP_AAA = 1,
++	NL_REQ_IMG_PREPARE_AAA = 2,
++	NL_REQ_IMG_DPTZ_MAIN = 3,
++	NL_REQ_IMG_WARP = 4,
++	NL_REQ_IMG_NUM,
+ 	NL_REQ_IMG_FIRST = NL_REQ_IMG_START_AAA,
+-	NL_REQ_IMG_LAST = NL_REQ_IMG_PREPARE_AAA + 1,
+-	NL_REQ_IMG_NUM = NL_REQ_IMG_LAST - NL_REQ_IMG_FIRST,
+-
++	NL_REQ_IMG_LAST = NL_REQ_IMG_NUM,
+ };
+ 
+ enum NL_REQUEST_VSYNC {
+ 	NL_REQ_VSYNC_RESTORE = 0,
++	NL_REQ_VSYNC_NUM,
+ 	NL_REQ_VSYNC_FIRST = NL_REQ_VSYNC_RESTORE,
+-	NL_REQ_VSYNC_LAST = NL_REQ_VSYNC_RESTORE + 1,
+-	NL_REQ_VSYNC_NUM = NL_REQ_VSYNC_LAST - NL_REQ_VSYNC_FIRST,
++	NL_REQ_VSYNC_LAST = NL_REQ_VSYNC_NUM,
++};
++
++enum NL_NOTICE_SYS {
++	NL_NOTICE_SYS_THAW_DONE = 0,
++	NL_NOTICE_SYS_NUM,
++	NL_NOTICE_SYS_FIRST = NL_NOTICE_SYS_THAW_DONE,
++	NL_NOTICE_SYS_LAST = NL_NOTICE_SYS_NUM,
+ };
+ 
+ enum NL_SESSION_CMD {
+ 	NL_SESS_CMD_CONNECT = 0,
+-	NL_SESS_CMD_DISCONNECT,
++	NL_SESS_CMD_DISCONNECT = 1,
++	NL_SESS_CMD_NUM,
+ 	NL_SESS_CMD_FIRST = NL_SESS_CMD_CONNECT,
+-	NL_SESS_CMD_LAST = NL_SESS_CMD_DISCONNECT + 1,
+-	NL_SESS_CMD_NUM = NL_SESS_CMD_LAST - NL_SESS_CMD_FIRST,
++	NL_SESS_CMD_LAST = NL_SESS_CMD_NUM,
+ };
+ 
+ enum NL_CMD_STATUS {
+ 	NL_CMD_STATUS_SUCCESS = 0,
+-	NL_CMD_STATUS_FAIL,
++	NL_CMD_STATUS_FAIL = 1,
+ };
+ 
+ enum NL_MSG_TYPE {
+ 	NL_MSG_TYPE_SESSION = 0,
+-	NL_MSG_TYPE_REQUEST,
++	NL_MSG_TYPE_REQUEST = 1,
++	NL_MSG_TYPE_NOTICE = 2,
+ };
+ 
+ enum NL_MSG_DIR {
+ 	NL_MSG_DIR_CMD = 0,
+-	NL_MSG_DIR_STATUS,
++	NL_MSG_DIR_STATUS = 1,
+ };
+ 
++#define NL_MSG_SIZE			(128)
++#define NL_MSG_HEADER_SIZE	(24)
++#define NL_MSG_PAYLOAD_SIZE	(NL_MSG_SIZE - NL_MSG_HEADER_SIZE)
++
+ struct nl_msg_data {
+ 	u32 pid;
+ 	u32 port;
+@@ -78,6 +112,7 @@ struct nl_msg_data {
+ 	u32 dir;
+ 	u32 cmd;
+ 	u32 status;
++	u8 payload[NL_MSG_PAYLOAD_SIZE];
+ };
+ 
+ #endif
+diff --git a/iav_ucode_ioctl.h b/iav_ucode_ioctl.h
+index 2e91c98..cff6009 100644
+--- a/iav_ucode_ioctl.h
++++ b/iav_ucode_ioctl.h
+@@ -5,12 +5,29 @@
+  * History:
+  *	2012/10/25 - [Cao Rongrong] Created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+@@ -23,13 +40,13 @@
+ 
+ typedef struct ucode_load_item_s {
+ 	unsigned long		addr_offset;
+-	char			filename[20];
++	char			filename[24];
+ } ucode_load_item_t;
+ 
+ 
+ typedef struct ucode_load_info_s {
+ 	unsigned long		map_size;
+-	int			nr_item;
++	unsigned long		nr_item;
+ 	ucode_load_item_t	items[UCODE_LOAD_ITEM_MAX];
+ } ucode_load_info_t;
+ 
+@@ -40,6 +57,7 @@ typedef struct ucode_version_s {
+ 	u8	day;
+ 	u32	edition_num;
+ 	u32	edition_ver;
++	u32	chip_arch;
+ } ucode_version_t;
+ 
+ 
+@@ -57,6 +75,21 @@ typedef enum {
+ 	// Reserved: 0x30 ~ 0xFF
+ } UCODE_IOC;
+ 
++enum ucode_arch {
++	UCODE_ARCH_UNKNOWN = 0xFFFF,
++	UCODE_ARCH_A5S = 0,
++	UCODE_ARCH_S2 = 1,
++	UCODE_ARCH_S2L = 2,
++	UCODE_ARCH_S2E = 3,
++	UCODE_ARCH_S3L = 4,
++	UCODE_ARCH_S5 = 5,
++	UCODE_ARCH_S5L = 6,
++
++	UCODE_ARCH_NUM,
++	UCODE_ARCH_FIRST = 0,
++	UCODE_ARCH_LAST = UCODE_ARCH_NUM,
++};
++
+ #define IAV_IOC_GET_UCODE_INFO		_IOR(UCODE_IOC_MAGIC, IOC_GET_UCODE_INFO, ucode_load_info_t)
+ #define IAV_IOC_GET_UCODE_VERSION	_IOR(UCODE_IOC_MAGIC, IOC_GET_UCODE_VERSION, ucode_version_t)
+ #define IAV_IOC_UPDATE_UCODE		_IOW(UCODE_IOC_MAGIC, IOC_UPDATE_UCODE, int)
+diff --git a/iav_vin_ioctl.h b/iav_vin_ioctl.h
+index b371ac1..1f08b02 100644
+--- a/iav_vin_ioctl.h
++++ b/iav_vin_ioctl.h
+@@ -4,12 +4,29 @@
+  * History:
+  *	2013/09/04 - [Cao Rongrong] Created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+@@ -51,6 +68,17 @@ enum amba_vindev_bayer_pattern_e {
+ 	VINDEV_BAYER_PATTERN_BG			= 1,
+ 	VINDEV_BAYER_PATTERN_GR			= 2,
+ 	VINDEV_BAYER_PATTERN_GB			= 3,
++	/* RGB/IR CFA, IR instead of B */
++	VINDEV_BAYER_PATTERN_RG_GI		= 4,
++	VINDEV_BAYER_PATTERN_IG_GR		= 5,
++	VINDEV_BAYER_PATTERN_GR_IG		= 6,
++	VINDEV_BAYER_PATTERN_GI_RG		= 7,
++	/* RGB/IR CFA, IR instead of R */
++	VINDEV_BAYER_PATTERN_BG_GI		= 8,
++	VINDEV_BAYER_PATTERN_IG_GB		= 9,
++	VINDEV_BAYER_PATTERN_GB_IG		= 10,
++	VINDEV_BAYER_PATTERN_GI_BG		= 11,
++
+ 	VINDEV_BAYER_PATTERN_AUTO		= 255,
+ };
+ 
+@@ -66,6 +94,7 @@ enum {
+ 	SENSOR_AR0141				= 0x00000007,
+ 	SENSOR_AR0230				= 0x00000008,
+ 	SENSOR_AR0237				= 0x00000009,
++	SENSOR_AR0521				= 0x0000000A,
+ 
+ 	/* OV Sensor */
+ 	SENSOR_OV10620				= 0x00001000,
+@@ -84,6 +113,8 @@ enum {
+ 	SENSOR_OV9750				= 0x0000100D,
+ 	SENSOR_OV9732				= 0x0000100E,
+ 	SENSOR_OV2718				= 0x0000100F,
++	SENSOR_OV2732				= 0x00001014,
++	SENSOR_OV2735				= 0x00001015,
+ 
+ 	/* Samsung Sensor */
+ 	SENSOR_S5K3E2FX				= 0x00002000,
+@@ -111,6 +142,10 @@ enum {
+ 	SENSOR_IMX185				= 0x00003011,
+ 	SENSOR_IMX226				= 0x00003012,
+ 	SENSOR_IMX290				= 0x00003013,
++	SENSOR_IMX274				= 0x00003014,
++	SENSOR_IMX326				= 0x00003015,
++	SENSOR_IMX307                           = 0x00003016,
++	SENSOR_IMX377                           = 0x00003017,
+ 
+ 	/* Panasonic Sensor */
+ 	SENSOR_MN34041PL			= 0x00004000,
+@@ -118,6 +153,7 @@ enum {
+ 	SENSOR_MN34220PL			= 0x00004002,
+ 	SENSOR_MN34210PL			= 0x00004003,
+ 	SENSOR_MN34227PL			= 0x00004004,
++	SENSOR_MN34420PL			= 0x00004005,
+ 
+ 	/*altera fpga vin in*/
+ 	SENSOR_ALTERA_FPGA			= 0x00005000,
+@@ -125,6 +161,9 @@ enum {
+ 	/* Dummy Sensor */
+ 	SENSOR_AMBDS				= 0x00006000,
+ 
++	/* Customized Sensor */
++	SENSOR_CUSTOM_FIRST			= 0x00010000,
++
+ 	/* ADI Decoder */
+ 	DECODER_ADV7403				= 0x80000000,
+ 	DECODER_ADV7441A			= 0x80000001,
+@@ -227,21 +266,11 @@ struct vindev_reg {
+ 
+ struct vindev_eisinfo {
+ 	unsigned int vsrc_id;
+-	unsigned short cap_start_x;
+-	unsigned short cap_start_y;
+-	unsigned short cap_cap_w;
+-	unsigned short cap_cap_h;
+-	unsigned short source_width;
+-	unsigned short source_height;
+-	unsigned int current_fps;
+-	unsigned int main_fps;
+-	unsigned int current_shutter_time;
+-	unsigned int row_time;
+-	unsigned short vb_lines;
+-	unsigned short sensor_cell_width;
+-	unsigned short sensor_cell_height;
+-	unsigned char column_bin;
+-	unsigned char row_bin;
++	unsigned int vb_time; // ns
++	unsigned short sensor_cell_width; // um * 100
++	unsigned short sensor_cell_height; // um * 100
++	unsigned char column_bin; // binning pixels
++	unsigned char row_bin; // binning pixels
+ };
+ 
+ struct vindev_wdr_gain_info {
+@@ -263,6 +292,10 @@ struct vindev_aaa_info {
+ 	unsigned int dual_gain_mode;
+ 	unsigned int line_time;
+ 	unsigned int vb_time;
++	unsigned int ll_mode;
++	unsigned int sht0_max;
++	unsigned int sht1_max;
++	unsigned int sht2_max;
+ };
+ 
+ struct vindev_dgain_ratio {
+@@ -294,6 +327,11 @@ struct vindev_wdr_gp_info {
+ };
+ 
+ 
++struct vindev_low_light_info {
++	unsigned int vsrc_id;
++	unsigned int ll_mode;
++};
++
+ /* ==========================================================================*/
+ #define VINIOC_MAGIC				's'
+ #define VIN_IO(nr)				_IO(VINIOC_MAGIC, nr)
+@@ -323,7 +361,10 @@ enum {
+ 	IOC_VIN_WDR_SHUTTER2ROW		= 0x19,
+ 	IOC_VIN_AAAINFO					= 0x1A,
+ 	IOC_VIN_CHIP_STATUS				= 0x1B,
+-	IOC_VIN_WDR_ROW_GP				= 0x1C
++	IOC_VIN_WDR_ROW_GP				= 0x1C,
++	IOC_VIN_AAA_COMPENSATION			= 0x1D,
++	IOC_VIN_SET_LOW_LIGHT_MODE			= 0x1E,
++	IOC_VIN_STOP_STREAM				= 0x1F,
+ };
+ 
+ /* ==========================================================================*/
+@@ -358,6 +399,10 @@ enum {
+ #define IAV_IOC_VIN_WDR_SHUTTER2ROW			VIN_IOWR(IOC_VIN_WDR_SHUTTER2ROW, struct vindev_wdr_gp_s)
+ #define IAV_IOC_VIN_SET_WDR_GP				VIN_IOW(IOC_VIN_WDR_ROW_GP, struct vindev_wdr_gp_info)
+ 
++#define IAV_IOC_VIN_AAA_COMPENSATION		VIN_IOWR(IOC_VIN_AAA_COMPENSATION, struct vindev_wdr_gp_info)
++#define IAV_IOC_VIN_SET_LOW_LIGHT_MODE		VIN_IOW(IOC_VIN_SET_LOW_LIGHT_MODE, struct vindev_low_light_info)
++#define IAV_IOC_VIN_STOP_STREAM				VIN_IOW(IOC_VIN_STOP_STREAM, unsigned int)
++
+ /* ==========================================================================*/
+ 
+ #endif	//__IAV_VIN_IOCTL_H__
+diff --git a/iav_vout_ioctl.h b/iav_vout_ioctl.h
+index d9dbb7b..387f7e2 100644
+--- a/iav_vout_ioctl.h
++++ b/iav_vout_ioctl.h
+@@ -6,12 +6,29 @@
+  *	2008/04/02 - [Oliver Li] created file
+  *	2011/06/10 - [Jian Tang] modified file
+  *
+- * Copyright (C) 2007-2011, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
+  *
+  */
+ 
+diff --git a/img_dev.h b/img_dev.h
+index 7dd444d..76a2556 100644
+--- a/img_dev.h
++++ b/img_dev.h
+@@ -4,13 +4,31 @@
+  * History:
+  * 2014/09/17 - [Bin Wang] Created this file
+  *
+- * Copyright (C) 2014-2018, Ambarella, Inc.
++ * Copyright (C) 2015 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
+- *********************************************************************/
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
+ #ifndef __IMG_DEV_H__
+ #define __IMG_DEV_H__
+ 
+diff --git a/mw_api.h b/mw_api.h
+index 397e217..eda94ad 100644
+--- a/mw_api.h
++++ b/mw_api.h
+@@ -1,3 +1,35 @@
++/*
++ * mw_api.h
++ *
++ * History:
++ *	2013/03/12 - [Cao Rongrong] Created file
++ *	2013/12/12 - [Jian Tang] Modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
+ 
+ #ifndef __MW_API_H__
+ #define __MW_API_H__
+@@ -13,7 +45,7 @@ extern "C" {
+ int mw_start_aaa(int fd_iav);
+ int mw_stop_aaa(void);
+ int mw_init_mctf(int fd_iav);
+-
++int mw_get_iav_state(int fd, int *pState);
+ /********************** Exposure Control Settings **********************/
+ int mw_enable_ae(int enable);
+ int mw_get_ae_param(mw_ae_param *ae_param);
+@@ -119,6 +151,16 @@ int mw_save_config_file(char *filename);
+ int mw_load_adj_param(mw_adj_file_param *contents);
+ int mw_save_adj_param(mw_adj_file_param *contents);
+ int mw_set_lens_id(int id);
++int mw_set_auto_knee_strength (int strength);
++int mw_get_auto_knee_strength (int *pStrength);
++int mw_enable_auto_dump_cfg(int enable);
++int mw_set_hdr_blend_config(mw_hdr_blend_info *pBlend_cfg);
++int mw_get_hdr_blend_config(mw_hdr_blend_info *pBlend_cfg);
++int mw_set_wdr_luma_config(mw_wdr_luma_info *pWdr_luma_cfg);
++int mw_get_wdr_luma_config(mw_wdr_luma_info *pWdr_luma_cfg);
++int mw_set_img_log_level(u32 level);
++
++int mw_get_sys_multi_chan_info(mw_sys_multi_chan_info *pMw_info);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/mw_struct.h b/mw_struct.h
+index ca7ac12..03062d2 100644
+--- a/mw_struct.h
++++ b/mw_struct.h
+@@ -1,3 +1,35 @@
++/*
++ * mw_struct.h
++ *
++ * History:
++ *	2013/03/12 - [Cao Rongrong] Created file
++ *	2013/12/12 - [Jian Tang] Modified file
++ *
++ * Copyright (C) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
+ 
+ #ifndef __MW_STRUCT_H__
+ #define __MW_STRUCT_H__
+@@ -11,6 +43,7 @@ extern "C" {
+ typedef u32			mw_id;
+ typedef u32			mw_stream;
+ 
++#define	MW_MAX_CHANNEL_NUM		(4)
+ #define	MW_MAX_STREAM_NUM		(4)
+ #define	MW_MAX_BUFFER_NUM		(4)
+ #define	MW_NUM_EXPOSURE_CURVE	(256)
+@@ -299,6 +332,19 @@ typedef struct {
+ } mw_sys_res;
+ 
+ typedef struct {
++	u16 expo_ratio; 	// one param for all frames. 4 ~ 128
++	u16 boost_factor;	// one param for all frames. 0 ~ 256, 0 means no boost
++} mw_hdr_blend_info;
++
++typedef struct {
++	u8 radius;
++	u8 luma_weight_red;
++	u8 luma_weight_green;
++	u8 luma_weight_blue;
++	u8 luma_weight_shift;
++}mw_wdr_luma_info;
++
++typedef struct {
+ 	u32 step;
+ 	u32 line_time;
+ } mw_sensor;
+@@ -309,6 +355,14 @@ typedef struct {
+ } mw_sys_info;
+ 
+ typedef struct {
++	u8 chan_num;
++	u8 cur_chan_id;
++	u8 reserved[6];
++	mw_sys_res res[MW_MAX_CHANNEL_NUM];
++	mw_sensor sensor[MW_MAX_CHANNEL_NUM];
++} mw_sys_multi_chan_info;
++
++typedef struct {
+ 	u32		FNO_min;
+ 	u32		FNO_max;
+ 	u32		aperture_min;
+@@ -327,6 +381,7 @@ typedef struct {
+ 	mw_aperture_param	lens_aperture;
+ 	mw_ae_metering_mode	ae_metering_mode;
+ 	mw_ae_metering_table	ae_metering_table;
++	u32					tone_curve_duration;
+ } mw_ae_param;
+ 
+ #define	FILE_NAME_LENGTH		64
+@@ -341,6 +396,16 @@ typedef enum {
+ 	FILE_TYPE_LAST = FILE_TYPE_TOTAL_NUM,
+ } MW_AAA_FILE_TYPE;
+ 
++typedef enum {
++	MW_AAA_SUCCESS = 0,
++	MW_AAA_INIT_FAIL = -1,
++	MW_AAA_DEINIT_FAIL = -2,
++	MW_AAA_NL_INIT_FAIL = -3,
++	MW_AAA_INTERRUPTED = -4,
++	MW_AAA_SET_FAIL = -5,
++	MW_AAA_GET_FAIL = -6,
++} MW_AAA_RESULT;
++
+ 
+ /*******************************************************
+  *
+@@ -389,6 +454,16 @@ typedef struct {
+ 	mw_operate flag[MW_ADJ_FILTER_NUM];
+ } mw_adj_file_param;
+ 
++typedef enum {
++	IMG_LOG_OFF    = 0,
++	IMG_LOG_AE     = 1 << 0,
++	IMG_LOG_AWB    = 1 << 1,
++	IMG_LOG_AF     = 1 << 2,
++	IMG_LOG_PARSER = 1 << 3,
++	IMG_LOG_MAIN   = 1 << 4,
++	IMG_LOG_HDR    = 1 << 5,
++} img_log_level;
++
+ #ifdef __cplusplus
+ }
+ #endif

@@ -1,0 +1,12 @@
+s2l_linux_sdk/ambarella/out
+s2l_linux_sdk/ambarella/oryx/services/apps_launcher/am_oryx_version.h
+*.o
+tags
+*.swp
+
+# built files
+s2l_linux_sdk/ambarella/build/dtc/dtc
+s2l_linux_sdk/ambarella/build/dtc/dtc-lexer.lex.c
+s2l_linux_sdk/ambarella/build/dtc/dtc-parser.tab.c
+s2l_linux_sdk/ambarella/build/dtc/dtc-parser.tab.h
+s2l_linux_sdk/ambarella/build/kconfig/mconf

@@ -1,0 +1,100 @@
+##
+## Script: create_board_mkcfg
+##
+## History:
+##    2013/03/27 - [Jian Tang] Create
+##
+## Copyright (c) 2016 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+#!/bin/sh
+
+func_create_board_cfg()
+{
+	local file=$1/AmbaConfig
+
+	### Create Board AmbaConfig
+	rm -rf "$file"
+	touch "$file"
+
+	{
+		echo "##"
+		echo "## boards/AmbaConfig"
+		echo "##"
+		echo "## Following content is generated automatically by"
+		echo "##  create_board_mkcfg: DO NOT EDIT!!"
+		echo "##"
+		echo ""
+
+		echo "choice"
+		echo "	prompt \"Board\""
+		echo "	help"
+		echo "		Select the board type of the target."
+		echo ""
+	} >> "$file"
+
+	boards_list=$(find "$1" -maxdepth 1 -mindepth 1 -type d | sort)
+	for board in $boards_list; do
+		if [ -f "$board"/AmbaConfig ]; then
+			{
+				grep -v '^\#'  "$board"/AmbaConfig | grep '^config CONFIG_BSP_BOARD' -A 2
+				echo ""
+			} >> "$file"
+		fi
+	done
+
+	{
+		echo "endchoice"
+		echo ""
+	} >> "$file"
+
+	for board in $boards_list; do
+		if [ -f "$board"/AmbaConfig ]; then
+			{
+				echo ""
+				echo "##### $(basename "$board")"
+				echo ""
+				grep -v '^\#' "$board"/AmbaConfig | grep '^choice$' -A 9999
+			} >> "$file"
+		fi
+	done
+
+	echo "" >> "$file"
+}
+
+func_main()
+{
+	if [ -d "$1" ]
+	then
+		func_create_board_cfg  "$1"
+	else
+		echo "The board directory ($1) does NOT exist!"
+	fi
+}
+
+### $1: the board directory path
+
+func_main  "$1"
+

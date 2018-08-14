@@ -1,0 +1,188 @@
+##
+## boards/s2lmkiwi/AmbaConfig
+##
+## History:
+##    2014/03/20 - [Cao Rongrong] Create
+##
+## Copyright (c) 2015 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+config CONFIG_BSP_BOARD_S2LM_KIWI
+	bool "KIWI"
+	depends on CONFIG_ARCH_S2L
+
+choice
+	prompt "Board Type"
+	default CONFIG_BOARD_VERSION_S2LMKIWI_S2L55M
+	depends on CONFIG_BSP_BOARD_S2LM_KIWI
+	help
+		Select the BSP of the S2LMKIWI.
+
+config CONFIG_BOARD_VERSION_S2LMKIWI_S2L55M
+        bool "KIWI (S2L55M)"
+
+config CONFIG_BOARD_VERSION_S2LMKIWI_S2L33M
+        bool "KIWI (S2L33M)"
+
+config CONFIG_BOARD_VERSION_S2LMKIWI_S2L22M
+        bool "KIWI (S2L22M)"
+
+config CONFIG_BOARD_VERSION_S2LMKIWI_S2L12M
+	bool "KIWI (S2L12M)"
+
+config CONFIG_BOARD_VERSION_S2LMKIWI_S2LMHC
+	bool "KIWI (S2LM High Clock)"
+	endchoice
+
+############ Fast Boot ##################
+
+menuconfig CONFIG_S2LMKIWI_FAST_BOOT
+	bool "Amboot Fast Boot Configuration"
+	depends on CONFIG_BSP_BOARD_S2LM_KIWI
+	default n
+	help
+		Boot Sensor, DSP (Vout), Audio in Amboot.
+
+if CONFIG_S2LMKIWI_FAST_BOOT
+
+config CONFIG_S2LMKIWI_SENSOR_BOOT
+	bool "Boot Sensor in Amboot"
+	select CONFIG_AMBOOT_ENABLE_IDC
+	default n
+
+if CONFIG_S2LMKIWI_SENSOR_BOOT
+choice
+	prompt "VIN Device"
+	default CONFIG_S2LMKIWI_SENSOR_OV4689
+
+config CONFIG_S2LMKIWI_SENSOR_IMX322
+	bool "IMX322"
+
+config CONFIG_S2LMKIWI_SENSOR_OV4689
+	bool "OV4689"
+
+config CONFIG_S2LMKIWI_SENSOR_OV2732_MIPI
+	bool "OV2732_MIPI"
+
+config CONFIG_S2LMKIWI_SENSOR_OV9710
+	bool "OV9710"
+
+config CONFIG_S2LMKIWI_SENSOR_AR0230
+	bool "AR0230(Linear)"
+
+config CONFIG_S2LMKIWI_SENSOR_AR0230_HDR_2X
+	bool "AR0230(2X HDR)"
+
+config CONFIG_S2LMKIWI_SENSOR_AR0230_WDR_IN
+	bool "AR0230(Built-in WDR)"
+endchoice
+endif ## END CONFIG_S2LMKIWI_SENSOR_BOOT
+
+config CONFIG_S2LMKIWI_DSP_BOOT
+	bool "Boot DSP to idle state"
+	select AMBOOT_BOOT_DSP
+	select AMBOOT_DEV_FAST_BOOT
+	help
+		Boot DSP to idle state.
+
+if CONFIG_S2LMKIWI_DSP_BOOT
+
+config CONFIG_S2LMKIWI_DSP_PREVIEW
+	bool "Boot DSP to preview state"
+	default n
+
+config CONFIG_S2LMKIWI_ENABLE_ADVANCED_ISO_MODE
+	bool "Boot up to advanced ISO mode (mode 4)"
+	depends on CONFIG_S2LMKIWI_DSP_PREVIEW
+	default n
+
+if CONFIG_S2LMKIWI_ENABLE_ADVANCED_ISO_MODE
+
+choice
+	prompt "ISO Type"
+	default CONFIG_ISO_TYPE_MIDDLE
+
+config CONFIG_ISO_TYPE_MIDDLE
+	bool "ISO Plus"
+
+config CONFIG_ISO_TYPE_ADVANCED
+	bool "Advanced ISO"
+endchoice
+endif ## END CONFIG_S2LMKIWI_ENABLE_ADVANCED_ISO_MODE
+
+config CONFIG_S2LMKIWI_DSP_VCA
+	bool "Boot up with vca dump"
+	depends on CONFIG_S2LMKIWI_DSP_PREVIEW
+	default n
+
+config CONFIG_S2LMKIWI_DSP_ENCODING
+	depends on CONFIG_S2LMKIWI_DSP_PREVIEW
+	bool "Boot DSP to encoding state"
+	default n
+
+config CONFIG_S2LMKIWI_DSP_FASTOSD
+	bool "Show Fast OSD on stream"
+	depends on CONFIG_S2LMKIWI_DSP_ENCODING
+	default n
+
+config CONFIG_S2LMKIWI_DSP_VOUT
+	bool "Boot DSP Vout"
+	default n
+
+if CONFIG_S2LMKIWI_DSP_VOUT
+choice
+	prompt "VOUT Device"
+	default CONFIG_S2LMKIWI_DSP_VOUT_CVBS
+
+config CONFIG_S2LMKIWI_DSP_VOUT_CVBS
+	bool "CVBS"
+
+config CONFIG_S2LMKIWI_DSP_VOUT_TD043
+	bool "TD043"
+endchoice
+endif
+
+config CONFIG_S2LMKIWI_DSP_SPLASH
+	bool "Show Splash Log on vout"
+	depends on CONFIG_S2LMKIWI_DSP_VOUT
+	default n
+
+config CONFIG_S2LMKIWI_DSP_LOG_CAPTURE
+	bool "DSP Log Capture"
+	select AMBOOT_DSP_LOG_CAPTURE
+	default n
+
+endif ## END CONFIG_S2LMKIWI_DSP_BOOT
+
+config CONFIG_S2LMKIWI_AUDIO_AK4954
+	bool "Boot Audio Codec AK4954"
+	select AMBOOT_DEV_FAST_BOOT
+	default n
+	help
+		Boot Audio in Amboot
+
+endif
+############ Fast Boot ##################
+

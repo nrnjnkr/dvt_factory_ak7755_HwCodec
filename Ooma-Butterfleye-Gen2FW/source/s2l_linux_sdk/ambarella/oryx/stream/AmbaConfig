@@ -1,0 +1,194 @@
+##
+## ambarella/oryx/stream/AmbaConfig
+##
+## History:
+##    2014/06/23 - [Louis Sun] Create
+##
+## Copyright (c) 2016 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+
+menuconfig BUILD_AMBARELLA_ORYX_STREAM
+  bool "Build Oryx Stream"
+  depends on BUILD_AMBARELLA_ORYX_MW
+  select BUILD_AMBARELLA_ORYX_UTIL
+  select BUILD_AMBARELLA_ORYX_CONFIG
+  select BUILD_AMBARELLA_ORYX_OSAL
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  default n
+  help
+    Build Oryx Stream
+
+menuconfig BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  bool "Build Oryx Stream Record Module"
+  depends on BUILD_AMBARELLA_ORYX_STREAM
+  select CONFIG_AMBARELLA_LIBEXIF_SUPPORT
+  select BUILD_AMBARELLA_ORYX_AUDIO
+  select BUILD_AMBARELLA_ORYX_AUDIO_CAPTURE
+  default y
+  help
+    Build Oryx Stream Record Module
+
+config BUILD_AMBARELLA_ORYX_MUXER_EXPORT
+  bool "Build Oryx Record Muxer Module - Export Raw Data Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default y
+  help
+    Build Export Raw Data Muxer
+
+config BUILD_AMBARELLA_ORYX_MUXER_TS
+  bool "Build Oryx Record Muxer Module - TS File Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default y
+  help
+    Build TS File Muxer
+
+config BUILD_AMBARELLA_ORYX_MUXER_MP4
+  bool "Build Oryx Record Muxer Module - MP4 File Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default y
+  help
+    Build MP4 File Muxer
+
+config BUILD_AMBARELLA_ORYX_MUXER_MP4_TIME_ELAPSE
+  bool "Build Oryx Record Muxer Module - MP4 Time Elapse File Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default y
+  help
+    Build MP4 Time Elapse File Muxer
+
+config BUILD_AMBARELLA_ORYX_MUXER_JPEG
+  bool "Build Oryx Record Muxer Module - JPEG File Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default y
+  help
+    Build Jpeg File Muxer
+
+config BUILD_AMBARELLA_ORYX_MUXER_JPEG_PERIODIC
+  bool "Build Oryx Record Muxer Module - Periodic JPEG File Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default n
+  help
+    Build Muxer Periodic JPEG File Muxer
+
+config BUILD_AMBARELLA_ORYX_MUXER_AV3
+  bool "Build Oryx Record Muxer Module - AV3 File Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default n
+  help
+    Build AV3 File Muxer
+
+menuconfig BUILD_AMBARELLA_ORYX_MUXER_RTP
+  bool "Build Oryx Record Muxer Module - RTP Packet Muxer"
+  depends on BUILD_AMBARELLA_ORYX_STREAM_RECORD
+  default y
+  help
+    Build RTP Packet Muxer
+
+menuconfig BUILD_AMBARELLA_ORYX_RTP_SESSION_AAC
+  bool "Build Oryx RTP AAC   Audio Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP AAC Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_AAC_SINGLE_AU
+  bool "Package every AAC into single audio unit"
+  depends on BUILD_AMBARELLA_ORYX_RTP_SESSION_AAC
+  default y
+  help
+    Build AAC into single audio unit
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_AAC_STRIP_HEADER
+  bool "AAC RTP Package without ADTS header"
+  depends on BUILD_AMBARELLA_ORYX_RTP_SESSION_AAC
+  default n
+  help
+    Strip ADTS header when build AAC RTP package
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_G711
+  bool "Build Oryx RTP G711  Audio Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP G711 Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_G726
+  bool "Build Oryx RTP G726  Audio Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP G726 Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_OPUS
+  bool "Build Oryx RTP OPUS  Audio Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP OPUS Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_SPEEX
+  bool "Build Oryx RTP SPEEX Audio Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP SPEEX Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_H264
+  bool "Build Oryx RTP H264  Video Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP H264 Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_H265
+  bool "Build Oryx RTP H265  Video Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP H265 Session
+
+config BUILD_AMBARELLA_ORYX_RTP_SESSION_MJPEG
+  bool "Build Oryx RTP MJPEG Video Session Support"
+  depends on BUILD_AMBARELLA_ORYX_MUXER_RTP
+  default y
+  help
+    Build RTP MJPEG Session
+
+config BUILD_AMBARELLA_ORYX_STREAM_PLAYBACK
+  bool "Build Oryx Stream Playback Module"
+  depends on BUILD_AMBARELLA_ORYX_STREAM
+  select BUILD_AMBARELLA_ORYX_AUDIO
+  select BUILD_AMBARELLA_ORYX_AUDIO_PLAYER
+  default y
+  help
+    Build Oryx Stream Playback Module
+
+config BUILD_AMBARELLA_ORYX_STREAM_UNIT_TEST
+  bool "Build Oryx Stream Module Unit Test Program"
+  depends on BUILD_AMBARELLA_ORYX_STREAM
+  default n
+  help
+    Build Oryx Stream Module Unit Test Program

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><a href="/">Home</a></h1>
+    <br>
+    <h1>APIs</h1>
+    <ul>
+      <% for(i=0; i < apiList.length; i++) { %>
+        <li><a href="<%= apiList[i] %>"><%= apiList[i] %></a></li>
+      <% } %>
+    </ul>
+    <br />
+    <h1>Files</h1>
+    <hr />
+    <table width="900" cellspacing="6">
+      <tr>
+        <th align="left"><a href="../">../</a></th>
+      </tr>
+      <% for(i=0; i < fileList.length; i++) { %>
+        <tr>
+        <td align="left"><a href="<%= fileList[i].name %>"><%= fileList[i].name %></a></td>
+        <td align="right"><%= fileList[i].size %></a></td>
+        <td align="right"><%= fileList[i].time %></a></td>
+        </tr>
+      <% } %>
+    </table>
+    <hr />
+  </body>
+</html>

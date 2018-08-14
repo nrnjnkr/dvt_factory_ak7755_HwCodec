@@ -1,0 +1,464 @@
+diff --git a/AmbaConfig b/AmbaConfig
+index 797a4ac..c4587e2 100644
+--- a/AmbaConfig
++++ b/AmbaConfig
+@@ -4,12 +4,29 @@
+ ## History:
+ ##    2012/07/08 - [Anthony Ginger]
+ ##
+-## Copyright (C) 2012-2016, Ambarella, Inc.
++## Copyright (c) 2016 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ config BUILD_AMBARELLA_BSREADER_PACKAGE
+diff --git a/bsreader.h b/bsreader.h
+index 55facbb..68208ef 100644
+--- a/bsreader.h
++++ b/bsreader.h
+@@ -1,21 +1,43 @@
+-/*
++/*******************************************************************************
+  * bsreader.h
+  *
+  * History:
+  *	2010/05/13 - [Louis Sun] created file
+  *	2013/03/04 - [Jian Tang] modified file
+- * Copyright (C) 2010-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2016 Ambarella, Inc.
+  *
+- */
+-
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
+ #ifndef __BSREADER_LIB_H__
+ #define __BSREADER_LIB_H__
+ 
++#include "config.h"
++
++#if defined(CONFIG_ARCH_S3L) || defined(CONFIG_ARCH_S5L)
++#include <iav_ioctl.h>
++#endif
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -59,18 +81,23 @@ typedef struct {
+ 	u32	stream_end;  // 0: normal stream frames,  1: stream end null frame
+ 	u32	frame_index;
+ 	u8	jpeg_quality;	// quality value for jpeg stream
+-	u8	reserved[7];
++	u8	tile_id:	2;
++	u8	tile_num:	2;
++	u8	reserved_1:	4;
++	u8	reserved[6];
+ } bs_info_t;
+ 
+-
+ /* any frame stored in bsreader must has continuous memory */
+ typedef struct bsreader_frame_info_s {
+ 	bs_info_t bs_info;	/* orignal information got from dsp */
+ 	u8	*frame_addr; /* the actual address in stream buffer */
+ 	u32	frame_size;	 /* the actual output frame size , including CAVLC */
++#if defined(CONFIG_ARCH_S3L) || defined(CONFIG_ARCH_S5L)
++	u8	*data_addr[IAV_HEVC_TILE_NUM];
++	u32	slice_size[IAV_HEVC_TILE_NUM];
++#endif
+ } bsreader_frame_info_t;
+ 
+-
+ typedef struct bsreader_init_data_s {
+ 	int	fd_iav;
+ 
+@@ -94,8 +121,12 @@ typedef struct bsreader_init_data_s {
+ 	 * set to 0 if don't need CAVLC
+ 	 */
+ 	u8	cavlc_possible;
+-}bsreader_init_data_t;
++#if defined(CONFIG_ARCH_S3L) || defined(CONFIG_ARCH_S5L)
++	u8	slice_flag;
++	u8	reserved[3];
++#endif
+ 
++}bsreader_init_data_t;
+ 
+ /* set init parameters, do nothing real*/
+ int bsreader_init(bsreader_init_data_t * bsinit);
+@@ -113,7 +144,6 @@ int bsreader_close(void);
+  * will invalidate it.
+  */
+ int bsreader_get_one_frame(int stream, bsreader_frame_info_t * info);
+-
+ /* flush (discard) and reset all data in ring buf (can flush selected ring
+  * buf), do not allocate or free ring buffer memory.
+  */
+diff --git a/bsreader_s2l.c b/bsreader_s2l.c
+index 5ea16d1..0aa9f0b 100644
+--- a/bsreader_s2l.c
++++ b/bsreader_s2l.c
+@@ -1,16 +1,35 @@
+-/*
++/*******************************************************************************
+  * bsreader_s2l.c
+  *
+  * History:
+  *	2012/05/23 - [Jian Tang] created file
+- * Copyright (C) 2007-2012, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2016 Ambarella, Inc.
+  *
+- */
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+diff --git a/fifo.c b/fifo.c
+index 7fb4677..4e51ee4 100644
+--- a/fifo.c
++++ b/fifo.c
+@@ -1,3 +1,36 @@
++/*******************************************************************************
++ * fifo.c
++ *
++ * History:
++ *	2010/05/13 - [Louis Sun] created file
++ *	2013/03/04 - [Jian Tang] modified file
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
++
+ #include <pthread.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+@@ -189,6 +222,103 @@ int fifo_write_one_packet(fifo_t *fifo, u8 *header, u8 *packet_addr, u32 packet_
+ 	return 0;
+ }
+ 
++/***************************************************************************************
++	function:	int fifo_write_one_packet(u8 *packet_addr, u32 packet_size)
++	input:	packet_addr: address of the packet to be stored into the fifo
++			packet_size: size of packet to be stored into the fifo
++	return value:	0: successful, -1: failed
++	remarks:	the algorithm gives priority to writers for sharing the free entries
++***************************************************************************************/
++int fifo_write_one_packet_slice(fifo_t *fifo, u8 *header, u8 *packet_addr[],u32 *slice_size, int tile_num)
++{
++	u8 *addr_for_this_write;
++	int entry_index_for_this_write;
++	int i;
++	u32 offset_size = 0;
++	u32 packet_size = 0;
++
++//	printf("lock, write\n");
++	pthread_mutex_lock(&fifo->mutex);
++//	printf("locked, write\n");
++	addr_for_this_write = fifo->addr_for_next_write;
++	entry_index_for_this_write = fifo->entry_index_for_next_write;
++
++	for (i = 0; i < tile_num; i++) {
++		// save the packet
++		packet_size += slice_size[i];
++	}
++
++	// skip the entry being used for this write
++	if (entry_index_for_this_write == fifo->entry_index_being_used) {
++		entry_index_for_this_write++;
++		wraparound_entry_index_if_necessary(fifo, &entry_index_for_this_write);
++	}
++	fifo_printf("[%x]write %d, using %d, next read %d, entry %d\n",
++		(u32)fifo&0xf, entry_index_for_this_write, fifo->entry_index_being_used,
++		fifo->entry_index_for_next_read, fifo->used_entry_num);
++
++	// if necessary, adjust write address to avoid wrapping around data
++	if ((addr_for_this_write + packet_size) > (fifo->buffer_end_addr + 1))
++		addr_for_this_write = fifo->buffer_start_addr;
++	for (i = 0; i < tile_num; i++) {
++		// save the packet
++		memcpy(addr_for_this_write + offset_size, packet_addr[i], slice_size[i]);
++		offset_size += slice_size[i];
++	}
++	// save the header
++	memcpy(&fifo->header_entries[entry_index_for_this_write*(fifo->header_size)],
++		header, fifo->header_size);
++
++	// update related info
++	if (fifo->packet_info_entries[entry_index_for_this_write].entry_state == ENTRY_INVALID)
++		fifo->used_entry_num++;
++
++	// fill the entry
++	fifo->packet_info_entries[entry_index_for_this_write].packet_addr = addr_for_this_write;
++	fifo->packet_info_entries[entry_index_for_this_write].packet_size = packet_size;
++	fifo->packet_info_entries[entry_index_for_this_write].entry_state = ENTRY_VALID;
++
++	// advance the entry for next read, if it is overwirtten by this write, when fifo is full
++	if ((entry_index_for_this_write == fifo->entry_index_for_next_read) &&
++		(fifo->used_entry_num > 2)) {	 // being used entry is still ocupying one entry
++		// if fifo is nearly full
++		fifo->entry_index_for_next_read++;
++		wraparound_entry_index_if_necessary(fifo, &fifo->entry_index_for_next_read);
++		if (fifo->entry_index_for_next_read == fifo->entry_index_being_used) {
++			fifo->entry_index_for_next_read++;	// skip the entry being used for next read
++			wraparound_entry_index_if_necessary(fifo, &fifo->entry_index_for_next_read);
++		}
++		fifo_printf("fifo full, advance read entry to %d >>>>>>>>>>>>>>"
++			">>>>>>>>>>>>>>>>>>\n", fifo->entry_index_for_next_read);
++	}
++
++	// update entry index for next write
++	fifo->entry_index_for_next_write = entry_index_for_this_write + 1;
++	wraparound_entry_index_if_necessary(fifo, &fifo->entry_index_for_next_write);
++
++	// update address for next write
++	fifo->addr_for_next_write = addr_for_this_write + packet_size;
++	if (fifo->addr_for_next_write > fifo->buffer_end_addr)
++		fifo->addr_for_next_write -= fifo->buffer_total_size;
++
++	// signal the condition variable if necessary
++	if (fifo->used_entry_num <= 1)
++		pthread_cond_signal(&fifo->cond);
++
++//	fifo->buffer_used_size += packet_size;
++
++//	printf("unlock, write\n");
++	pthread_mutex_unlock(&fifo->mutex);
++
++#if 0
++	printf("fifo_write_one_packet\n");
++	for (i = 0; i < 4; i++) {
++		printf("%p\t", fifo->packet_info_entries[i].packet_addr);
++	}
++	printf("\nnow %d entry used\n", fifo->used_entry_num);
++#endif
++	return 0;
++}
+ 
+ /***************************************************************************************
+ 	function:	int fifo_read_one_packet(u8 **packet_addr, u32 *packet_size)
+diff --git a/fifo.h b/fifo.h
+index 36d9d09..c211b7c 100644
+--- a/fifo.h
++++ b/fifo.h
+@@ -1,9 +1,41 @@
++/*******************************************************************************
++ * fifo.h
++ *
++ * History:
++ *	2010/05/13 - [Louis Sun] created file
++ *	2013/03/04 - [Jian Tang] modified file
++ *
++ * Copyright (c) 2016 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ ******************************************************************************/
+ #ifndef _FIFO_H
+ #define _FIFO_H
+ 
+ #ifdef __cplusplus
+ extern "C" {
+-#endif 
++#endif
+ 
+ #define OneCircle     1
+ #define ZeroCircle    0
+@@ -22,7 +54,7 @@ typedef struct packet_info_s
+ } packet_info_t;
+ 
+ typedef struct fifo_s
+-{	
++{
+ 	// buffer related
+ 	u8    			*buffer_start_addr;
+ 	u8    			*buffer_end_addr;
+@@ -55,10 +87,11 @@ void fifo_close(fifo_t *fifo);
+ 
+ int fifo_write_one_packet(fifo_t *fifo, u8 *header, u8 *packet_addr, u32 packet_size);
+ int fifo_read_one_packet(fifo_t *fifo, u8 *header, u8 **packet_addr, u32 *packet_size);
++int fifo_write_one_packet_slice(fifo_t *fifo, u8 *header, u8 *packet_addr[],u32 *slice_size, int tile_num);
+ int fifo_flush(fifo_t *fifo);
+ 
+ #ifdef __cplusplus
+ }
+-#endif 
++#endif
+ 
+ #endif
+diff --git a/make.inc b/make.inc
+index f264785..4ed20f1 100644
+--- a/make.inc
++++ b/make.inc
+@@ -4,12 +4,29 @@
+ ## History:
+ ##    2012/06/01 - [Cao Rongrong] Created file
+ ##
+-## Copyright (C) 2012-2016, Ambarella, Inc.
++## Copyright (c) 2016 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ ifeq ($(BUILD_AMBARELLA_BSREADER_PACKAGE), y)
+@@ -37,10 +54,19 @@ endif
+ ifeq ($(CONFIG_ARCH_S2L),y)
+ LOCAL_SRCS	+= $(LOCAL_PATH)/bsreader_s2l.c
+ endif
++ifeq ($(CONFIG_ARCH_S3L),y)
++LOCAL_SRCS	+= $(LOCAL_PATH)/bsreader_s3l.c
++endif
++ifeq ($(CONFIG_ARCH_S5),y)
++LOCAL_SRCS	+= $(LOCAL_PATH)/bsreader_s5.c
++endif
+ ifeq ($(CONFIG_ARCH_A7L),y)
+ LOCAL_SRCS	+= $(LOCAL_PATH)/bsreader_a7l.c
+ LOCAL_CFLAGS	+= -I$(AMB_TOPDIR)/build/include
+ endif
++ifeq ($(CONFIG_ARCH_S5L),y)
++LOCAL_SRCS	+= $(LOCAL_PATH)/bsreader_s5l.c
++endif
+ endif
+ 
+ include $(BUILD_APP)

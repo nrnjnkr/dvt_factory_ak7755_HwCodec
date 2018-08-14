@@ -1,0 +1,11 @@
+menuconfig BUILD_BUTTERFLEYE_APP
+	bool "Butterfleye Application Configurations"
+	default n
+	help
+		Build Butterfleye Application
+
+if BUILD_AMBARELLA_APP_IPCAM
+
+endif
+
+

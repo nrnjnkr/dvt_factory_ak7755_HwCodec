@@ -1,0 +1,5447 @@
+diff --git a/AmbaConfig b/AmbaConfig
+index eb28b44..e7665b5 100644
+--- a/AmbaConfig
++++ b/AmbaConfig
+@@ -3,12 +3,29 @@
+ ##
+ ## Author: Anthony Ginger <hfjiang@ambarella.com>
+ ##
+-## Copyright (C) 2012-2014, Ambarella, Inc.
++## Copyright (c) 2015 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ config CONFIG_BSP_BOARD_HAWTHORN
+@@ -34,6 +51,12 @@ config CONFIG_BOARD_VERSION_HAWTHORN_S2L63
+ config CONFIG_BOARD_VERSION_HAWTHORN_S2L63_EVKB
+ 	bool "HAWTHORN (S2L63 + 8Gbit DDR-B)"
+ 
++config CONFIG_BOARD_VERSION_HAWTHORN_S2L22
++	bool "HAWTHORN (S2L22 + 8Gbit DDR)"
++
++config CONFIG_BOARD_VERSION_HAWTHORN_S2L33EX
++	bool "HAWTHORN (S2L33EX + 8Gbit DDR)"
++
+ endchoice
+ 
+ menuconfig CONFIG_HAWTHORN_DSP_BOOT
+diff --git a/Makefile b/Makefile
+index 1ee8f57..b4cc7f7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,12 +3,29 @@
+ ##
+ ## Author: Anthony Ginger <hfjiang@ambarella.com>
+ ##
+-## Copyright (C) 2012-2014, Ambarella, Inc.
++## Copyright (c) 2015 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ .PHONY: all
+diff --git a/bsp/bsp.c b/bsp/bsp.c
+index 1591d53..f7fc4d6 100644
+--- a/bsp/bsp.c
++++ b/bsp/bsp.c
+@@ -3,16 +3,35 @@
+  *
+  * Author: Anthony Ginger <hfjiang@ambarella.com>
+  *
+- * Copyright (C) 2004-2014, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #include <bldfunc.h>
+-#include <bapi.h>
+ #include <eth/network.h>
+ #include <ambhw/gpio.h>
+ #include <ambhw/idc.h>
+@@ -20,8 +39,12 @@
+ #include <sdmmc.h>
+ #include <dsp/dsp.h>
+ 
++#if defined(AMBOOT_BOOT_DSP)
++#include "iav_fastboot.h"
++#endif
++
+ /* ==========================================================================*/
+-static void pca9539_set_gpio(u32 id, u32 set)
++static void pca9539_set_gpio(int i2c_id, u32 id, u32 set)
+ {
+ #if defined(CONFIG_AMBOOT_ENABLE_PCA953X)
+ 	u8 pca9539_adds = 0xE8;
+@@ -34,7 +57,7 @@ static void pca9539_set_gpio(u32 id, u32 set)
+ 		pca9539_cfg_adds = 0x06;
+ 		pca9539_out_adds = 0x02;
+ 		pca9539_shift = id;
+-	} else if (id < 15) {
++	} else if (id < 16) {
+ 		pca9539_cfg_adds = 0x07;
+ 		pca9539_out_adds = 0x03;
+ 		pca9539_shift = (id - 8);
+@@ -42,24 +65,47 @@ static void pca9539_set_gpio(u32 id, u32 set)
+ 		return;
+ 	}
+ 
+-	reg_val = idc_bld_pca953x_read(IDC_MASTER3,
++	reg_val = idc_bld_read_8_8(i2c_id,
+ 		pca9539_adds, pca9539_cfg_adds);
+ 	reg_val &= ~(0x1 << pca9539_shift);
+-	idc_bld_pca953x_write(IDC_MASTER3,
++	idc_bld_write_8_8(i2c_id,
+ 		pca9539_adds, pca9539_cfg_adds, reg_val);
+ 
+-	reg_val = idc_bld_pca953x_read(IDC_MASTER3,
++	reg_val = idc_bld_read_8_8(i2c_id,
+ 		pca9539_adds, pca9539_out_adds);
+ 	if (set) {
+ 		reg_val |= (0x1 << pca9539_shift);
+ 	} else {
+ 		reg_val &= ~(0x1 << pca9539_shift);
+ 	}
+-	idc_bld_pca953x_write(IDC_MASTER3,
++	idc_bld_write_8_8(i2c_id,
+ 		pca9539_adds, pca9539_out_adds, reg_val);
+ #endif
+ }
+ 
++void pca9539_direction_input(int i2c_id, u32 id)
++{
++	u8 pca9539_adds = 0xE8;
++	u8 pca9539_cfg_adds;
++	u8 pca9539_shift;
++	u8 reg_val;
++
++	if (id < 8) {
++		pca9539_cfg_adds = 0x06;
++		pca9539_shift = id;
++	} else if (id < 16) {
++		pca9539_cfg_adds = 0x07;
++		pca9539_shift = (id - 8);
++	} else {
++		return;
++	}
++
++	reg_val = idc_bld_read_8_8(i2c_id,
++		pca9539_adds, pca9539_cfg_adds);
++	reg_val |= (0x1 << pca9539_shift);
++	idc_bld_write_8_8(i2c_id,
++		pca9539_adds, pca9539_cfg_adds, reg_val);
++}
+ 
+ /* ==========================================================================*/
+ int amboot_bsp_hw_init(void)
+@@ -102,11 +148,9 @@ int amboot_bsp_entry(flpart_table_t *pptb)
+ 	u32 *p_iav_status = NULL;
+ 	u32 iav_status = IAV_STATE_IDLE;
+ 	/* Change the value after call dsp_boot() */
+-	p_iav_status = (u32*)(DSP_STATUS_STORE_START);
+-#endif
+-
+-#if defined(CONFIG_AMBOOT_BAPI_SUPPORT)
+-	bld_bapi_set_fb_info(0, 0, 1920, 1080, 1920, 1080, 1, 8);
++	struct iav_fb_hdr *fb_hdr =
++		(struct iav_fb_hdr *)DSP_FASTDATA_START;
++	p_iav_status = &(fb_hdr->dsp_status);
+ #endif
+ 
+ 	/* setup sensor */
+@@ -198,9 +242,9 @@ int amboot_bsp_sd_slot_init(int slot, int volt)
+ 		}
+ 
+ 		/* power off, then power on */
+-		pca9539_set_gpio(gpio_pwr, 0);
+-		rct_timer_dly_ms(10);
+-		pca9539_set_gpio(gpio_pwr, 1);
++		pca9539_set_gpio(IDC_MASTER3, gpio_pwr, 0);
++		rct_timer_dly_ms(100);
++		pca9539_set_gpio(IDC_MASTER3, gpio_pwr, 1);
+ 
+ 	} else {
+ 		if(slot == 0) {
+@@ -223,15 +267,12 @@ int amboot_bsp_sd_phy_init(int slot, int mode)
+ 	if (slot > 0)
+ 		return 0;
+ 
+-	if (mode == SDMMC_MODE_AUTO) { /* "auto" also means in init stage */
+-		phy0_val = 0x04070000;
+-		latency_val = 0x00000000;
+-	} else if (mode == SDMMC_MODE_DDR50) {
++	if (mode == SDMMC_MODE_DDR50) { /* "auto" also means in init stage */
+ 		phy0_val = 0x00000003;
+ 		latency_val = 0x00001111;
+ 	} else {
+-		phy0_val = 0x00000001;
+-		latency_val = 0x00001111;
++		phy0_val = 0x04070000;
++		latency_val = 0x00000000;
+ 	}
+ 
+ 	writel(SD_PHY_CTRL_0_REG, phy0_val | 0x02000000);
+diff --git a/bsp/bsp.h b/bsp/bsp.h
+index 83a94c3..4df969e 100644
+--- a/bsp/bsp.h
++++ b/bsp/bsp.h
+@@ -3,14 +3,34 @@
+  *
+  * Author: Anthony Ginger <hfjiang@ambarella.com>
+  *
+- * Copyright (C) 2004-2014, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #ifndef __BSP_H__
+ #define __BSP_H__
+ 
+@@ -69,14 +89,22 @@
+ #define AMBOOT_PRI_SIZE 	(16 * 1024 * 1024)
+ #define AMBOOT_SEC_SIZE		(16 * 1024 * 1024)
+ #define AMBOOT_BAK_SIZE		0
++#ifndef BUILD_AMBARELLA_ORYX_MW
+ #define AMBOOT_RMD_SIZE		(64 * 1024 * 1024)
++#else
++#define AMBOOT_RMD_SIZE		(0 * 1024 * 1024)
++#endif
+ #define AMBOOT_ROM_SIZE		0
+ #define AMBOOT_DSP_SIZE		0
+ #if defined(AMBOOT_THAW_HIBERNATION)
+ #define AMBOOT_LNX_SIZE		(64 * 1024 * 1024)
+ #define AMBOOT_SWP_SIZE		(64 * 1024 * 1024)
+ #else
++#ifndef BUILD_AMBARELLA_ORYX_MW
+ #define AMBOOT_LNX_SIZE		(128 * 1024 * 1024)
++#else
++#define AMBOOT_LNX_SIZE		(192 * 1024 * 1024)
++#endif
+ #define AMBOOT_SWP_SIZE		0
+ #endif //AMBOOT_THAW_HIBERNATION
+ #define AMBOOT_ADD_SIZE		0
+diff --git a/bsp/bsp_fw.c b/bsp/bsp_fw.c
+index 20137d2..a01a902 100644
+--- a/bsp/bsp_fw.c
++++ b/bsp/bsp_fw.c
+@@ -3,14 +3,34 @@
+  *
+  * Author: Anthony Ginger <hfjiang@ambarella.com>
+  *
+- * Copyright (C) 2004-2014, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #include <bldfunc.h>
+ 
+ static flpart_table_t gPtb;
+@@ -96,7 +116,7 @@ void hook_post_memfwprog(fwprog_cmd_t *fwprog_cmd)
+ 			} else {
+ 				if (strlen((const char*)fwprog_cmd->data) > 0) {
+ 					memset(gPtb.dev.sn, 0, sizeof(gPtb.dev.sn));
+-					strncpy(gPtb.dev.sn, (const char*)fwprog_cmd->data, strlen((const char*)fwprog_cmd->data));
++					strncpy(gPtb.dev.sn, (const char*)fwprog_cmd->data, (sizeof(gPtb.dev.sn)-1));
+ 				}
+ 			}
+ 			update_ptb_info(&ptb, &gPtb);
+diff --git a/bsp/hawthorn.dts b/bsp/hawthorn.dts
+index a049357..a6ebcd9 100644
+--- a/bsp/hawthorn.dts
++++ b/bsp/hawthorn.dts
+@@ -101,6 +101,7 @@
+ 			slot@0 {
+ 				pwr-gpios = <&pca9539 1 0x1>;
+ 				no-1-8-v;
++				keep-power-in-suspend;
+ 				max-frequency = <50000000>;
+ 				bus-width = <4>;
+ 			};
+diff --git a/bsp/hawthorn_s2l22.ini b/bsp/hawthorn_s2l22.ini
+new file mode 100644
+index 0000000..51a17a3
+--- /dev/null
++++ b/bsp/hawthorn_s2l22.ini
+@@ -0,0 +1,65 @@
++<?xml version="1.0" encoding="utf-8"?>
++<BSTConfig version="20141211">
++  <T_XSR value="1526786"/>
++  <T_WTR value="7500"/>
++  <T_WR value="15000"/>
++  <T_WL value="7"/>
++  <T_RTP value="7500"/>
++  <T_RRD value="7500"/>
++  <T_RP value="13125"/>
++  <T_RFC value="260000"/>
++  <T_REFI value="7800"/>
++  <T_RCD value="13125"/>
++  <T_RC value="48125"/>
++  <T_RAS value="35000"/>
++  <T_FAW value="40000"/>
++  <T_CL value="9"/>
++  <SW_PAD_ZQ_CTL value="0x0"/>
++  <SW_DQS_SYNC_EN value="Disable"/>
++  <SW_DQS_SYNC_CTL value="0x40"/>
++  <S2L_CHIP value="S2L22"/>
++  <PLL_PROGRAM_DELAY value="0x50000"/>
++  <PLL_DDR_CTRL3_PARAM value="0x00068300"/>
++  <PLL_DDR_CTRL2_PARAM value="0x3f770000"/>
++  <PAGE_SIZE value="4 KBytes"/>
++  <PAD_TERM value="0x2002C"/>
++  <NAND_TIMING_INTERVAL_5 value="0x00202020"/>
++  <NAND_TIMING_INTERVAL_4 value="0x20202020"/>
++  <NAND_TIMING_INTERVAL_3 value="0x20202020"/>
++  <NAND_TIMING_INTERVAL_2 value="0x20204020"/>
++  <NAND_TIMING_INTERVAL_1 value="0x20202020"/>
++  <NAND_TIMING_INTERVAL_0 value="0x20202020"/>
++  <DRAM_ZQ_CALIB value="0x26"/>
++  <DRAM_TYPE value="DDR3"/>
++  <DRAM_SIZE value="8 Gbits"/>
++  <DRAM_RSVD_SPACE value="0x00100000"/>
++  <DRAM_BYTE_MAP value="0xe4"/>
++  <DRAM_RESET_CTRL_GPIO value="5"/>
++  <DLL_RESET_DELAY value="0x1000"/>
++  <DLL_PROGRAM_DELAY value="0x30000"/>
++  <DLL_CTRL_SEL_MISC value="0x12e50000"/>
++  <DLL_CTRL_SEL_3 value="0x8001"/>
++  <DLL_CTRL_SEL_2 value="0x8001"/>
++  <DLL_CTRL_SEL_1 value="0x8001"/>
++  <DLL_CTRL_SEL_0 value="0x8001"/>
++  <DLL3_SEL2 value="0x03"/>
++  <DLL3_SEL1 value="0x26"/>
++  <DLL3_SEL0 value="0x03"/>
++  <DLL2_SEL2 value="0x03"/>
++  <DLL2_SEL1 value="0x26"/>
++  <DLL2_SEL0 value="0x03"/>
++  <DLL1_SEL2 value="0x03"/>
++  <DLL1_SEL1 value="0x26"/>
++  <DLL1_SEL0 value="0x03"/>
++  <DLL0_SEL2 value="0x03"/>
++  <DLL0_SEL1 value="0x26"/>
++  <DLL0_SEL0 value="0x03"/>
++  <DDS value="100%"/>
++  <CTRL_ODT_CFG value="RZQ/2"/>
++  <BANK_SIZE value="8 Banks"/>
++  <AUTO_DQS_SYNC_CFG value="4 refreshes"/>
++  <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
++  <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
++  <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++  <EMMC_BOOT_PARAM value="Bst_Boot0 Bld_User"/>
++</BSTConfig>
+diff --git a/bsp/hawthorn_s2l33ex.ini b/bsp/hawthorn_s2l33ex.ini
+new file mode 100644
+index 0000000..b5a01cf
+--- /dev/null
++++ b/bsp/hawthorn_s2l33ex.ini
+@@ -0,0 +1,65 @@
++<?xml version="1.0" encoding="utf-8"?>
++<BSTConfig version="20141211">
++  <T_XSR value="1526786"/>
++  <T_WTR value="8800"/>
++  <T_WR value="15000"/>
++  <T_WL value="6"/>
++  <T_RTP value="8800"/>
++  <T_RRD value="8800"/>
++  <T_RP value="13750"/>
++  <T_RFC value="260000"/>
++  <T_REFI value="7800"/>
++  <T_RCD value="13750"/>
++  <T_RC value="48750"/>
++  <T_RAS value="35000"/>
++  <T_FAW value="40000"/>
++  <T_CL value="7"/>
++  <SW_PAD_ZQ_CTL value="0x0"/>
++  <SW_DQS_SYNC_EN value="Disable"/>
++  <SW_DQS_SYNC_CTL value="0x40"/>
++  <S2L_CHIP value="S2L33EX"/>
++  <PLL_PROGRAM_DELAY value="0x50000"/>
++  <PLL_DDR_CTRL3_PARAM value="0x00068300"/>
++  <PLL_DDR_CTRL2_PARAM value="0x3f770000"/>
++  <PAGE_SIZE value="4 KBytes"/>
++  <PAD_TERM value="0x2002C"/>
++  <NAND_TIMING_INTERVAL_5 value="0x00202020"/>
++  <NAND_TIMING_INTERVAL_4 value="0x20202020"/>
++  <NAND_TIMING_INTERVAL_3 value="0x20202020"/>
++  <NAND_TIMING_INTERVAL_2 value="0x20204020"/>
++  <NAND_TIMING_INTERVAL_1 value="0x20202020"/>
++  <NAND_TIMING_INTERVAL_0 value="0x20202020"/>
++  <DRAM_ZQ_CALIB value="0x26"/>
++  <DRAM_TYPE value="DDR3"/>
++  <DRAM_SIZE value="8 Gbits"/>
++  <DRAM_RSVD_SPACE value="0x00100000"/>
++  <DRAM_BYTE_MAP value="0xe4"/>
++  <DRAM_RESET_CTRL_GPIO value="-1"/>
++  <DLL_RESET_DELAY value="0x1000"/>
++  <DLL_PROGRAM_DELAY value="0x30000"/>
++  <DLL_CTRL_SEL_MISC value="0x12e50000"/>
++  <DLL_CTRL_SEL_3 value="0x8001"/>
++  <DLL_CTRL_SEL_2 value="0x8001"/>
++  <DLL_CTRL_SEL_1 value="0x8001"/>
++  <DLL_CTRL_SEL_0 value="0x8001"/>
++  <DLL3_SEL2 value="0x03"/>
++  <DLL3_SEL1 value="0x26"/>
++  <DLL3_SEL0 value="0x03"/>
++  <DLL2_SEL2 value="0x03"/>
++  <DLL2_SEL1 value="0x26"/>
++  <DLL2_SEL0 value="0x03"/>
++  <DLL1_SEL2 value="0x03"/>
++  <DLL1_SEL1 value="0x26"/>
++  <DLL1_SEL0 value="0x03"/>
++  <DLL0_SEL2 value="0x03"/>
++  <DLL0_SEL1 value="0x26"/>
++  <DLL0_SEL0 value="0x03"/>
++  <DDS value="100%"/>
++  <CTRL_ODT_CFG value="RZQ/2"/>
++  <BANK_SIZE value="8 Banks"/>
++  <AUTO_DQS_SYNC_CFG value="4 refreshes"/>
++  <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
++  <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
++  <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++  <EMMC_BOOT_PARAM value="Bst_Boot0 Bld_User"/>
++</BSTConfig>
+diff --git a/bsp/hawthorn_s2l63.ini b/bsp/hawthorn_s2l63.ini
+index 2bc0e79..9c76bb7 100644
+--- a/bsp/hawthorn_s2l63.ini
++++ b/bsp/hawthorn_s2l63.ini
+@@ -61,4 +61,5 @@
+   <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
+   <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
+   <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++  <EMMC_BOOT_PARAM value="Bst_Boot0 Bld_User"/>
+ </BSTConfig>
+diff --git a/bsp/hawthorn_s2l63_evkb.ini b/bsp/hawthorn_s2l63_evkb.ini
+index 076deec..f6a3c4e 100644
+--- a/bsp/hawthorn_s2l63_evkb.ini
++++ b/bsp/hawthorn_s2l63_evkb.ini
+@@ -61,4 +61,5 @@
+   <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
+   <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
+   <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++  <EMMC_BOOT_PARAM value="Bst_Boot0 Bld_User"/>
+ </BSTConfig>
+diff --git a/bsp/hawthorn_s2l66.ini b/bsp/hawthorn_s2l66.ini
+index 6cb14c4..5e558a2 100644
+--- a/bsp/hawthorn_s2l66.ini
++++ b/bsp/hawthorn_s2l66.ini
+@@ -61,4 +61,5 @@
+   <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
+   <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
+   <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++  <EMMC_BOOT_PARAM value="Bst_Boot0 Bld_User"/>
+ </BSTConfig>
+diff --git a/bsp/hawthorn_s2l66_evkb.ini b/bsp/hawthorn_s2l66_evkb.ini
+index f841c45..8dd12de 100644
+--- a/bsp/hawthorn_s2l66_evkb.ini
++++ b/bsp/hawthorn_s2l66_evkb.ini
+@@ -61,4 +61,5 @@
+   <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
+   <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
+   <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++  <EMMC_BOOT_PARAM value="Bst_Boot0 Bld_User"/>
+ </BSTConfig>
+diff --git a/bsp/iav/codec_ak4954.c b/bsp/iav/codec_ak4954.c
+index 96d33a1..f176c66 100644
+--- a/bsp/iav/codec_ak4954.c
++++ b/bsp/iav/codec_ak4954.c
+@@ -4,13 +4,33 @@
+  * History:
+  *    2014/11/18 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
++
+ static int ak4954_init(void)
+ {
+ 	/* ak4954 cannot work with 400K I2C */
+diff --git a/bsp/iav/iav_cvbs.c b/bsp/iav/iav_cvbs.c
+index bee408b..bc3e4f8 100644
+--- a/bsp/iav/iav_cvbs.c
++++ b/bsp/iav/iav_cvbs.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/07 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ static u32 vout_display_setup_dram[] = {
+ 	0x10000021, 0x00000000, 0x06B30105, 0x00000106,
+ 	0x01120016, 0x06B10105, 0x01120017, 0x06B10106,
+diff --git a/bsp/iav/iav_fastosd.c b/bsp/iav/iav_fastosd.c
+index 3f02b40..017b674 100644
+--- a/bsp/iav/iav_fastosd.c
++++ b/bsp/iav/iav_fastosd.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/12/03 - [Tao Wu] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ static char osd_dram[] = "2014/12/08-12:01:01";
+ static int osd_string_index = 0;
+ 
+@@ -171,7 +191,7 @@ static ipcam_fast_osd_insert_t ipcam_fast_osd_insert = {
+ 
+ static int load_fastosd_resources(flpart_table_t *pptb)
+ {
+-	u32 addr = 0;
++	u32 offset = 0;
+ 	u32 size = 0;
+ 	int rval = 0;
+ 
+@@ -179,17 +199,17 @@ static int load_fastosd_resources(flpart_table_t *pptb)
+ 	if ( !hdr) {
+ 		return -1;
+ 	}
+-	rval = dsp_get_ucode_by_name(hdr, "font_index.bin", &addr, &size);
++	rval = dsp_get_bin_by_name(hdr, "font_index.bin", &offset, &size);
+ 	if (rval >= 0) {
+-		memcpy((void *)DSP_OVERLAY_FONT_INDEX_START, (void *)addr, size);
++		bld_loader_load_partition_partial(PART_DSP, offset, size, DSP_OVERLAY_FONT_INDEX_START, 0);
+ 	}
+-	rval = dsp_get_ucode_by_name(hdr, "font_map.bin", &addr, &size);
++	rval = dsp_get_bin_by_name(hdr, "font_map.bin", &offset, &size);
+ 	if (rval >= 0) {
+-		memcpy((void *)DSP_OVERLAY_FONT_MAP_START, (void *)addr, size);
++		bld_loader_load_partition_partial(PART_DSP, offset, size, DSP_OVERLAY_FONT_MAP_START, 0);
+ 	}
+-	rval = dsp_get_ucode_by_name(hdr, "clut.bin", &addr, &size);
++	rval = dsp_get_bin_by_name(hdr, "clut.bin", &offset, &size);
+ 	if (rval >= 0) {
+-		memcpy((void *)DSP_OVERLAY_CLUT_START, (void *)addr, size);
++		bld_loader_load_partition_partial(PART_DSP, offset, size, DSP_OVERLAY_CLUT_START, 0);
+ 	}
+ 
+ 	return rval;
+@@ -198,7 +218,7 @@ static int load_fastosd_resources(flpart_table_t *pptb)
+ static int iav_fastosd(flpart_table_t *pptb)
+ {
+ 	u32	val = 0;
+-	struct rtc_time *now = NULL;
++	struct rtc_time now;
+ 
+ 	val = load_fastosd_resources(pptb);
+ 
+@@ -207,8 +227,8 @@ static int iav_fastosd(flpart_table_t *pptb)
+ 	}
+ 
+ 	val = readl(RTC_REG_ADDR);
+-	rtc_time_to_tm(val, now);
+-	tm_to_osd(now);
++	rtc_time_to_tm(val, &now);
++	tm_to_osd(&now);
+ 
+ 	memcpy((void *)(DSP_OVERLAY_STRING_START), (void *)osd_dram, sizeof(osd_dram));
+ 
+diff --git a/bsp/iav/iav_td043.c b/bsp/iav/iav_td043.c
+index 3888f4f..2de6a98 100644
+--- a/bsp/iav/iav_td043.c
++++ b/bsp/iav/iav_td043.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/11 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ static u32 vout_display_setup_dram[] = {
+ 	0x08000000, 0x00000000, 0x03AB01F7, 0x000001F7,
+ 	0x00780014, 0x039701F3, 0x00780015, 0x039701F4,
+diff --git a/bsp/iav/sensor_ov4689.c b/bsp/iav/sensor_ov4689.c
+index a22759e..d757b1c 100644
+--- a/bsp/iav/sensor_ov4689.c
++++ b/bsp/iav/sensor_ov4689.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/11 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #if defined(CONFIG_HAWTHORN_IAV_OV4689)
+ struct vin_reg_16_8 {
+ 	u16 addr;
+@@ -120,7 +140,6 @@ static struct vin_video_format vin_video_boot_format = {
+ 	.bayer_pattern = 0,
+ 	.hdr_mode = BOOT_HDR_MODE,
+ 	.readout_mode = 0,
+-	.sync_start = 0,
+ 
+ 	.max_fps = 0,
+ 	.default_fps = 0,
+@@ -571,6 +590,8 @@ static dsp_debug_level_setup_t dsp_debug_level_setup =  {
+ static int ov4689_init(void)
+ {
+ 	int i;
++	struct iav_fb_hdr *fb_hdr =
++		(struct iav_fb_hdr *)DSP_FASTDATA_START;
+ 
+ 	/* set pll sent to sensor */
+ 	rct_set_so_pll();
+@@ -584,12 +605,19 @@ static int ov4689_init(void)
+ 				ov4689_4lane_4m_regs[i].data);
+ 	}
+ 
++	fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset = sizeof(struct iav_fb_hdr);
++	fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].size = sizeof(struct vin_video_format);
++
++	fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].offset = fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset +
++		fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].size;
++	fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].size = set_vin_config.config_data_size;
++
+ 	/* store vin video format in amboot, restore it after enter Linux IAV */
+-	memcpy((void *)(DSP_VIN_VIDEO_FORMAT_STORE_START),
++	memcpy((void *)((u8 *)fb_hdr + fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset),
+ 		&vin_video_boot_format, sizeof(vin_video_boot_format));
+ 
+-	/* store dsp vin config in amboot, restore it after enter Linux IAV*/
+-	memcpy((void *)(DSP_VIN_CONFIG_STORE_START),
++	/* store dsp vin config in amboot, restore it after enter Linux IAV */
++	memcpy((void *)((u8 *)fb_hdr + fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].offset),
+ 		set_vin_config_dram, sizeof(set_vin_config_dram));
+ 
+ 	putstr("ov4689_init\r\n");
+diff --git a/bsp/iav/sensor_ov9710.c b/bsp/iav/sensor_ov9710.c
+index f7cbba8..bf7d30c 100644
+--- a/bsp/iav/sensor_ov9710.c
++++ b/bsp/iav/sensor_ov9710.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/11 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #if defined(CONFIG_S2LMKIWI_IAV_OV9710)
+ struct vin_reg_8_8 {
+ 	u8 addr;
+@@ -91,6 +111,44 @@ static u32 set_vin_config_dram[] = {
+ 	0x00000000,
+ };
+ 
++static struct vin_video_format vin_video_boot_format = {
++	.video_mode = BOOT_VIDEO_MODE,
++	.device_mode = 0,
++	.pll_idx = 0,
++	.width = 0,
++	.height = 0,
++
++	.def_start_x = 0,
++	.def_start_y = 0,
++	.def_width = 0,
++	.def_height = 0,
++	.format = 0,
++	.type = 0,
++	.bits = 0,
++	.ratio = 0,
++	.bayer_pattern = 0,
++	.hdr_mode = BOOT_HDR_MODE,
++	.readout_mode = 0,
++
++	.max_fps = 0,
++	.default_fps = 0,
++	.default_agc = 0,
++	.default_shutter_time = 0,
++	.default_bayer_pattern = 0,
++
++	/* hdr mode related */
++	.act_start_x = 0,
++	.act_start_y = 0,
++	.act_width = 0,
++	.act_height = 0,
++	.hdr_long_offset = 0,
++	.hdr_short1_offset = 0,
++	.hdr_short2_offset = 0,
++	.hdr_short3_offset = 0,
++	.dual_gain_mode = 0,
++	.gp_ctrl_used = 0
++};
++
+ static chip_select_t chip_selection = {
+ 	.cmd_code = CHIP_SELECTION,
+ 	.chip_type = 3
+@@ -386,7 +444,7 @@ static h264_encode_t h264_encode = {
+ 	.overscan_info_present_flag = 0,
+ 	.overscan_appropriate_flag = 0,
+ 	.video_signal_type_present_flag = 1,
+-	.video_full_range_flag = 0,
++	.video_full_range_flag = 1,
+ 	.colour_description_present_flag = 1,
+ 	.chroma_loc_info_present_flag = 0,
+ 	.timing_info_present_flag = 1,
+@@ -472,6 +530,8 @@ static ipcam_real_time_encode_param_setup_t ipcam_real_time_encode_param_setup =
+ static int ov9710_init(void)
+ {
+ 	int i;
++	struct iav_fb_hdr *fb_hdr =
++		(struct iav_fb_hdr *)DSP_FASTDATA_START;
+ 
+ 	/* set pll sent to sensor */
+ 	rct_set_so_pll();
+@@ -484,10 +544,21 @@ static int ov9710_init(void)
+ 				ov9710_720p30_regs[i].addr,
+ 				ov9710_720p30_regs[i].data);
+ 
++	fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset = sizeof(struct iav_fb_hdr);
++	fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].size = sizeof(struct vin_video_format);
++
++	fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].offset = fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset +
++		fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].size;
++	fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].size = set_vin_config.config_data_size;
++
+ 	/* store vin video format in amboot, restore it after enter Linux IAV */
+-	memcpy((void *)(DSP_VIN_VIDEO_FORMAT_STORE_START),
++	memcpy((void *)((u8 *)fb_hdr + fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset),
+ 		&vin_video_boot_format, sizeof(vin_video_boot_format));
+ 
++	/* store dsp vin config in amboot, restore it after enter Linux IAV */
++	memcpy((void *)((u8 *)fb_hdr + fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].offset),
++		set_vin_config_dram, sizeof(set_vin_config_dram));
++
+ 	putstr("ov9710_init\r\n");
+ 	return 0;
+ }
+diff --git a/bsp/make.amboot b/bsp/make.amboot
+index 3baa7b4..89b2aad 100644
+--- a/bsp/make.amboot
++++ b/bsp/make.amboot
+@@ -4,15 +4,33 @@
+ ## History:
+ ##    2015/01/22 - [Tao Wu] created file
+ ##
+-## Copyright (C) 2012-2016, Ambarella, Inc.
++## Copyright (c) 2015 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ DSP_FILE_LIST	:= $(AMB_TOPDIR)/kernel/private/lib/firmware_s2l/encode_only/ucode.list
++INCLUDES	+= -I$(AMB_TOPDIR)/include/arch_s2l
+ DSP_FILE_LIST	+= $(AMB_TOPDIR)/unit_test/private/iav_test/data/fastosd.list
+ 
+ ifeq ($(CONFIG_HAWTHORN_IAV_OV4689), y)
+diff --git a/config/kernel/hawthorn_fastboot_kernel_config b/config/kernel/hawthorn_fastboot_kernel_config
+index ada06ba..c3f98ec 100644
+--- a/config/kernel/hawthorn_fastboot_kernel_config
++++ b/config/kernel/hawthorn_fastboot_kernel_config
+@@ -366,12 +366,13 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_MMAP_DBGBUS=y
+ # CONFIG_PLAT_AMBARELLA_A8_CORTEX is not set
+ CONFIG_PLAT_AMBARELLA_S2L=y
+ # CONFIG_PLAT_AMBARELLA_S3 is not set
++# CONFIG_PLAT_AMBARELLA_S3L is not set
+ 
+ #
+ # Generic Platform Configuration
+ #
++# CONFIG_AMBARELLA_CALC_PLL is not set
+ # CONFIG_AMBARELLA_RAW_BOOT is not set
+-# CONFIG_AMBARELLA_SUPPORT_BAPI is not set
+ # CONFIG_AMBARELLA_PMUSERENR_EN is not set
+ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ 
+@@ -379,7 +380,6 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ # Sys file system support
+ #
+ # CONFIG_AMBARELLA_SYS_CACHE_CALL is not set
+-# CONFIG_AMBARELLA_SYS_BAPI_CALL is not set
+ 
+ #
+ # Proc file system support
+@@ -401,6 +401,7 @@ CONFIG_AMBARELLA_TIMER_HZ=100
+ CONFIG_AMBARELLA_TIMER_HIGHRES=y
+ CONFIG_AMBARELLA_EXT_IRQ_NUM=16
+ CONFIG_AMBARELLA_EXT_GPIO_NUM=16
++# CONFIG_AMBARELLA_SREF_FIFO_EXEC is not set
+ CONFIG_GPIO_PCA953X=y
+ # CONFIG_KEYBOARD_GPIO_POLLED is not set
+ # CONFIG_PLAT_SPEAR is not set
+@@ -614,6 +615,7 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_TCP_CONG_CUBIC=y
+ CONFIG_DEFAULT_TCP_CONG="cubic"
+ # CONFIG_TCP_MD5SIG is not set
++# CONFIG_WLAN_UPDATE_SEQ is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_NETWORK_SECMARK is not set
+ # CONFIG_NETWORK_PHY_TIMESTAMPING is not set
+@@ -786,6 +788,8 @@ CONFIG_MTD_NAND_BCH=y
+ CONFIG_MTD_NAND_ECC_BCH=y
+ # CONFIG_MTD_SM_COMMON is not set
+ CONFIG_MTD_NAND_AMBARELLA=y
++# CONFIG_MTD_SPINAND_AMBARELLA is not set
++# CONFIG_MTD_SPINAND_ONDIEECC is not set
+ # CONFIG_MTD_NAND_DENALI is not set
+ # CONFIG_MTD_NAND_GPIO is not set
+ CONFIG_MTD_NAND_IDS=y
+@@ -1555,10 +1559,14 @@ CONFIG_SND_SOC_AK4642_AMB=m
+ CONFIG_SND_SOC_AK4951_AMB=m
+ CONFIG_SND_SOC_AK4954_AMB=m
+ CONFIG_SND_SOC_AK7719_DSP=m
++# CONFIG_SND_SOC_AK7755 is not set
++# CONFIG_SND_SOC_TLV320ADC3xxx is not set
+ # CONFIG_SND_SOC_ES8388 is not set
++# CONFIG_SND_SOC_ES8374 is not set
+ # CONFIG_SND_SOC_WM8974_AMB is not set
+ # CONFIG_SND_SOC_WM8940_AMB is not set
+-# CONFIG_SND_SOC_AMBARELLA_DUMMY is not set
++# CONFIG_SND_SOC_ZL380TW is not set
++CONFIG_SND_SOC_AMBARELLA_DUMMY=m
+ # CONFIG_SND_ATMEL_SOC is not set
+ CONFIG_SND_SOC_I2C_AND_SPI=m
+ # CONFIG_SND_SOC_ALL_CODECS is not set
+@@ -1859,6 +1867,7 @@ CONFIG_USB_MASS_STORAGE=m
+ CONFIG_USB_G_SERIAL=m
+ # CONFIG_USB_MIDI_GADGET is not set
+ # CONFIG_USB_G_PRINTER is not set
++# CONFIG_USB_AMB_STREAM is not set
+ # CONFIG_USB_CDC_COMPOSITE is not set
+ # CONFIG_USB_G_ACM_MS is not set
+ CONFIG_USB_G_MULTI=m
+@@ -1884,6 +1893,7 @@ CONFIG_MMC_BLOCK_MINORS=32
+ # MMC/SD/SDIO Host Controller Drivers
+ #
+ CONFIG_MMC_AMBARELLA=m
++# CONFIG_AMBARELLA_EMMC_BOOT is not set
+ # CONFIG_MMC_SDHCI is not set
+ # CONFIG_MMC_SPI is not set
+ # CONFIG_MMC_DW is not set
+diff --git a/config/kernel/hawthorn_small_kernel_config b/config/kernel/hawthorn_small_kernel_config
+index bba116f..1fd22ca 100644
+--- a/config/kernel/hawthorn_small_kernel_config
++++ b/config/kernel/hawthorn_small_kernel_config
+@@ -351,12 +351,13 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_MMAP_DBGBUS=y
+ # CONFIG_PLAT_AMBARELLA_A8_CORTEX is not set
+ CONFIG_PLAT_AMBARELLA_S2L=y
+ # CONFIG_PLAT_AMBARELLA_S3 is not set
++# CONFIG_PLAT_AMBARELLA_S3L is not set
+ 
+ #
+ # Generic Platform Configuration
+ #
++# CONFIG_AMBARELLA_CALC_PLL is not set
+ # CONFIG_AMBARELLA_RAW_BOOT is not set
+-CONFIG_AMBARELLA_SUPPORT_BAPI=y
+ # CONFIG_AMBARELLA_PMUSERENR_EN is not set
+ # CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA is not set
+ 
+@@ -364,7 +365,6 @@ CONFIG_AMBARELLA_SUPPORT_BAPI=y
+ # Sys file system support
+ #
+ # CONFIG_AMBARELLA_SYS_CACHE_CALL is not set
+-# CONFIG_AMBARELLA_SYS_BAPI_CALL is not set
+ 
+ #
+ # Proc file system support
+@@ -597,6 +597,7 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_TCP_CONG_CUBIC=y
+ CONFIG_DEFAULT_TCP_CONG="cubic"
+ # CONFIG_TCP_MD5SIG is not set
++# CONFIG_WLAN_UPDATE_SEQ is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_NETWORK_SECMARK is not set
+ # CONFIG_NETWORK_PHY_TIMESTAMPING is not set
+@@ -755,6 +756,8 @@ CONFIG_MTD_NAND_BCH=y
+ CONFIG_MTD_NAND_ECC_BCH=y
+ # CONFIG_MTD_SM_COMMON is not set
+ CONFIG_MTD_NAND_AMBARELLA=y
++# CONFIG_MTD_SPINAND_AMBARELLA is not set
++# CONFIG_MTD_SPINAND_ONDIEECC is not set
+ # CONFIG_MTD_NAND_DENALI is not set
+ # CONFIG_MTD_NAND_GPIO is not set
+ CONFIG_MTD_NAND_IDS=y
+@@ -1410,6 +1413,7 @@ CONFIG_SND_AMBARELLA_SOC=y
+ CONFIG_SND_AMBARELLA_BOARD=y
+ # CONFIG_AMBA_BOARD is not set
+ # CONFIG_SND_AMBARELLA_CODEC is not set
++# CONFIG_SND_SOC_ZL380TW is not set
+ # CONFIG_SND_ATMEL_SOC is not set
+ CONFIG_SND_SOC_I2C_AND_SPI=y
+ # CONFIG_SND_SOC_ALL_CODECS is not set
+@@ -1447,6 +1451,7 @@ CONFIG_MMC_BLOCK_MINORS=8
+ # MMC/SD/SDIO Host Controller Drivers
+ #
+ CONFIG_MMC_AMBARELLA=y
++# CONFIG_AMBARELLA_EMMC_BOOT is not set
+ # CONFIG_MMC_SDHCI is not set
+ # CONFIG_MMC_SPI is not set
+ # CONFIG_MMC_DW is not set
+diff --git a/config/kernel/hawthorn_spinor_kernel_config b/config/kernel/hawthorn_spinor_kernel_config
+index 6a53bb4..60a09fd 100644
+--- a/config/kernel/hawthorn_spinor_kernel_config
++++ b/config/kernel/hawthorn_spinor_kernel_config
+@@ -111,7 +111,7 @@ CONFIG_NAMESPACES=y
+ # CONFIG_IPC_NS is not set
+ # CONFIG_USER_NS is not set
+ # CONFIG_PID_NS is not set
+-# CONFIG_NET_NS is not set
++CONFIG_NET_NS=y
+ CONFIG_UIDGID_CONVERTED=y
+ # CONFIG_UIDGID_STRICT_TYPE_CHECKS is not set
+ # CONFIG_SCHED_AUTOGROUP is not set
+@@ -367,12 +367,13 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_MMAP_DBGBUS=y
+ # CONFIG_PLAT_AMBARELLA_A8_CORTEX is not set
+ CONFIG_PLAT_AMBARELLA_S2L=y
+ # CONFIG_PLAT_AMBARELLA_S3 is not set
++# CONFIG_PLAT_AMBARELLA_S3L is not set
+ 
+ #
+ # Generic Platform Configuration
+ #
++# CONFIG_AMBARELLA_CALC_PLL is not set
+ # CONFIG_AMBARELLA_RAW_BOOT is not set
+-CONFIG_AMBARELLA_SUPPORT_BAPI=y
+ # CONFIG_AMBARELLA_PMUSERENR_EN is not set
+ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ 
+@@ -380,7 +381,6 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ # Sys file system support
+ #
+ # CONFIG_AMBARELLA_SYS_CACHE_CALL is not set
+-# CONFIG_AMBARELLA_SYS_BAPI_CALL is not set
+ 
+ #
+ # Proc file system support
+@@ -402,6 +402,7 @@ CONFIG_AMBARELLA_TIMER_HZ=100
+ CONFIG_AMBARELLA_TIMER_HIGHRES=y
+ CONFIG_AMBARELLA_EXT_IRQ_NUM=16
+ CONFIG_AMBARELLA_EXT_GPIO_NUM=16
++# CONFIG_AMBARELLA_SREF_FIFO_EXEC is not set
+ CONFIG_GPIO_PCA953X=y
+ # CONFIG_KEYBOARD_GPIO_POLLED is not set
+ # CONFIG_PLAT_SPEAR is not set
+@@ -656,6 +657,7 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_TCP_CONG_CUBIC=y
+ CONFIG_DEFAULT_TCP_CONG="cubic"
+ # CONFIG_TCP_MD5SIG is not set
++# CONFIG_WLAN_UPDATE_SEQ is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_NETWORK_SECMARK is not set
+ # CONFIG_NETWORK_PHY_TIMESTAMPING is not set
+@@ -854,6 +856,8 @@ CONFIG_MTD_NAND_BCH=y
+ CONFIG_MTD_NAND_ECC_BCH=y
+ # CONFIG_MTD_SM_COMMON is not set
+ CONFIG_MTD_NAND_AMBARELLA=y
++# CONFIG_MTD_SPINAND_AMBARELLA is not set
++# CONFIG_MTD_SPINAND_ONDIEECC is not set
+ # CONFIG_MTD_NAND_DENALI is not set
+ # CONFIG_MTD_NAND_GPIO is not set
+ CONFIG_MTD_NAND_IDS=y
+@@ -1628,10 +1632,14 @@ CONFIG_SND_AMBARELLA_CODEC=m
+ CONFIG_SND_SOC_AK4642_AMB=m
+ CONFIG_SND_SOC_AK4951_AMB=m
+ CONFIG_SND_SOC_AK4954_AMB=m
++# CONFIG_SND_SOC_AK7755 is not set
+ # CONFIG_SND_SOC_AK7719_DSP is not set
++# CONFIG_SND_SOC_TLV320ADC3xxx is not set
+ CONFIG_SND_SOC_ES8388=m
++# CONFIG_SND_SOC_ES8374 is not set
+ # CONFIG_SND_SOC_WM8974_AMB is not set
+ # CONFIG_SND_SOC_WM8940_AMB is not set
++# CONFIG_SND_SOC_ZL380TW is not set
+ CONFIG_SND_SOC_AMBARELLA_DUMMY=m
+ # CONFIG_SND_ATMEL_SOC is not set
+ CONFIG_SND_SOC_I2C_AND_SPI=m
+@@ -1958,6 +1966,7 @@ CONFIG_MMC_BLOCK_MINORS=32
+ # MMC/SD/SDIO Host Controller Drivers
+ #
+ CONFIG_MMC_AMBARELLA=m
++# CONFIG_AMBARELLA_EMMC_BOOT is not set
+ # CONFIG_MMC_SDHCI is not set
+ # CONFIG_MMC_SPI is not set
+ # CONFIG_MMC_DW is not set
+diff --git a/config/kernel/hawthorn_spinor_kernel_cpio_config b/config/kernel/hawthorn_spinor_kernel_cpio_config
+index fe24fdc..e65d7e2 100644
+--- a/config/kernel/hawthorn_spinor_kernel_cpio_config
++++ b/config/kernel/hawthorn_spinor_kernel_cpio_config
+@@ -367,12 +367,13 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_MMAP_DBGBUS=y
+ # CONFIG_PLAT_AMBARELLA_A8_CORTEX is not set
+ CONFIG_PLAT_AMBARELLA_S2L=y
+ # CONFIG_PLAT_AMBARELLA_S3 is not set
++# CONFIG_PLAT_AMBARELLA_S3L is not set
+ 
+ #
+ # Generic Platform Configuration
+ #
++# CONFIG_AMBARELLA_CALC_PLL is not set
+ # CONFIG_AMBARELLA_RAW_BOOT is not set
+-CONFIG_AMBARELLA_SUPPORT_BAPI=y
+ # CONFIG_AMBARELLA_PMUSERENR_EN is not set
+ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ 
+@@ -380,7 +381,6 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ # Sys file system support
+ #
+ # CONFIG_AMBARELLA_SYS_CACHE_CALL is not set
+-# CONFIG_AMBARELLA_SYS_BAPI_CALL is not set
+ 
+ #
+ # Proc file system support
+@@ -402,6 +402,7 @@ CONFIG_AMBARELLA_TIMER_HZ=100
+ CONFIG_AMBARELLA_TIMER_HIGHRES=y
+ CONFIG_AMBARELLA_EXT_IRQ_NUM=16
+ CONFIG_AMBARELLA_EXT_GPIO_NUM=16
++# CONFIG_AMBARELLA_SREF_FIFO_EXEC is not set
+ CONFIG_GPIO_PCA953X=y
+ # CONFIG_PLAT_SPEAR is not set
+ 
+@@ -651,6 +652,7 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_TCP_CONG_CUBIC=y
+ CONFIG_DEFAULT_TCP_CONG="cubic"
+ # CONFIG_TCP_MD5SIG is not set
++# CONFIG_WLAN_UPDATE_SEQ is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_NETWORK_SECMARK is not set
+ # CONFIG_NETWORK_PHY_TIMESTAMPING is not set
+@@ -1537,12 +1539,16 @@ CONFIG_SND_AMBARELLA_BOARD=m
+ CONFIG_AMBA_BOARD=m
+ CONFIG_SND_AMBARELLA_CODEC=m
+ CONFIG_SND_SOC_AK4642_AMB=m
++# CONFIG_SND_SOC_AK7755 is not set
+ # CONFIG_SND_SOC_AK4951_AMB is not set
+ # CONFIG_SND_SOC_AK4954_AMB is not set
++# CONFIG_SND_SOC_TLV320ADC3xxx is not set
+ # CONFIG_SND_SOC_ES8388 is not set
++# CONFIG_SND_SOC_ES8374 is not set
+ # CONFIG_SND_SOC_WM8974_AMB is not set
+ # CONFIG_SND_SOC_WM8940_AMB is not set
+-# CONFIG_SND_SOC_AMBARELLA_DUMMY is not set
++# CONFIG_SND_SOC_ZL380TW is not set
++CONFIG_SND_SOC_AMBARELLA_DUMMY=m
+ # CONFIG_SND_ATMEL_SOC is not set
+ CONFIG_SND_SOC_I2C_AND_SPI=m
+ # CONFIG_SND_SOC_ALL_CODECS is not set
+@@ -1868,6 +1874,7 @@ CONFIG_MMC_BLOCK_MINORS=32
+ # MMC/SD/SDIO Host Controller Drivers
+ #
+ CONFIG_MMC_AMBARELLA=m
++# CONFIG_AMBARELLA_EMMC_BOOT is not set
+ # CONFIG_MMC_SDHCI is not set
+ # CONFIG_MMC_SPI is not set
+ # CONFIG_MMC_DW is not set
+diff --git a/config/s2l_ipcam_22_config b/config/s2l_ipcam_22_config
+new file mode 100644
+index 0000000..0b9e128
+--- /dev/null
++++ b/config/s2l_ipcam_22_config
+@@ -0,0 +1,751 @@
++#
++# Automatically generated make config: don't edit
++# Ambarella Build Configuration
++# Wed May  4 10:01:53 2016
++#
++# CONFIG_ARCH_A5S is not set
++# CONFIG_ARCH_A7 is not set
++# CONFIG_ARCH_A7L is not set
++# CONFIG_ARCH_S2 is not set
++# CONFIG_ARCH_S2E is not set
++CONFIG_ARCH_S2L=y
++# CONFIG_ARCH_S3 is not set
++# CONFIG_ARCH_S3L is not set
++# CONFIG_CPU_CORTEXA9 is not set
++CONFIG_CPU_CORTEXA9_HF=y
++
++#
++# Ambarella Board Configuration
++#
++# CONFIG_BSP_BOARD_DOORMAN is not set
++CONFIG_BSP_BOARD_HAWTHORN=y
++# CONFIG_BSP_BOARD_S2LBUB is not set
++# CONFIG_BSP_BOARD_S2LM_ELEKTRA is not set
++# CONFIG_BSP_BOARD_S2LM_ICEMAN is not set
++# CONFIG_BSP_BOARD_S2LM_IRONMAN is not set
++# CONFIG_BSP_BOARD_S2LM_KIWI is not set
++# CONFIG_BSP_BOARD_S2LSMALLBIN is not set
++# CONFIG_BSP_BOARD_STRAWBERRY is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63_EVKB is not set
++CONFIG_BOARD_VERSION_HAWTHORN_S2L22=y
++# CONFIG_HAWTHORN_DSP_BOOT is not set
++BUILD_AMBARELLA_FIRMWARE=y
++
++#
++# Memory Options
++#
++
++#
++# AMBoot memory options
++#
++AMBOOT_BLD_RAM_START=0x00000000
++AMBOOT_BLD_STACK_SIZE=0x00008000
++AMBOOT_BLD_HEAP_SIZE=0x00008000
++
++#
++# RTOS memory options
++#
++KERNEL_RAM_START=0x00208000
++AMBARELLA_INITRD_PHYS=0x00800000
++IDSP_RAM_START=0x2BE00000
++DSP_BSB_SIZE=0x0600000
++DSP_IAVRSVD_SIZE=0x1000000
++DSP_FASTAUDIO_SIZE=0x0000000
++
++#
++# Hardware Options
++#
++ARCH_SUPPORT_BCH_ID5=y
++ARCH_SUPPORT_SPINOR=y
++# CONFIG_FLASH_PAGE_256 is not set
++# CONFIG_FLASH_PAGE_512 is not set
++CONFIG_FLASH_PAGE_2K=y
++# CONFIG_FLASH_PAGE_4K is not set
++# CONFIG_FLASH_ERASE_4k is not set
++# CONFIG_FLASH_ERASE_16k is not set
++# CONFIG_FLASH_ERASE_64k is not set
++CONFIG_FLASH_ERASE_128k=y
++# CONFIG_FLASH_ERASE_256k is not set
++CONFIG_AMBOOT_ENABLE_NAND=y
++
++#
++# NAND Subsystem Options
++#
++CONFIG_NAND_ERASE_UNUSED_BLOCK=y
++CONFIG_NAND_USE_FLASH_BBT=y
++# CONFIG_NAND_P512_E16K is not set
++# CONFIG_NAND_P2K_E64K is not set
++CONFIG_NAND_P2K_E128K=y
++# CONFIG_NAND_P4K_E64K is not set
++# CONFIG_NAND_P4K_E128K is not set
++# CONFIG_NAND_K9F2808 is not set
++# CONFIG_NAND_K9F5608 is not set
++# CONFIG_NAND_K9F1208 is not set
++# CONFIG_NAND_K9F1208X0C is not set
++# CONFIG_NAND_K9F1G08 is not set
++# CONFIG_NAND_K9F1G08U0B is not set
++# CONFIG_NAND_K9F1G08U0E is not set
++# CONFIG_NAND_K9F4G08U0E is not set
++CONFIG_NAND_K9F2G08=y
++# CONFIG_NAND_K9F2G08U0C is not set
++# CONFIG_NAND_K9W8G08 is not set
++# CONFIG_NAND_K9K4G08 is not set
++# CONFIG_NAND_K9K8G08 is not set
++# CONFIG_NAND_K9WAG08 is not set
++# CONFIG_NAND_K9NBG08 is not set
++# CONFIG_NAND_HY27US08281A is not set
++# CONFIG_NAND_HY27US08561A is not set
++# CONFIG_NAND_HY27US08561M is not set
++# CONFIG_NAND_HY27US08121M is not set
++# CONFIG_NAND_HY27US08121A is not set
++# CONFIG_NAND_HY27UA081G1M is not set
++# CONFIG_NAND_HY27UF081G2A is not set
++# CONFIG_NAND_HY27UF082G2A is not set
++# CONFIG_NAND_HY27UF082G2B is not set
++# CONFIG_NAND_HY27UF084G2B is not set
++# CONFIG_NAND_HY27UF084G2M is not set
++# CONFIG_NAND_HY27U1G8F2B is not set
++# CONFIG_NAND_H27U518S2c is not set
++# CONFIG_NAND_HY27US4G86F2D is not set
++# CONFIG_NAND_H27U2G8F2D is not set
++# CONFIG_NAND_MX30LF1G08AA is not set
++# CONFIG_NAND_ST128W3A is not set
++# CONFIG_NAND_ST256W3A is not set
++# CONFIG_NAND_ST512W3A is not set
++# CONFIG_NAND_ST01GW3A is not set
++# CONFIG_NAND_ST01GW3B is not set
++# CONFIG_NAND_ST02GW3B is not set
++# CONFIG_NAND_NUMONYX02GW3B2D is not set
++# CONFIG_NAND_TC58BVG0S3H is not set
++# CONFIG_NAND_TC58BVG1S3H is not set
++# CONFIG_NAND_TC58DVM72A is not set
++# CONFIG_NAND_TC58DVM82A is not set
++# CONFIG_NAND_TC58DVM92A is not set
++# CONFIG_NAND_TC58NVG0S3C is not set
++# CONFIG_NAND_TC58NVG0S3E is not set
++# CONFIG_NAND_TC58NVG0S3H is not set
++# CONFIG_NAND_TC58NVG1S3H is not set
++# CONFIG_NAND_TC58NVG1S3E is not set
++# CONFIG_NAND_TC58NVG2S3E is not set
++# CONFIG_NAND_TC58NVM9S3C is not set
++# CONFIG_NAND_MT29F2G08AAC is not set
++# CONFIG_NAND_MT29F1G08ABAEA is not set
++# CONFIG_NAND_MT29F2G08ABA is not set
++# CONFIG_NAND_MT29F8G08DAA is not set
++# CONFIG_NAND_MT29F4G08ABADA is not set
++# CONFIG_NAND_MT29F2G08ABAFA is not set
++# CONFIG_NAND_CT48248NS486G1 is not set
++# CONFIG_NAND_ASU1GA30HT is not set
++# CONFIG_NAND_K9F4G08U0A is not set
++# CONFIG_NAND_F59L1G81A is not set
++# CONFIG_NAND_F59L1G81LA is not set
++# CONFIG_NAND_F59L1G81MA is not set
++# CONFIG_NAND_F59L2G81A is not set
++# CONFIG_NAND_F59L4G81A is not set
++# CONFIG_NAND_S34ML01G1 is not set
++# CONFIG_NAND_S34ML02G1 is not set
++# CONFIG_NAND_S34ML04G1 is not set
++# CONFIG_NAND_S34ML01G2 is not set
++# CONFIG_NAND_S34ML02G2 is not set
++# CONFIG_NAND_S34ML04G2 is not set
++# CONFIG_NAND_W29N02GVSIAA is not set
++CONFIG_NAND_1DEVICE=y
++# CONFIG_NAND_2DEVICE is not set
++# CONFIG_NAND_4DEVICE is not set
++CONFIG_AMBOOT_ENABLE_SD=y
++
++#
++# SD Subsystem Options
++#
++# CONFIG_AMBOOT_ENABLE_SPINOR is not set
++# CONFIG_AMBOOT_ENABLE_SPI is not set
++CONFIG_AMBOOT_ENABLE_IDC=y
++
++#
++# IDC Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_ISL12022M=y
++CONFIG_AMBOOT_ENABLE_PCA953X=y
++CONFIG_AMBOOT_ENABLE_ETH=y
++
++#
++# ETH Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_USB=y
++
++#
++# USB Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_GPIO=y
++
++#
++# GPIO Subsystem Options
++#
++# CONFIG_AMBOOT_DISABLE_UART is not set
++CONFIG_AMBOOT_ENABLE_UART0=y
++
++#
++# UART Subsystem Options
++#
++# AMBOOT_UART_19200 is not set
++# AMBOOT_UART_38400 is not set
++# AMBOOT_UART_57600 is not set
++AMBOOT_UART_115200=y
++# CONFIG_AMBOOT_ENABLE_ADC is not set
++# CONFIG_AMBOOT_ENABLE_IR is not set
++
++#
++# AMBoot (boot loader)
++#
++CONFIG_BOOT_MEDIA_NAND=y
++# CONFIG_BOOT_MEDIA_EMMC is not set
++# CONFIG_4K_BOOT_IMAGE is not set
++
++#
++# NAND Boot Options
++#
++
++#
++# Common Boot Options
++#
++CONFIG_AMBOOT_COMMAND_SUPPORT=y
++CONFIG_AMBOOT_BD_FDT_SUPPORT=y
++# CONFIG_AMBOOT_BD_ATAG_SUPPORT is not set
++# CONFIG_AMBOOT_BD_NONE_SUPPORT is not set
++# CONFIG_AMBOOT_FDT_LOW_ADDR is not set
++# CONFIG_AMBOOT_SEARCH_PTB is not set
++CONFIG_AMBOOT_BD_CMDLINE=""
++CONFIG_AMBOOT_BAPI_SUPPORT=y
++CONFIG_AMBOOT_BAPI_ZERO_FB=y
++# CONFIG_AMBOOT_BAPI_AOSS is not set
++AMBOOT_DEFAULT_SN=""
++AMBOOT_DEFAULT_LINUX_MACHINE_ID=4603
++AMBOOT_DEV_AUTO_BOOT=y
++# AMBOOT_DEV_FAST_BOOT is not set
++AMBOOT_DEV_NORMAL_MODE=y
++# AMBOOT_DEV_USBDL_MODE is not set
++# DRAM_TYPE_DDR3 is not set
++# DRAM_TYPE_DDR2 is not set
++# DRAM_TYPE_LPDDR3 is not set
++BUILD_DEVFW=y
++MINIMAL_FIRMWARE_COMBO=y
++# BUILD_DEBUG_MEMFWPROG is not set
++
++#
++# Persistent BIOS App Partition
++#
++PBA=""
++PBA_VIF=""
++
++#
++# Primary Partition
++#
++KERNEL="$(AMB_BOARD_OUT)/kernel/Image"
++KERNEL_VIF="$(AMB_TOPDIR)/amboot/vif/linux.info"
++
++#
++# Secondary Partition
++#
++SECONDARY=""
++SECONDARY_VIF=""
++
++#
++# Backup Partition
++#
++BACKUP=""
++BACKUP_VIF=""
++
++#
++# Ramdisk Partition
++#
++RAMDISK=""
++RAMDISK_VIF=""
++
++#
++# ROMFS Partition
++#
++ROMFS=""
++ROMFS_VIF=""
++
++#
++# Linux Partition
++#
++LNX="$(AMB_BOARD_OUT)/rootfs/ubifs"
++LNX_VIF="$(AMB_TOPDIR)/amboot/vif/ubifs.info"
++
++#
++# Swap Partition
++#
++SWP=""
++SWP_VIF=""
++
++#
++# Android Data Partition
++#
++ADD=""
++ADD_VIF=""
++
++#
++# Android Cache Partition
++#
++ADC=""
++ADC_VIF=""
++# AMBOOT_BOOT_DSP is not set
++BUILD_AMBARELLA_APPLICATION=y
++CONFIG_APP_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_APP_IPCAM_CONFIG_DIR="$(FAKEROOT_DIR)/etc/ambaipcam"
++# BUILD_AMBARELLA_APP_DEBUG is not set
++BUILD_AMBAREALLA_CLOUD_LIB=y
++BUILD_AMBAREALLA_CLOUD_AGENT=y
++BUILD_AMBARELLA_APP_IPCAM=y
++# BUILD_AMBARELLA_APP_IPCAM_MEDIASERVER is not set
++BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON=y
++# BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_C is not set
++BUILD_AMBARELLA_APP_IPCAM_RTSP=y
++# BUILD_AMBARELLA_APP_IPCAM_AUTORUN_SERVICES is not set
++BUILD_AMBARELLA_APP_IPCAM_SMART_LDC=y
++# BUILD_AMBARELLA_APP_HTTP_UPLOADER is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_AUDIO is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_APP is not set
++# BUILD_AMBARELLA_APP_ELEKTRA_BOOT is not set
++BUILD_AMBAREALLA_APP_UTILITY=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS_ALL=y
++# BUILD_AMBAREALLA_APP_UTILITY_DNG_TOOL is not set
++BUILD_AMBARELLA_APP_UTILITY_DSP=y
++BUILD_AMBARELLA_APP_UTILITY_LOAD_UCODE=y
++BUILD_AMBARELLA_APP_UTILITY_DSPLOG=y
++# BUILD_AMBARELLA_APP_UTILITY_GEN_FASTBOOT_UCODE is not set
++# BUILD_AMBARELLA_APP_UTILITY_JPG is not set
++# BUILD_AMBAREALLA_APP_UTILITY_UPGRADE is not set
++BUILD_AMBARELLA_LINUX_KERNEL=y
++CONFIG_LINUX_KERNEL_VERSION="3.10"
++CONFIG_KERNEL_DEFCONFIG_STRING="ambarella_s2l_defconfig"
++CONFIG_KERNEL_MODULES_INSTALL_DIR="$(FAKEROOT_DIR)"
++# BUILD_AMBARELLA_EXTERNAL_MODULES is not set
++BUILD_AMBARELLA_PRIVATE_MODULES=y
++# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
++BUILD_AMBARELLA_HW_TIMER=y
++BUILD_AMBARELLA_VIN=y
++
++#
++# Ambarella Sensor Configuration
++#
++CONFIG_SENSOR_MT9T002=y
++CONFIG_SENSOR_MT9T002_MIPI=y
++# CONFIG_SENSOR_MT9T002_PARALLEL is not set
++CONFIG_SENSOR_AR0130=y
++CONFIG_SENSOR_AR0141=y
++CONFIG_SENSOR_AR0230=y
++# CONFIG_SENSOR_AR0230P is not set
++# CONFIG_SENSOR_AR0331 is not set
++# CONFIG_SENSOR_OV2710P is not set
++CONFIG_SENSOR_OV4689_MIPI=y
++# CONFIG_SENSOR_OV5653 is not set
++# CONFIG_SENSOR_OV9710 is not set
++CONFIG_SENSOR_OV9718_MIPI=y
++# CONFIG_SENSOR_OV9750_MIPI is not set
++# CONFIG_SENSOR_OV9750_PARALLEL is not set
++CONFIG_SENSOR_OV5658_MIPI=y
++CONFIG_SENSOR_IMX122=y
++CONFIG_SENSOR_IMX104=y
++# CONFIG_SENSOR_IMX136 is not set
++CONFIG_SENSOR_IMX136P=y
++# CONFIG_SENSOR_IMX172 is not set
++# CONFIG_SENSOR_IMX226 is not set
++# CONFIG_SENSOR_IMX174 is not set
++CONFIG_SENSOR_IMX178=y
++CONFIG_SENSOR_IMX178_I2C=y
++# CONFIG_SENSOR_IMX178_SPI is not set
++# CONFIG_SENSOR_IMX185 is not set
++CONFIG_SENSOR_IMX123=y
++CONFIG_SENSOR_IMX322=y
++# CONFIG_SENSOR_IMX322_I2C is not set
++CONFIG_SENSOR_IMX322_SPI=y
++CONFIG_SENSOR_IMX124=y
++CONFIG_SENSOR_IMX224=y
++CONFIG_SENSOR_IMX290=y
++CONFIG_SENSOR_IMX291=y
++CONFIG_SENSOR_MN34041PL=y
++# CONFIG_SENSOR_MN34210PL is not set
++CONFIG_SENSOR_MN34220PL=y
++# CONFIG_SENSOR_FPGA is not set
++# CONFIG_SENSOR_AMBDS is not set
++
++#
++# Ambarella TV decoder Configuration
++#
++CONFIG_YUV_ADV7441A=y
++# CONFIG_YUV_AMBDD is not set
++# CONFIG_AMBARELLA_VIN_DEBUG is not set
++# CONFIG_VIN_FPS_STAT is not set
++# BUILD_AMBARELLA_LENS is not set
++BUILD_AMBARELLA_DSP=y
++CONFIG_PRINT_DSP_CMD=y
++CONFIG_PRINT_DSP_CMD_MORE=y
++# CONFIG_PRINT_DSP_CMD_RAW is not set
++CONFIG_DSP_LOG_START_0X80000=y
++# CONFIG_DSP_LOG_START_IAVMEM is not set
++BUILD_AMBARELLA_VOUT=y
++# CONFIG_DVE_NULL is not set
++CONFIG_DVE_AMBTVE=y
++# CONFIG_DIGITAL_NULL is not set
++CONFIG_DIGITAL_AMBDBUS=y
++# CONFIG_HDMI_NULL is not set
++CONFIG_HDMI_AMBHDMI=y
++# BUILD_AMBARELLA_IT66121_HDMI is not set
++# CONFIG_AMBARELLA_VOUT_DEBUG is not set
++BUILD_AMBARELLA_IAV=y
++# CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
++CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS=y
++# CONFIG_AMBARELLA_IAV_ABSOLUTE_QP_IPB is not set
++BUILD_AMBARELLA_IMGPROC_DRV=y
++CONFIG_IMGPROC_MEM_SMALL=y
++# CONFIG_IMGPROC_MEM_LARGE is not set
++BUILD_AMBARELLA_DEBUG=y
++# BUILD_AMBARELLA_CRYPTO is not set
++# BUILD_GYRO is not set
++# BUILD_EIS is not set
++BUILD_AMBARELLA_DSP_LOG=y
++CONFIG_DSP_FIRMWARE_GERNEIC=y
++# CONFIG_DSP_FIRMWARE_DEBUG is not set
++# BUILD_DRIVERS_FROM_BINARY is not set
++# BUILD_AMBARELLA_ORYX_MW is not set
++BUILD_AMBARELLA_PACKAGE=y
++BUILD_AMBARELLA_BSREADER_PACKAGE=y
++BUILD_AMBARELLA_DATATX_PACKAGE=y
++BUILD_AMBARELLA_DEWARP_PACKAGE=y
++CONFIG_DEWARP_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/dewarp"
++BUILD_AMBARELLA_DEWARP_DYNAMIC=y
++# BUILD_AMBARELLA_DEWARP_STATIC is not set
++# BUILD_AMBARELLA_DIGITALSIGN_PACKAGE is not set
++BUILD_AMBARELLA_IMGPROC_PACKAGE=y
++CONFIG_IMGPROC_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/imgproc"
++# CONFIG_IMGPROC_PACKAGE_DYNAMIC_LIB is not set
++BUILD_AMBARELLA_MIDDLEWARE=y
++
++#
++# MW Device configs
++#
++BUILD_AMBARELLA_IMAGE_DEVICE_PROC=y
++CONFIG_IMAGE_DEVICE_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/img_dev"
++
++#
++# MW IMAGE configs
++#
++BUILD_AMBARELLA_MIDDLEWARE_PROC=y
++CONFIG_MIDDLEWARE_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/img_mw"
++# BUILD_AMBARELLA_LBR_PACKAGE is not set
++BUILD_AMBARELLA_MAINPREPROC_PACKAGE=y
++# BUILD_AMBARELLA_MDMOTBUF_PACKAGE is not set
++# BUILD_AMBARELLA_SECURITY_PACKAGE is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE is not set
++BUILD_AMBARELLA_TEXTINSERT_PACKAGE=y
++BUILD_AMBARELLA_UTILITIES_PACKAGE=y
++CONFIG_AMBARELLA_PREBUILD=y
++CONFIG_AMBARELLA_IMAGE_DATA=y
++CONFIG_AMBARELLA_MKFS=y
++# CONFIG_AMBARELLA_ROOTFS_RAM is not set
++# CONFIG_AMBARELLA_ROOTFS_CPIO is not set
++# CONFIG_AMBARELLA_ROOTFS_JFFS2 is not set
++# CONFIG_AMBARELLA_ROOTFS_YAFFS is not set
++CONFIG_AMBARELLA_ROOTFS_UBIFS=y
++# CONFIG_AMBARELLA_ROOTFS_EXT2 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT3 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT4 is not set
++# CONFIG_AMBARELLA_ROOTFS_SQUASHFS is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_FASTBOOT is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_SMALLBOOT is not set
++CONFIG_AMBARELLA_INIT_SYSTEMD=y
++
++#
++# Systemd Features
++#
++# CONFIG_AMBARELLA_SYSTEMD_JOURNAL_GATEWAY is not set
++# CONFIG_AMBARELLA_SYSTEMD_NETWORKD is not set
++# CONFIG_AMBARELLA_SYSTEMD_RESOLVD is not set
++# CONFIG_AMBARELLA_SYSTEMD_TIMESYNCD is not set
++CONFIG_AMBARELLA_ROOT_PASSWORD=""
++# CONFIG_AMBARELLA_NORMAL_USER is not set
++# CONFIG_BACKUP_CPIO is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD_STATIC is not set
++CONFIG_AMBARELLA_BUSYBOX_PREBUILD=y
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN is not set
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN_STATIC is not set
++CONFIG_AMBARELLA_ETH0=y
++# CONFIG_AMBARELLA_ETH0_DHCP is not set
++CONFIG_AMBARELLA_ETH0_ADDRESS="10.0.0.2"
++CONFIG_AMBARELLA_ETH0_GW_ADDRESS="10.0.0.1"
++CONFIG_AMBARELLA_ETH0_IP_MASK="255.255.255.0"
++CONFIG_AMBARELLA_MOUNT_MNT=""
++CONFIG_AMBARELLA_EXT_CMD_FILE=""
++CONFIG_AMBARELLA_RUN_DEMO_NONE=y
++# CONFIG_AMBARELLA_RUN_AUTO_DEMO is not set
++# CONFIG_AMBARELLA_RUN_SHMOO_TEST is not set
++# CONFIG_AMBARELLA_RUN_MEDIASERVER is not set
++# CONFIG_AMBARELLA_RUN_DEWARP is not set
++
++#
++# Serial Port Configuration
++#
++CONFIG_AMBARELLA_SERIAL_PORT0_GETTY=y
++# CONFIG_AMBARELLA_SERIAL_PORT0_NA is not set
++# CONFIG_AMBARELLA_SERIAL_PORT1_GETTY is not set
++CONFIG_AMBARELLA_SERIAL_PORT1_NA=y
++# CONFIG_AMBARELLA_ASKFIRST_CONSOLE is not set
++CONFIG_AMBARELLA_ASKFIRST_CONSOLE_NA=y
++# CONFIG_AMBARELLA_SERIAL_PORT_USB0 is not set
++
++#
++# Audio Packages
++#
++
++#
++# ALSA
++#
++CONFIG_AMBARELLA_ALSA_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_SPEEKER_TEST_SUPPORT is not set
++CONFIG_AMBARELLA_ALSA_PLUGINS_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_PLUGINS_PULSEAUDIO_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_PLUGINS_LIBSAMPLERATE_SUPPORT is not set
++# CONFIG_AMBARELLA_ALSA_PLUGINS_SPEEX_SUPPORT is not set
++
++#
++# PulseAudio
++#
++CONFIG_AMBARELLA_PULSEAUDIO_SUPPORT=y
++CONFIG_AMBARELLA_PULSEAUDIO_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PULSEAUDIO_AEC_SUPPORT is not set
++# CONFIG_AMBARELLA_SYSTEM_SOUND_FILES is not set
++
++#
++# Libraries
++#
++# CONFIG_AMBARELLA_LIBNL_1_SUPPORT is not set
++CONFIG_AMBARELLA_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBFFI_SUPPORT=y
++CONFIG_AMBARELLA_ZLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBBZIP2_SUPPORT=y
++# CONFIG_AMBARELLA_XZ_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBPCRE_SUPPORT=y
++CONFIG_AMBARELLA_LIBELF_SUPPORT=y
++CONFIG_AMBARELLA_FREETYPE_SUPPORT=y
++# CONFIG_AMBARELLA_FREETYPE_FONT_SUPPORT is not set
++CONFIG_AMBARELLA_EXPAT_SUPPORT=y
++# CONFIG_AMBARELLA_LIBXML2_SUPPORT is not set
++CONFIG_AMBARELLA_MXML_SUPPORT=y
++CONFIG_AMBARELLA_CLEARSILVER_SUPPORT=y
++CONFIG_AMBARELLA_LIBNL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNL_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBTOOL_SUPPORT=y
++CONFIG_AMBARELLA_OPENSSL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSODIUM_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGPG_ERROR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGPG_ERROR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGCRYPT_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGCRYPT_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_GNUTLS_SUPPORT=y
++# CONFIG_AMBARELLA_GNUTLS_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_CA_CERTIFICATES_SUPPORT=y
++CONFIG_AMBARELLA_JSONC_SUPPORT=y
++CONFIG_AMBARELLA_LIBOGG_SUPPORT=y
++# CONFIG_AMBARELLA_LIBG7XX_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOPUS_SUPPORT is not set
++# CONFIG_AMBARELLA_AUDIOFILE_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBVORBIS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSAMPLERATE_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSAMPLERATE_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSNDFILE_SUPPORT=y
++# CONFIG_AMBARELLA_WEBRTC_AUDIO_PROCESSING_SUPPORT is not set
++CONFIG_AMBARELLA_SPEEX_SUPPORT=y
++# CONFIG_AMBARELLA_SPEEX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_ORC_SUPPORT=y
++# CONFIG_AMBARELLA_ORC_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_NCURSES_SUPPORT=y
++CONFIG_AMBARELLA_LIBSELINUX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSELINUX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSEPOL_SUPPORT=y
++# CONFIG_AMBARELLA_INIPARSER_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSSH2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBIDN_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBCURL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT=y
++# CONFIG_AMBARELLA_LIBJPEG_TURBO_UTIL_SUPPORT is not set
++# CONFIG_AMBARELLA_ZBAR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBDAEMON_SUPPORT is not set
++# CONFIG_AMBARELLA_JRTPLIB_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBJTHREAD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBICAL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBUSBX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBUSB_COMPAT_SUPPORT is not set
++CONFIG_AMBARELLA_READLINE_SUPPORT=y
++# CONFIG_AMBARELLA_SBC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBPCAP_SUPPORT is not set
++CONFIG_AMBARELLA_LIBCAP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBCAP_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBATTR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBATTR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_PAM_SUPPORT=y
++# CONFIG_AMBARELLA_OPENCV_SUPPORT is not set
++CONFIG_AMBARELLA_GMP_SUPPORT=y
++CONFIG_AMBARELLA_LIBTASN1_SUPPORT=y
++# CONFIG_AMBARELLA_LIBTASN1_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_NETTLE_SUPPORT=y
++# CONFIG_AMBARELLA_NETTLE_UTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMICROHTTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBAUDIOANALYTIC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOSIP2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEXOSIP2_SUPPORT is not set
++CONFIG_AMBARELLA_LIBNDP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNDP_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_X265_SUPPORT is not set
++# CONFIG_AMBARELLA_SQLITE_SUPPORT is not set
++
++#
++# Network/BlueTooth Packages
++#
++
++#
++# Wireless
++#
++# CONFIG_AMBARELLA_MARVELL_WIRELESS_SUPPORT is not set
++# CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_BROADCOM_SUPPORT is not set
++# CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
++# CONFIG_BROADCOM_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT is not set
++CONFIG_AMBARELLA_WPA_SUPPLICANT_SUPPORT=y
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_FAST_SUPPORT is not set
++CONFIG_AMBARELLA_IW_SUPPORT=y
++CONFIG_AMBARELLA_DNSMASQ_SUPPORT=y
++# CONFIG_AMBARELLA_HOSTAPD_SUPPORT is not set
++
++#
++# BlueTooth
++#
++CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT=y
++# CONFIG_AMBARELLA_BLUETOOTH4_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUETOOTH5_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUEZ_TOOLS_SUPPORT is not set
++
++#
++# Network Utilities
++#
++# CONFIG_AMBARELLA_NO_IPTABLES_SUPPORT is not set
++# CONFIG_AMBARELLA_IPTABLES_2_6_38_SUPPORT is not set
++CONFIG_AMBARELLA_IPTABLES_3_8_SUPPORT=y
++CONFIG_AMBARELLA_DHCP_SUPPORT=y
++CONFIG_AMBARELLA_DHCPCD_SUPPORT=y
++CONFIG_AMBARELLA_NETWORKMANAGER_SUPPORT=y
++# CONFIG_AMBARELLA_SAMBA_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_AUTO_TELNETD=y
++# CONFIG_AMBARELLA_SSH_SUPPORT is not set
++# CONFIG_AMBARELLA_AVAHI_SUPPORT is not set
++# CONFIG_AMBARELLA_TFTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_NFS_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT=y
++# CONFIG_AMBARELLA_PARTNER_Y_SUPPORT is not set
++CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT=y
++# CONFIG_AMBARELLA_NTP_SUPPORT is not set
++# CONFIG_AMBARELLA_TCPDUMP_SUPPORT is not set
++# CONFIG_AMBARELLA_USTREAM_SUPPORT is not set
++# CONFIG_AMBARELLA_PPPD_SUPPORT is not set
++CONFIG_AMBARELLA_ETHTOOL_SUPPORT=y
++
++#
++# Filesystem Tools
++#
++# CONFIG_AMBARELLA_E2FSPROGS_SUPPORT is not set
++# CONFIG_AMBARELLA_DOSFSTOOS_SUPPORT is not set
++CONFIG_AMBARELLA_PARTED_SUPPORT=y
++CONFIG_AMBARELLA_UBI_TOOLS_SUPPORT=y
++CONFIG_AMBARELLA_F2FS_SUPPORT=y
++# CONFIG_AMBARELLA_FUSE_SUPPORT is not set
++# CONFIG_AMBARELLA_SSHFS_FUSE_SUPPORT is not set
++
++#
++# Script Language
++#
++CONFIG_AMBARELLA_LUA_SUPPORT=y
++# CONFIG_AMBARELLA_PERL_SUPPORT is not set
++# CONFIG_AMBARELLA_PYTHON_SUPPORT is not set
++
++#
++# Benchmark Tools
++#
++# CONFIG_AMBARELLA_LMBENCH_SUPPORT is not set
++# CONFIG_AMBARELLA_CYCLICTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_HALTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_IOZONE_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF_SUPPORT is not set
++
++#
++# System Utils
++#
++
++#
++# Message Bus System
++#
++CONFIG_AMBARELLA_DBUS_SUPPORT=y
++CONFIG_AMBARELLA_DBUS_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_START_WATCHDOG=y
++CONFIG_AMBARELLA_PROCPS_SUPPORT=y
++CONFIG_AMBARELLA_ELFUTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PINFO_SUPPORT is not set
++CONFIG_UTIL_LINUX_SUPPORT=y
++
++#
++# Debug Tools
++#
++# CONFIG_AMBARELLA_GDB_SUPPORT is not set
++# CONFIG_AMBARELLA_GDBSERVER_SUPPORT is not set
++# CONFIG_AMBARELLA_GPROF_SUPPORT is not set
++# CONFIG_AMBARELLA_STRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_LTRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_VALGRIND_SUPPORT is not set
++BUILD_AMBARELLA_UNIT_TESTS=y
++CONFIG_UNIT_TEST_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_UNIT_TEST_IMGPROC_PARAM_DIR="$(FAKEROOT_DIR)/etc/idsp"
++# BUILD_AMBARELLA_UNIT_TESTS_STATIC is not set
++BUILD_AMBARELLA_PUBLIC_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_AUDIO is not set
++BUILD_AMBARELLA_UNIT_TESTS_BENCHMARK=y
++BUILD_AMBARELLA_UNIT_TESTS_BANDWIDTH=y
++BUILD_AMBARELLA_UNIT_TESTS_NBENCH=y
++BUILD_AMBARELLA_UNIT_TESTS_PI_CSS5=y
++# BUILD_AMBARELLA_UNIT_TESTS_MEM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_WRITE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NET_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_MEMTESTER=y
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO_SOCKET is not set
++# BUILD_AMBARELLA_UNIT_TESTS_FLASH_FS is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IDE is not set
++BUILD_AMBARELLA_UNIT_TESTS_MISC=y
++# BUILD_AMBARELLA_UNIT_TESTS_NAND is not set
++# BUILD_AMBARELLA_UNIT_TESTS_UPGRADE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_USB_STREAM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_I2C_TOOL is not set
++BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_CALIBRATION is not set
++BUILD_AMBARELLA_UNIT_TESTS_AMBADEBUG=y
++BUILD_AMBARELLA_UNIT_TESTS_IAV=y
++# BUILD_AMBARELLA_IAV_AUTO_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_IDSP=y
++# BUILD_AMBARELLA_UNIT_TESTS_IDSP_EXP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CUSTOM_IDSP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IR_DEMO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MW is not set
++BUILD_AMBARELLA_UNIT_TESTS_PACKAGE=y
++BUILD_AMBARELLA_UNIT_TESTS_VIN=y
++BUILD_AMBARELLA_UNIT_TESTS_VOUT=y
++# BUILD_AMBARELLA_UNIT_TESTS_VSYNC is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SHMOO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_HW_TIMER is not set
+diff --git a/config/s2l_ipcam_33ex_config b/config/s2l_ipcam_33ex_config
+new file mode 100644
+index 0000000..aa303f9
+--- /dev/null
++++ b/config/s2l_ipcam_33ex_config
+@@ -0,0 +1,752 @@
++#
++# Automatically generated make config: don't edit
++# Ambarella Build Configuration
++# Wed May  4 10:01:53 2016
++#
++# CONFIG_ARCH_A5S is not set
++# CONFIG_ARCH_A7 is not set
++# CONFIG_ARCH_A7L is not set
++# CONFIG_ARCH_S2 is not set
++# CONFIG_ARCH_S2E is not set
++CONFIG_ARCH_S2L=y
++# CONFIG_ARCH_S3 is not set
++# CONFIG_ARCH_S3L is not set
++# CONFIG_CPU_CORTEXA9 is not set
++CONFIG_CPU_CORTEXA9_HF=y
++
++#
++# Ambarella Board Configuration
++#
++# CONFIG_BSP_BOARD_DOORMAN is not set
++CONFIG_BSP_BOARD_HAWTHORN=y
++# CONFIG_BSP_BOARD_S2LBUB is not set
++# CONFIG_BSP_BOARD_S2LM_ELEKTRA is not set
++# CONFIG_BSP_BOARD_S2LM_ICEMAN is not set
++# CONFIG_BSP_BOARD_S2LM_IRONMAN is not set
++# CONFIG_BSP_BOARD_S2LM_KIWI is not set
++# CONFIG_BSP_BOARD_S2LSMALLBIN is not set
++# CONFIG_BSP_BOARD_STRAWBERRY is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L22=y is not set
++CONFIG_BOARD_VERSION_HAWTHORN_S2L33EX=y
++# CONFIG_HAWTHORN_DSP_BOOT is not set
++BUILD_AMBARELLA_FIRMWARE=y
++
++#
++# Memory Options
++#
++
++#
++# AMBoot memory options
++#
++AMBOOT_BLD_RAM_START=0x00000000
++AMBOOT_BLD_STACK_SIZE=0x00008000
++AMBOOT_BLD_HEAP_SIZE=0x00008000
++
++#
++# RTOS memory options
++#
++KERNEL_RAM_START=0x00208000
++AMBARELLA_INITRD_PHYS=0x00800000
++IDSP_RAM_START=0x2BE00000
++DSP_BSB_SIZE=0x0600000
++DSP_IAVRSVD_SIZE=0x1000000
++DSP_FASTAUDIO_SIZE=0x0000000
++
++#
++# Hardware Options
++#
++ARCH_SUPPORT_BCH_ID5=y
++ARCH_SUPPORT_SPINOR=y
++# CONFIG_FLASH_PAGE_256 is not set
++# CONFIG_FLASH_PAGE_512 is not set
++CONFIG_FLASH_PAGE_2K=y
++# CONFIG_FLASH_PAGE_4K is not set
++# CONFIG_FLASH_ERASE_4k is not set
++# CONFIG_FLASH_ERASE_16k is not set
++# CONFIG_FLASH_ERASE_64k is not set
++CONFIG_FLASH_ERASE_128k=y
++# CONFIG_FLASH_ERASE_256k is not set
++CONFIG_AMBOOT_ENABLE_NAND=y
++
++#
++# NAND Subsystem Options
++#
++CONFIG_NAND_ERASE_UNUSED_BLOCK=y
++CONFIG_NAND_USE_FLASH_BBT=y
++# CONFIG_NAND_P512_E16K is not set
++# CONFIG_NAND_P2K_E64K is not set
++CONFIG_NAND_P2K_E128K=y
++# CONFIG_NAND_P4K_E64K is not set
++# CONFIG_NAND_P4K_E128K is not set
++# CONFIG_NAND_K9F2808 is not set
++# CONFIG_NAND_K9F5608 is not set
++# CONFIG_NAND_K9F1208 is not set
++# CONFIG_NAND_K9F1208X0C is not set
++# CONFIG_NAND_K9F1G08 is not set
++# CONFIG_NAND_K9F1G08U0B is not set
++# CONFIG_NAND_K9F1G08U0E is not set
++# CONFIG_NAND_K9F4G08U0E is not set
++CONFIG_NAND_K9F2G08=y
++# CONFIG_NAND_K9F2G08U0C is not set
++# CONFIG_NAND_K9W8G08 is not set
++# CONFIG_NAND_K9K4G08 is not set
++# CONFIG_NAND_K9K8G08 is not set
++# CONFIG_NAND_K9WAG08 is not set
++# CONFIG_NAND_K9NBG08 is not set
++# CONFIG_NAND_HY27US08281A is not set
++# CONFIG_NAND_HY27US08561A is not set
++# CONFIG_NAND_HY27US08561M is not set
++# CONFIG_NAND_HY27US08121M is not set
++# CONFIG_NAND_HY27US08121A is not set
++# CONFIG_NAND_HY27UA081G1M is not set
++# CONFIG_NAND_HY27UF081G2A is not set
++# CONFIG_NAND_HY27UF082G2A is not set
++# CONFIG_NAND_HY27UF082G2B is not set
++# CONFIG_NAND_HY27UF084G2B is not set
++# CONFIG_NAND_HY27UF084G2M is not set
++# CONFIG_NAND_HY27U1G8F2B is not set
++# CONFIG_NAND_H27U518S2c is not set
++# CONFIG_NAND_HY27US4G86F2D is not set
++# CONFIG_NAND_H27U2G8F2D is not set
++# CONFIG_NAND_MX30LF1G08AA is not set
++# CONFIG_NAND_ST128W3A is not set
++# CONFIG_NAND_ST256W3A is not set
++# CONFIG_NAND_ST512W3A is not set
++# CONFIG_NAND_ST01GW3A is not set
++# CONFIG_NAND_ST01GW3B is not set
++# CONFIG_NAND_ST02GW3B is not set
++# CONFIG_NAND_NUMONYX02GW3B2D is not set
++# CONFIG_NAND_TC58BVG0S3H is not set
++# CONFIG_NAND_TC58BVG1S3H is not set
++# CONFIG_NAND_TC58DVM72A is not set
++# CONFIG_NAND_TC58DVM82A is not set
++# CONFIG_NAND_TC58DVM92A is not set
++# CONFIG_NAND_TC58NVG0S3C is not set
++# CONFIG_NAND_TC58NVG0S3E is not set
++# CONFIG_NAND_TC58NVG0S3H is not set
++# CONFIG_NAND_TC58NVG1S3H is not set
++# CONFIG_NAND_TC58NVG1S3E is not set
++# CONFIG_NAND_TC58NVG2S3E is not set
++# CONFIG_NAND_TC58NVM9S3C is not set
++# CONFIG_NAND_MT29F2G08AAC is not set
++# CONFIG_NAND_MT29F1G08ABAEA is not set
++# CONFIG_NAND_MT29F2G08ABA is not set
++# CONFIG_NAND_MT29F8G08DAA is not set
++# CONFIG_NAND_MT29F4G08ABADA is not set
++# CONFIG_NAND_MT29F2G08ABAFA is not set
++# CONFIG_NAND_CT48248NS486G1 is not set
++# CONFIG_NAND_ASU1GA30HT is not set
++# CONFIG_NAND_K9F4G08U0A is not set
++# CONFIG_NAND_F59L1G81A is not set
++# CONFIG_NAND_F59L1G81LA is not set
++# CONFIG_NAND_F59L1G81MA is not set
++# CONFIG_NAND_F59L2G81A is not set
++# CONFIG_NAND_F59L4G81A is not set
++# CONFIG_NAND_S34ML01G1 is not set
++# CONFIG_NAND_S34ML02G1 is not set
++# CONFIG_NAND_S34ML04G1 is not set
++# CONFIG_NAND_S34ML01G2 is not set
++# CONFIG_NAND_S34ML02G2 is not set
++# CONFIG_NAND_S34ML04G2 is not set
++# CONFIG_NAND_W29N02GVSIAA is not set
++CONFIG_NAND_1DEVICE=y
++# CONFIG_NAND_2DEVICE is not set
++# CONFIG_NAND_4DEVICE is not set
++CONFIG_AMBOOT_ENABLE_SD=y
++
++#
++# SD Subsystem Options
++#
++# CONFIG_AMBOOT_ENABLE_SPINOR is not set
++# CONFIG_AMBOOT_ENABLE_SPI is not set
++CONFIG_AMBOOT_ENABLE_IDC=y
++
++#
++# IDC Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_ISL12022M=y
++CONFIG_AMBOOT_ENABLE_PCA953X=y
++CONFIG_AMBOOT_ENABLE_ETH=y
++
++#
++# ETH Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_USB=y
++
++#
++# USB Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_GPIO=y
++
++#
++# GPIO Subsystem Options
++#
++# CONFIG_AMBOOT_DISABLE_UART is not set
++CONFIG_AMBOOT_ENABLE_UART0=y
++
++#
++# UART Subsystem Options
++#
++# AMBOOT_UART_19200 is not set
++# AMBOOT_UART_38400 is not set
++# AMBOOT_UART_57600 is not set
++AMBOOT_UART_115200=y
++# CONFIG_AMBOOT_ENABLE_ADC is not set
++# CONFIG_AMBOOT_ENABLE_IR is not set
++
++#
++# AMBoot (boot loader)
++#
++CONFIG_BOOT_MEDIA_NAND=y
++# CONFIG_BOOT_MEDIA_EMMC is not set
++# CONFIG_4K_BOOT_IMAGE is not set
++
++#
++# NAND Boot Options
++#
++
++#
++# Common Boot Options
++#
++CONFIG_AMBOOT_COMMAND_SUPPORT=y
++CONFIG_AMBOOT_BD_FDT_SUPPORT=y
++# CONFIG_AMBOOT_BD_ATAG_SUPPORT is not set
++# CONFIG_AMBOOT_BD_NONE_SUPPORT is not set
++# CONFIG_AMBOOT_FDT_LOW_ADDR is not set
++# CONFIG_AMBOOT_SEARCH_PTB is not set
++CONFIG_AMBOOT_BD_CMDLINE=""
++CONFIG_AMBOOT_BAPI_SUPPORT=y
++CONFIG_AMBOOT_BAPI_ZERO_FB=y
++# CONFIG_AMBOOT_BAPI_AOSS is not set
++AMBOOT_DEFAULT_SN=""
++AMBOOT_DEFAULT_LINUX_MACHINE_ID=4603
++AMBOOT_DEV_AUTO_BOOT=y
++# AMBOOT_DEV_FAST_BOOT is not set
++AMBOOT_DEV_NORMAL_MODE=y
++# AMBOOT_DEV_USBDL_MODE is not set
++# DRAM_TYPE_DDR3 is not set
++# DRAM_TYPE_DDR2 is not set
++# DRAM_TYPE_LPDDR3 is not set
++BUILD_DEVFW=y
++MINIMAL_FIRMWARE_COMBO=y
++# BUILD_DEBUG_MEMFWPROG is not set
++
++#
++# Persistent BIOS App Partition
++#
++PBA=""
++PBA_VIF=""
++
++#
++# Primary Partition
++#
++KERNEL="$(AMB_BOARD_OUT)/kernel/Image"
++KERNEL_VIF="$(AMB_TOPDIR)/amboot/vif/linux.info"
++
++#
++# Secondary Partition
++#
++SECONDARY=""
++SECONDARY_VIF=""
++
++#
++# Backup Partition
++#
++BACKUP=""
++BACKUP_VIF=""
++
++#
++# Ramdisk Partition
++#
++RAMDISK=""
++RAMDISK_VIF=""
++
++#
++# ROMFS Partition
++#
++ROMFS=""
++ROMFS_VIF=""
++
++#
++# Linux Partition
++#
++LNX="$(AMB_BOARD_OUT)/rootfs/ubifs"
++LNX_VIF="$(AMB_TOPDIR)/amboot/vif/ubifs.info"
++
++#
++# Swap Partition
++#
++SWP=""
++SWP_VIF=""
++
++#
++# Android Data Partition
++#
++ADD=""
++ADD_VIF=""
++
++#
++# Android Cache Partition
++#
++ADC=""
++ADC_VIF=""
++# AMBOOT_BOOT_DSP is not set
++BUILD_AMBARELLA_APPLICATION=y
++CONFIG_APP_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_APP_IPCAM_CONFIG_DIR="$(FAKEROOT_DIR)/etc/ambaipcam"
++# BUILD_AMBARELLA_APP_DEBUG is not set
++BUILD_AMBAREALLA_CLOUD_LIB=y
++BUILD_AMBAREALLA_CLOUD_AGENT=y
++BUILD_AMBARELLA_APP_IPCAM=y
++# BUILD_AMBARELLA_APP_IPCAM_MEDIASERVER is not set
++BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON=y
++# BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_C is not set
++BUILD_AMBARELLA_APP_IPCAM_RTSP=y
++# BUILD_AMBARELLA_APP_IPCAM_AUTORUN_SERVICES is not set
++BUILD_AMBARELLA_APP_IPCAM_SMART_LDC=y
++# BUILD_AMBARELLA_APP_HTTP_UPLOADER is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_AUDIO is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_APP is not set
++# BUILD_AMBARELLA_APP_ELEKTRA_BOOT is not set
++BUILD_AMBAREALLA_APP_UTILITY=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS_ALL=y
++# BUILD_AMBAREALLA_APP_UTILITY_DNG_TOOL is not set
++BUILD_AMBARELLA_APP_UTILITY_DSP=y
++BUILD_AMBARELLA_APP_UTILITY_LOAD_UCODE=y
++BUILD_AMBARELLA_APP_UTILITY_DSPLOG=y
++# BUILD_AMBARELLA_APP_UTILITY_GEN_FASTBOOT_UCODE is not set
++# BUILD_AMBARELLA_APP_UTILITY_JPG is not set
++# BUILD_AMBAREALLA_APP_UTILITY_UPGRADE is not set
++BUILD_AMBARELLA_LINUX_KERNEL=y
++CONFIG_LINUX_KERNEL_VERSION="3.10"
++CONFIG_KERNEL_DEFCONFIG_STRING="ambarella_s2l_defconfig"
++CONFIG_KERNEL_MODULES_INSTALL_DIR="$(FAKEROOT_DIR)"
++# BUILD_AMBARELLA_EXTERNAL_MODULES is not set
++BUILD_AMBARELLA_PRIVATE_MODULES=y
++# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
++BUILD_AMBARELLA_HW_TIMER=y
++BUILD_AMBARELLA_VIN=y
++
++#
++# Ambarella Sensor Configuration
++#
++CONFIG_SENSOR_MT9T002=y
++CONFIG_SENSOR_MT9T002_MIPI=y
++# CONFIG_SENSOR_MT9T002_PARALLEL is not set
++CONFIG_SENSOR_AR0130=y
++CONFIG_SENSOR_AR0141=y
++CONFIG_SENSOR_AR0230=y
++# CONFIG_SENSOR_AR0230P is not set
++# CONFIG_SENSOR_AR0331 is not set
++# CONFIG_SENSOR_OV2710P is not set
++CONFIG_SENSOR_OV4689_MIPI=y
++# CONFIG_SENSOR_OV5653 is not set
++# CONFIG_SENSOR_OV9710 is not set
++CONFIG_SENSOR_OV9718_MIPI=y
++# CONFIG_SENSOR_OV9750_MIPI is not set
++# CONFIG_SENSOR_OV9750_PARALLEL is not set
++CONFIG_SENSOR_OV5658_MIPI=y
++CONFIG_SENSOR_IMX122=y
++CONFIG_SENSOR_IMX104=y
++# CONFIG_SENSOR_IMX136 is not set
++CONFIG_SENSOR_IMX136P=y
++# CONFIG_SENSOR_IMX172 is not set
++# CONFIG_SENSOR_IMX226 is not set
++# CONFIG_SENSOR_IMX174 is not set
++CONFIG_SENSOR_IMX178=y
++CONFIG_SENSOR_IMX178_I2C=y
++# CONFIG_SENSOR_IMX178_SPI is not set
++# CONFIG_SENSOR_IMX185 is not set
++CONFIG_SENSOR_IMX123=y
++CONFIG_SENSOR_IMX322=y
++# CONFIG_SENSOR_IMX322_I2C is not set
++CONFIG_SENSOR_IMX322_SPI=y
++CONFIG_SENSOR_IMX124=y
++CONFIG_SENSOR_IMX224=y
++CONFIG_SENSOR_IMX290=y
++CONFIG_SENSOR_IMX291=y
++CONFIG_SENSOR_MN34041PL=y
++# CONFIG_SENSOR_MN34210PL is not set
++CONFIG_SENSOR_MN34220PL=y
++# CONFIG_SENSOR_FPGA is not set
++# CONFIG_SENSOR_AMBDS is not set
++
++#
++# Ambarella TV decoder Configuration
++#
++CONFIG_YUV_ADV7441A=y
++# CONFIG_YUV_AMBDD is not set
++# CONFIG_AMBARELLA_VIN_DEBUG is not set
++# CONFIG_VIN_FPS_STAT is not set
++# BUILD_AMBARELLA_LENS is not set
++BUILD_AMBARELLA_DSP=y
++CONFIG_PRINT_DSP_CMD=y
++CONFIG_PRINT_DSP_CMD_MORE=y
++# CONFIG_PRINT_DSP_CMD_RAW is not set
++CONFIG_DSP_LOG_START_0X80000=y
++# CONFIG_DSP_LOG_START_IAVMEM is not set
++BUILD_AMBARELLA_VOUT=y
++# CONFIG_DVE_NULL is not set
++CONFIG_DVE_AMBTVE=y
++# CONFIG_DIGITAL_NULL is not set
++CONFIG_DIGITAL_AMBDBUS=y
++# CONFIG_HDMI_NULL is not set
++CONFIG_HDMI_AMBHDMI=y
++# BUILD_AMBARELLA_IT66121_HDMI is not set
++# CONFIG_AMBARELLA_VOUT_DEBUG is not set
++BUILD_AMBARELLA_IAV=y
++# CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
++CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS=y
++# CONFIG_AMBARELLA_IAV_ABSOLUTE_QP_IPB is not set
++BUILD_AMBARELLA_IMGPROC_DRV=y
++CONFIG_IMGPROC_MEM_SMALL=y
++# CONFIG_IMGPROC_MEM_LARGE is not set
++BUILD_AMBARELLA_DEBUG=y
++# BUILD_AMBARELLA_CRYPTO is not set
++# BUILD_GYRO is not set
++# BUILD_EIS is not set
++BUILD_AMBARELLA_DSP_LOG=y
++CONFIG_DSP_FIRMWARE_GERNEIC=y
++# CONFIG_DSP_FIRMWARE_DEBUG is not set
++# BUILD_DRIVERS_FROM_BINARY is not set
++# BUILD_AMBARELLA_ORYX_MW is not set
++BUILD_AMBARELLA_PACKAGE=y
++BUILD_AMBARELLA_BSREADER_PACKAGE=y
++BUILD_AMBARELLA_DATATX_PACKAGE=y
++BUILD_AMBARELLA_DEWARP_PACKAGE=y
++CONFIG_DEWARP_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/dewarp"
++BUILD_AMBARELLA_DEWARP_DYNAMIC=y
++# BUILD_AMBARELLA_DEWARP_STATIC is not set
++# BUILD_AMBARELLA_DIGITALSIGN_PACKAGE is not set
++BUILD_AMBARELLA_IMGPROC_PACKAGE=y
++CONFIG_IMGPROC_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/imgproc"
++# CONFIG_IMGPROC_PACKAGE_DYNAMIC_LIB is not set
++BUILD_AMBARELLA_MIDDLEWARE=y
++
++#
++# MW Device configs
++#
++BUILD_AMBARELLA_IMAGE_DEVICE_PROC=y
++CONFIG_IMAGE_DEVICE_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/img_dev"
++
++#
++# MW IMAGE configs
++#
++BUILD_AMBARELLA_MIDDLEWARE_PROC=y
++CONFIG_MIDDLEWARE_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/img_mw"
++# BUILD_AMBARELLA_LBR_PACKAGE is not set
++BUILD_AMBARELLA_MAINPREPROC_PACKAGE=y
++# BUILD_AMBARELLA_MDMOTBUF_PACKAGE is not set
++# BUILD_AMBARELLA_SECURITY_PACKAGE is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE is not set
++BUILD_AMBARELLA_TEXTINSERT_PACKAGE=y
++BUILD_AMBARELLA_UTILITIES_PACKAGE=y
++CONFIG_AMBARELLA_PREBUILD=y
++CONFIG_AMBARELLA_IMAGE_DATA=y
++CONFIG_AMBARELLA_MKFS=y
++# CONFIG_AMBARELLA_ROOTFS_RAM is not set
++# CONFIG_AMBARELLA_ROOTFS_CPIO is not set
++# CONFIG_AMBARELLA_ROOTFS_JFFS2 is not set
++# CONFIG_AMBARELLA_ROOTFS_YAFFS is not set
++CONFIG_AMBARELLA_ROOTFS_UBIFS=y
++# CONFIG_AMBARELLA_ROOTFS_EXT2 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT3 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT4 is not set
++# CONFIG_AMBARELLA_ROOTFS_SQUASHFS is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_FASTBOOT is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_SMALLBOOT is not set
++CONFIG_AMBARELLA_INIT_SYSTEMD=y
++
++#
++# Systemd Features
++#
++# CONFIG_AMBARELLA_SYSTEMD_JOURNAL_GATEWAY is not set
++# CONFIG_AMBARELLA_SYSTEMD_NETWORKD is not set
++# CONFIG_AMBARELLA_SYSTEMD_RESOLVD is not set
++# CONFIG_AMBARELLA_SYSTEMD_TIMESYNCD is not set
++CONFIG_AMBARELLA_ROOT_PASSWORD=""
++# CONFIG_AMBARELLA_NORMAL_USER is not set
++# CONFIG_BACKUP_CPIO is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD_STATIC is not set
++CONFIG_AMBARELLA_BUSYBOX_PREBUILD=y
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN is not set
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN_STATIC is not set
++CONFIG_AMBARELLA_ETH0=y
++# CONFIG_AMBARELLA_ETH0_DHCP is not set
++CONFIG_AMBARELLA_ETH0_ADDRESS="10.0.0.2"
++CONFIG_AMBARELLA_ETH0_GW_ADDRESS="10.0.0.1"
++CONFIG_AMBARELLA_ETH0_IP_MASK="255.255.255.0"
++CONFIG_AMBARELLA_MOUNT_MNT=""
++CONFIG_AMBARELLA_EXT_CMD_FILE=""
++CONFIG_AMBARELLA_RUN_DEMO_NONE=y
++# CONFIG_AMBARELLA_RUN_AUTO_DEMO is not set
++# CONFIG_AMBARELLA_RUN_SHMOO_TEST is not set
++# CONFIG_AMBARELLA_RUN_MEDIASERVER is not set
++# CONFIG_AMBARELLA_RUN_DEWARP is not set
++
++#
++# Serial Port Configuration
++#
++CONFIG_AMBARELLA_SERIAL_PORT0_GETTY=y
++# CONFIG_AMBARELLA_SERIAL_PORT0_NA is not set
++# CONFIG_AMBARELLA_SERIAL_PORT1_GETTY is not set
++CONFIG_AMBARELLA_SERIAL_PORT1_NA=y
++# CONFIG_AMBARELLA_ASKFIRST_CONSOLE is not set
++CONFIG_AMBARELLA_ASKFIRST_CONSOLE_NA=y
++# CONFIG_AMBARELLA_SERIAL_PORT_USB0 is not set
++
++#
++# Audio Packages
++#
++
++#
++# ALSA
++#
++CONFIG_AMBARELLA_ALSA_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_SPEEKER_TEST_SUPPORT is not set
++CONFIG_AMBARELLA_ALSA_PLUGINS_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_PLUGINS_PULSEAUDIO_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_PLUGINS_LIBSAMPLERATE_SUPPORT is not set
++# CONFIG_AMBARELLA_ALSA_PLUGINS_SPEEX_SUPPORT is not set
++
++#
++# PulseAudio
++#
++CONFIG_AMBARELLA_PULSEAUDIO_SUPPORT=y
++CONFIG_AMBARELLA_PULSEAUDIO_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PULSEAUDIO_AEC_SUPPORT is not set
++# CONFIG_AMBARELLA_SYSTEM_SOUND_FILES is not set
++
++#
++# Libraries
++#
++# CONFIG_AMBARELLA_LIBNL_1_SUPPORT is not set
++CONFIG_AMBARELLA_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBFFI_SUPPORT=y
++CONFIG_AMBARELLA_ZLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBBZIP2_SUPPORT=y
++# CONFIG_AMBARELLA_XZ_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBPCRE_SUPPORT=y
++CONFIG_AMBARELLA_LIBELF_SUPPORT=y
++CONFIG_AMBARELLA_FREETYPE_SUPPORT=y
++# CONFIG_AMBARELLA_FREETYPE_FONT_SUPPORT is not set
++CONFIG_AMBARELLA_EXPAT_SUPPORT=y
++# CONFIG_AMBARELLA_LIBXML2_SUPPORT is not set
++CONFIG_AMBARELLA_MXML_SUPPORT=y
++CONFIG_AMBARELLA_CLEARSILVER_SUPPORT=y
++CONFIG_AMBARELLA_LIBNL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNL_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBTOOL_SUPPORT=y
++CONFIG_AMBARELLA_OPENSSL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSODIUM_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGPG_ERROR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGPG_ERROR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGCRYPT_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGCRYPT_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_GNUTLS_SUPPORT=y
++# CONFIG_AMBARELLA_GNUTLS_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_CA_CERTIFICATES_SUPPORT=y
++CONFIG_AMBARELLA_JSONC_SUPPORT=y
++CONFIG_AMBARELLA_LIBOGG_SUPPORT=y
++# CONFIG_AMBARELLA_LIBG7XX_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOPUS_SUPPORT is not set
++# CONFIG_AMBARELLA_AUDIOFILE_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBVORBIS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSAMPLERATE_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSAMPLERATE_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSNDFILE_SUPPORT=y
++# CONFIG_AMBARELLA_WEBRTC_AUDIO_PROCESSING_SUPPORT is not set
++CONFIG_AMBARELLA_SPEEX_SUPPORT=y
++# CONFIG_AMBARELLA_SPEEX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_ORC_SUPPORT=y
++# CONFIG_AMBARELLA_ORC_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_NCURSES_SUPPORT=y
++CONFIG_AMBARELLA_LIBSELINUX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSELINUX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSEPOL_SUPPORT=y
++# CONFIG_AMBARELLA_INIPARSER_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSSH2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBIDN_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBCURL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT=y
++# CONFIG_AMBARELLA_LIBJPEG_TURBO_UTIL_SUPPORT is not set
++# CONFIG_AMBARELLA_ZBAR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBDAEMON_SUPPORT is not set
++# CONFIG_AMBARELLA_JRTPLIB_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBJTHREAD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBICAL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBUSBX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBUSB_COMPAT_SUPPORT is not set
++CONFIG_AMBARELLA_READLINE_SUPPORT=y
++# CONFIG_AMBARELLA_SBC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBPCAP_SUPPORT is not set
++CONFIG_AMBARELLA_LIBCAP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBCAP_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBATTR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBATTR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_PAM_SUPPORT=y
++# CONFIG_AMBARELLA_OPENCV_SUPPORT is not set
++CONFIG_AMBARELLA_GMP_SUPPORT=y
++CONFIG_AMBARELLA_LIBTASN1_SUPPORT=y
++# CONFIG_AMBARELLA_LIBTASN1_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_NETTLE_SUPPORT=y
++# CONFIG_AMBARELLA_NETTLE_UTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMICROHTTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBAUDIOANALYTIC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOSIP2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEXOSIP2_SUPPORT is not set
++CONFIG_AMBARELLA_LIBNDP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNDP_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_X265_SUPPORT is not set
++# CONFIG_AMBARELLA_SQLITE_SUPPORT is not set
++
++#
++# Network/BlueTooth Packages
++#
++
++#
++# Wireless
++#
++# CONFIG_AMBARELLA_MARVELL_WIRELESS_SUPPORT is not set
++# CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_BROADCOM_SUPPORT is not set
++# CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
++# CONFIG_BROADCOM_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT is not set
++CONFIG_AMBARELLA_WPA_SUPPLICANT_SUPPORT=y
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_FAST_SUPPORT is not set
++CONFIG_AMBARELLA_IW_SUPPORT=y
++CONFIG_AMBARELLA_DNSMASQ_SUPPORT=y
++# CONFIG_AMBARELLA_HOSTAPD_SUPPORT is not set
++
++#
++# BlueTooth
++#
++CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT=y
++# CONFIG_AMBARELLA_BLUETOOTH4_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUETOOTH5_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUEZ_TOOLS_SUPPORT is not set
++
++#
++# Network Utilities
++#
++# CONFIG_AMBARELLA_NO_IPTABLES_SUPPORT is not set
++# CONFIG_AMBARELLA_IPTABLES_2_6_38_SUPPORT is not set
++CONFIG_AMBARELLA_IPTABLES_3_8_SUPPORT=y
++CONFIG_AMBARELLA_DHCP_SUPPORT=y
++CONFIG_AMBARELLA_DHCPCD_SUPPORT=y
++CONFIG_AMBARELLA_NETWORKMANAGER_SUPPORT=y
++# CONFIG_AMBARELLA_SAMBA_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_AUTO_TELNETD=y
++# CONFIG_AMBARELLA_SSH_SUPPORT is not set
++# CONFIG_AMBARELLA_AVAHI_SUPPORT is not set
++# CONFIG_AMBARELLA_TFTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_NFS_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT=y
++# CONFIG_AMBARELLA_PARTNER_Y_SUPPORT is not set
++CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT=y
++# CONFIG_AMBARELLA_NTP_SUPPORT is not set
++# CONFIG_AMBARELLA_TCPDUMP_SUPPORT is not set
++# CONFIG_AMBARELLA_USTREAM_SUPPORT is not set
++# CONFIG_AMBARELLA_PPPD_SUPPORT is not set
++CONFIG_AMBARELLA_ETHTOOL_SUPPORT=y
++
++#
++# Filesystem Tools
++#
++# CONFIG_AMBARELLA_E2FSPROGS_SUPPORT is not set
++# CONFIG_AMBARELLA_DOSFSTOOS_SUPPORT is not set
++CONFIG_AMBARELLA_PARTED_SUPPORT=y
++CONFIG_AMBARELLA_UBI_TOOLS_SUPPORT=y
++CONFIG_AMBARELLA_F2FS_SUPPORT=y
++# CONFIG_AMBARELLA_FUSE_SUPPORT is not set
++# CONFIG_AMBARELLA_SSHFS_FUSE_SUPPORT is not set
++
++#
++# Script Language
++#
++CONFIG_AMBARELLA_LUA_SUPPORT=y
++# CONFIG_AMBARELLA_PERL_SUPPORT is not set
++# CONFIG_AMBARELLA_PYTHON_SUPPORT is not set
++
++#
++# Benchmark Tools
++#
++# CONFIG_AMBARELLA_LMBENCH_SUPPORT is not set
++# CONFIG_AMBARELLA_CYCLICTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_HALTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_IOZONE_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF_SUPPORT is not set
++
++#
++# System Utils
++#
++
++#
++# Message Bus System
++#
++CONFIG_AMBARELLA_DBUS_SUPPORT=y
++CONFIG_AMBARELLA_DBUS_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_START_WATCHDOG=y
++CONFIG_AMBARELLA_PROCPS_SUPPORT=y
++CONFIG_AMBARELLA_ELFUTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PINFO_SUPPORT is not set
++CONFIG_UTIL_LINUX_SUPPORT=y
++
++#
++# Debug Tools
++#
++# CONFIG_AMBARELLA_GDB_SUPPORT is not set
++# CONFIG_AMBARELLA_GDBSERVER_SUPPORT is not set
++# CONFIG_AMBARELLA_GPROF_SUPPORT is not set
++# CONFIG_AMBARELLA_STRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_LTRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_VALGRIND_SUPPORT is not set
++BUILD_AMBARELLA_UNIT_TESTS=y
++CONFIG_UNIT_TEST_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_UNIT_TEST_IMGPROC_PARAM_DIR="$(FAKEROOT_DIR)/etc/idsp"
++# BUILD_AMBARELLA_UNIT_TESTS_STATIC is not set
++BUILD_AMBARELLA_PUBLIC_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_AUDIO is not set
++BUILD_AMBARELLA_UNIT_TESTS_BENCHMARK=y
++BUILD_AMBARELLA_UNIT_TESTS_BANDWIDTH=y
++BUILD_AMBARELLA_UNIT_TESTS_NBENCH=y
++BUILD_AMBARELLA_UNIT_TESTS_PI_CSS5=y
++# BUILD_AMBARELLA_UNIT_TESTS_MEM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_WRITE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NET_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_MEMTESTER=y
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO_SOCKET is not set
++# BUILD_AMBARELLA_UNIT_TESTS_FLASH_FS is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IDE is not set
++BUILD_AMBARELLA_UNIT_TESTS_MISC=y
++# BUILD_AMBARELLA_UNIT_TESTS_NAND is not set
++# BUILD_AMBARELLA_UNIT_TESTS_UPGRADE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_USB_STREAM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_I2C_TOOL is not set
++BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_CALIBRATION is not set
++BUILD_AMBARELLA_UNIT_TESTS_AMBADEBUG=y
++BUILD_AMBARELLA_UNIT_TESTS_IAV=y
++# BUILD_AMBARELLA_IAV_AUTO_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_IDSP=y
++# BUILD_AMBARELLA_UNIT_TESTS_IDSP_EXP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CUSTOM_IDSP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IR_DEMO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MW is not set
++BUILD_AMBARELLA_UNIT_TESTS_PACKAGE=y
++BUILD_AMBARELLA_UNIT_TESTS_VIN=y
++BUILD_AMBARELLA_UNIT_TESTS_VOUT=y
++# BUILD_AMBARELLA_UNIT_TESTS_VSYNC is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SHMOO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_HW_TIMER is not set
+diff --git a/config/s2l_ipcam_63_config b/config/s2l_ipcam_63_config
+index e3fd6b3..472a51b 100644
+--- a/config/s2l_ipcam_63_config
++++ b/config/s2l_ipcam_63_config
+@@ -399,7 +399,7 @@ CONFIG_HDMI_AMBHDMI=y
+ # CONFIG_AMBARELLA_VOUT_DEBUG is not set
+ BUILD_AMBARELLA_IAV=y
+ # CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
+-# CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS is not set
++CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS=y
+ # CONFIG_AMBARELLA_IAV_ABSOLUTE_QP_IPB is not set
+ BUILD_AMBARELLA_IMGPROC_DRV=y
+ CONFIG_IMGPROC_MEM_SMALL=y
+diff --git a/config/s2l_ipcam_66_config b/config/s2l_ipcam_66_config
+index 68f7294..364cbc4 100644
+--- a/config/s2l_ipcam_66_config
++++ b/config/s2l_ipcam_66_config
+@@ -401,7 +401,7 @@ CONFIG_HDMI_AMBHDMI=y
+ # CONFIG_AMBARELLA_VOUT_DEBUG is not set
+ BUILD_AMBARELLA_IAV=y
+ # CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
+-# CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS is not set
++CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS=y
+ # CONFIG_AMBARELLA_IAV_ABSOLUTE_QP_IPB is not set
+ BUILD_AMBARELLA_IMGPROC_DRV=y
+ CONFIG_IMGPROC_MEM_SMALL=y
+diff --git a/config/s2l_ipcam_66_emmc_config b/config/s2l_ipcam_66_emmc_config
+new file mode 100644
+index 0000000..13c5d23
+--- /dev/null
++++ b/config/s2l_ipcam_66_emmc_config
+@@ -0,0 +1,842 @@
++#
++# Automatically generated make config: don't edit
++# Ambarella Build Configuration
++# Tue Apr 11 17:15:16 2017
++#
++# CONFIG_ARCH_A5S is not set
++# CONFIG_ARCH_A7L is not set
++# CONFIG_ARCH_S2 is not set
++# CONFIG_ARCH_S2E is not set
++CONFIG_ARCH_S2L=y
++# CONFIG_ARCH_S3 is not set
++# CONFIG_ARCH_S3L is not set
++# CONFIG_CPU_CORTEXA9 is not set
++CONFIG_CPU_CORTEXA9_HF=y
++
++#
++# Ambarella Board Configuration
++#
++CONFIG_BSP_BOARD_HAWTHORN=y
++# CONFIG_BSP_BOARD_S2LM_IRONMAN is not set
++# CONFIG_BSP_BOARD_S2LM_KIWI is not set
++CONFIG_BOARD_VERSION_HAWTHORN_S2L66=y
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L22 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L33EX is not set
++# CONFIG_HAWTHORN_DSP_BOOT is not set
++BUILD_AMBARELLA_FIRMWARE=y
++
++#
++# Memory Options
++#
++
++#
++# AMBoot memory options
++#
++AMBOOT_BLD_RAM_START=0x00000000
++AMBOOT_BLD_STACK_SIZE=0x00008000
++AMBOOT_BLD_HEAP_SIZE=0x00008000
++
++#
++# RTOS memory options
++#
++KERNEL_RAM_START=0x00208000
++AMBARELLA_INITRD_PHYS=0x00800000
++IDSP_RAM_START=0x2BE00000
++DSP_FASTDATA_SIZE=0x0000000
++DSP_FASTAUDIO_SIZE=0x0000000
++FRAMEBUFFER_SIZE=0x0000000
++
++#
++# Hardware Options
++#
++ARCH_SUPPORT_BCH_ID5=y
++ARCH_SUPPORT_SPINOR=y
++# CONFIG_FLASH_PAGE_256 is not set
++# CONFIG_FLASH_PAGE_512 is not set
++CONFIG_FLASH_PAGE_2K=y
++# CONFIG_FLASH_PAGE_4K is not set
++# CONFIG_FLASH_ERASE_4k is not set
++# CONFIG_FLASH_ERASE_16k is not set
++# CONFIG_FLASH_ERASE_64k is not set
++CONFIG_FLASH_ERASE_128k=y
++# CONFIG_FLASH_ERASE_256k is not set
++CONFIG_AMBOOT_ENABLE_NAND=y
++
++#
++# NAND Subsystem Options
++#
++CONFIG_NAND_ERASE_UNUSED_BLOCK=y
++CONFIG_NAND_USE_FLASH_BBT=y
++# CONFIG_NAND_P512_E16K is not set
++# CONFIG_NAND_P2K_E64K is not set
++CONFIG_NAND_P2K_E128K=y
++# CONFIG_NAND_P4K_E64K is not set
++# CONFIG_NAND_P4K_E128K is not set
++# CONFIG_NAND_K9F2808 is not set
++# CONFIG_NAND_K9F5608 is not set
++# CONFIG_NAND_K9F1208 is not set
++# CONFIG_NAND_K9F1208X0C is not set
++# CONFIG_NAND_K9F1G08 is not set
++# CONFIG_NAND_K9F1G08U0B is not set
++# CONFIG_NAND_K9F1G08U0E is not set
++# CONFIG_NAND_K9F4G08U0E is not set
++CONFIG_NAND_K9F2G08=y
++# CONFIG_NAND_K9F2G08U0C is not set
++# CONFIG_NAND_K9W8G08 is not set
++# CONFIG_NAND_K9K4G08 is not set
++# CONFIG_NAND_K9K8G08 is not set
++# CONFIG_NAND_K9WAG08 is not set
++# CONFIG_NAND_K9NBG08 is not set
++# CONFIG_NAND_HY27US08281A is not set
++# CONFIG_NAND_HY27US08561A is not set
++# CONFIG_NAND_HY27US08561M is not set
++# CONFIG_NAND_HY27US08121M is not set
++# CONFIG_NAND_HY27US08121A is not set
++# CONFIG_NAND_HY27UA081G1M is not set
++# CONFIG_NAND_HY27UF081G2A is not set
++# CONFIG_NAND_HY27UF082G2A is not set
++# CONFIG_NAND_HY27UF082G2B is not set
++# CONFIG_NAND_HY27UF084G2B is not set
++# CONFIG_NAND_HY27UF084G2M is not set
++# CONFIG_NAND_HY27U1G8F2B is not set
++# CONFIG_NAND_H27U518S2c is not set
++# CONFIG_NAND_HY27US4G86F2D is not set
++# CONFIG_NAND_H27U2G8F2C is not set
++# CONFIG_NAND_H27U2G8F2D is not set
++# CONFIG_NAND_MX30LF1G08AA is not set
++# CONFIG_NAND_MX30LF1GE8AB is not set
++# CONFIG_NAND_MX30LF2GE8AB is not set
++# CONFIG_NAND_ST128W3A is not set
++# CONFIG_NAND_ST256W3A is not set
++# CONFIG_NAND_ST512W3A is not set
++# CONFIG_NAND_ST01GW3A is not set
++# CONFIG_NAND_ST01GW3B is not set
++# CONFIG_NAND_ST02GW3B is not set
++# CONFIG_NAND_NUMONYX02GW3B2D is not set
++# CONFIG_NAND_TC58BVG0S3H is not set
++# CONFIG_NAND_TC58BVG1S3H is not set
++# CONFIG_NAND_TC58DVM72A is not set
++# CONFIG_NAND_TC58DVM82A is not set
++# CONFIG_NAND_TC58DVM92A is not set
++# CONFIG_NAND_TC58NVG0S3C is not set
++# CONFIG_NAND_TC58NVG0S3E is not set
++# CONFIG_NAND_TC58NVG0S3H is not set
++# CONFIG_NAND_TC58NVG1S3H is not set
++# CONFIG_NAND_TC58NVG1S3E is not set
++# CONFIG_NAND_TC58NVG2S3E is not set
++# CONFIG_NAND_TC58NVM9S3C is not set
++# CONFIG_NAND_MT29F2G08AAC is not set
++# CONFIG_NAND_MT29F1G08ABAEA is not set
++# CONFIG_NAND_MT29F2G08ABA is not set
++# CONFIG_NAND_MT29F8G08DAA is not set
++# CONFIG_NAND_MT29F4G08ABADA is not set
++# CONFIG_NAND_MT29F4G08ABBDA is not set
++# CONFIG_NAND_MT29F2G08ABAFA is not set
++# CONFIG_NAND_MT29F2G08ABBEA is not set
++# CONFIG_NAND_CT48248NS486G1 is not set
++# CONFIG_NAND_ASU1GA30HT is not set
++# CONFIG_NAND_K9F4G08U0A is not set
++# CONFIG_NAND_F59L1G81A is not set
++# CONFIG_NAND_F59L1G81LA is not set
++# CONFIG_NAND_F59L1G81MA is not set
++# CONFIG_NAND_F59L2G81A is not set
++# CONFIG_NAND_F59L4G81A is not set
++# CONFIG_NAND_S34ML01G1 is not set
++# CONFIG_NAND_S34ML02G1 is not set
++# CONFIG_NAND_S34ML04G1 is not set
++# CONFIG_NAND_S34ML01G2 is not set
++# CONFIG_NAND_S34ML02G2 is not set
++# CONFIG_NAND_S34ML04G2 is not set
++# CONFIG_NAND_W29N01GVSCAA is not set
++# CONFIG_NAND_W29N02GVSIAA is not set
++CONFIG_NAND_1DEVICE=y
++# CONFIG_NAND_2DEVICE is not set
++# CONFIG_NAND_4DEVICE is not set
++# CONFIG_AMBOOT_ENABLE_CRYPTO_CHIP is not set
++CONFIG_AMBOOT_ENABLE_SD=y
++
++#
++# SD Subsystem Options
++#
++# CONFIG_AMBOOT_ENABLE_SPINOR is not set
++# CONFIG_AMBOOT_ENABLE_SPINAND is not set
++# CONFIG_AMBOOT_ENABLE_SPI is not set
++CONFIG_AMBOOT_ENABLE_IDC=y
++
++#
++# IDC Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_ISL12022M=y
++CONFIG_AMBOOT_ENABLE_PCA953X=y
++CONFIG_AMBOOT_ENABLE_ETH=y
++
++#
++# ETH Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_USB=y
++
++#
++# USB Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_GPIO=y
++# CONFIG_AMBOOT_DISABLE_UART is not set
++CONFIG_AMBOOT_ENABLE_UART0=y
++
++#
++# UART Subsystem Options
++#
++# AMBOOT_UART_19200 is not set
++# AMBOOT_UART_38400 is not set
++# AMBOOT_UART_57600 is not set
++AMBOOT_UART_115200=y
++# CONFIG_AMBOOT_ENABLE_ADC is not set
++# CONFIG_AMBOOT_ENABLE_IR is not set
++
++#
++# AMBoot (boot loader)
++#
++# CONFIG_BOOT_MEDIA_NAND is not set
++CONFIG_BOOT_MEDIA_EMMC=y
++# CONFIG_4K_BOOT_IMAGE is not set
++
++#
++# eMMC Boot Options
++#
++CONFIG_EMMC_BOOT_INTERFACE="sd0"
++CONFIG_EMMC_BOOT_PARTITION_BP1=y
++# CONFIG_EMMC_BOOT_PARTITION_BP2 is not set
++# CONFIG_EMMC_BOOT_PARTITION_USER is not set
++CONFIG_EMMC_BOOT_RST_ENABLE=y
++# CONFIG_EMMC_BOOT_RST_DISABLE is not set
++CONFIG_EMMC_BOOT_3_3V=y
++# CONFIG_EMMC_BOOT_1_8V is not set
++
++#
++# BLD Option
++#
++# CONFIG_EMMC_BLD_OPTION is not set
++
++#
++# Common Boot Options
++#
++CONFIG_AMBOOT_COMMAND_SUPPORT=y
++CONFIG_AMBOOT_BD_FDT_SUPPORT=y
++# CONFIG_AMBOOT_BD_ATAG_SUPPORT is not set
++# CONFIG_AMBOOT_BD_NONE_SUPPORT is not set
++# CONFIG_AMBOOT_FDT_LOW_ADDR is not set
++# CONFIG_AMBOOT_SEARCH_PTB is not set
++CONFIG_AMBOOT_BD_CMDLINE="console=ttyS0 noinitrd root=/dev/mmcblk0p8 rw rootfstype=ext4 init=/linuxrc"
++AMBOOT_DEFAULT_SN=""
++AMBOOT_DEFAULT_LINUX_MACHINE_ID=4603
++AMBOOT_DEV_AUTO_BOOT=y
++# AMBOOT_DEV_FAST_BOOT is not set
++AMBOOT_DEV_NORMAL_MODE=y
++# AMBOOT_DEV_USBDL_MODE is not set
++# DRAM_TYPE_DDR3 is not set
++# DRAM_TYPE_DDR2 is not set
++# DRAM_TYPE_LPDDR3 is not set
++BUILD_DEVFW=y
++# SECURE_BOOT is not set
++# AMBOOT_THAW_HIBERNATION is not set
++MINIMAL_FIRMWARE_COMBO=y
++# BUILD_DEBUG_MEMFWPROG is not set
++
++#
++# Persistent BIOS App Partition
++#
++PBA=""
++PBA_VIF=""
++
++#
++# Primary Partition
++#
++KERNEL="$(AMB_BOARD_OUT)/kernel/Image"
++KERNEL_VIF="$(AMB_TOPDIR)/amboot/vif/linux.info"
++
++#
++# Secondary Partition
++#
++SECONDARY=""
++SECONDARY_VIF=""
++
++#
++# Backup Partition
++#
++BACKUP=""
++BACKUP_VIF=""
++
++#
++# Ramdisk Partition
++#
++RAMDISK=""
++RAMDISK_VIF=""
++
++#
++# ROMFS Partition
++#
++ROMFS=""
++ROMFS_VIF=""
++
++#
++# Linux Partition
++#
++LNX="$(AMB_BOARD_OUT)/rootfs/ext4"
++LNX_VIF="$(AMB_TOPDIR)/amboot/vif/extx.info"
++
++#
++# Swap Partition
++#
++SWP=""
++SWP_VIF=""
++
++#
++# Android Data Partition
++#
++ADD=""
++ADD_VIF=""
++
++#
++# Android Cache Partition
++#
++ADC=""
++ADC_VIF=""
++# AMBOOT_BOOT_DSP is not set
++# AMBOOT_DSP_LOG_CAPTURE is not set
++BUILD_AMBARELLA_APPLICATION=y
++CONFIG_APP_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_APP_IPCAM_CONFIG_DIR="$(FAKEROOT_DIR)/etc/ambaipcam"
++# BUILD_AMBARELLA_APP_DEBUG is not set
++BUILD_AMBAREALLA_CLOUD_LIB=y
++BUILD_AMBAREALLA_CLOUD_AGENT=y
++BUILD_AMBARELLA_APP_IPCAM=y
++BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON=y
++# BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_C is not set
++BUILD_AMBARELLA_APP_IPCAM_RTSP=y
++# BUILD_AMBARELLA_APP_IPCAM_AUTORUN_SERVICES is not set
++BUILD_AMBARELLA_APP_IPCAM_SMART_LDC=y
++# BUILD_AMBARELLA_APP_HTTP_UPLOADER is not set
++# BUILD_AMBARELLA_APP_WIFI_UTILITY is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_AUDIO is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_APP is not set
++# BUILD_AMBARELLA_APP_SMARTCAM is not set
++BUILD_AMBAREALLA_APP_UTILITY=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS_ALL=y
++# BUILD_AMBAREALLA_APP_UTILITY_DNG_TOOL is not set
++BUILD_AMBARELLA_APP_UTILITY_DSP=y
++BUILD_AMBARELLA_APP_UTILITY_LOAD_UCODE=y
++BUILD_AMBARELLA_APP_UTILITY_DSPLOG=y
++# BUILD_AMBARELLA_APP_UTILITY_GEN_FASTBOOT_UCODE is not set
++# BUILD_AMBARELLA_APP_UTILITY_JPG is not set
++# BUILD_AMBARELLA_ORYX_MPTOOL is not set
++# BUILD_AMBAREALLA_APP_UTILITY_UPGRADE is not set
++BUILD_AMBARELLA_LINUX_KERNEL=y
++CONFIG_LINUX_KERNEL_VERSION="3.10"
++CONFIG_KERNEL_DEFCONFIG_STRING="ambarella_s2l_defconfig"
++CONFIG_KERNEL_MODULES_INSTALL_DIR="$(FAKEROOT_DIR)"
++# BUILD_AMBARELLA_EXTERNAL_MODULES is not set
++BUILD_AMBARELLA_PRIVATE_MODULES=y
++BUILD_AMBARELLA_VIN=y
++
++#
++# Ambarella Sensor Configuration
++#
++CONFIG_SENSOR_MT9T002=y
++CONFIG_SENSOR_MT9T002_MIPI=y
++# CONFIG_SENSOR_MT9T002_PARALLEL is not set
++CONFIG_SENSOR_AR0130=y
++CONFIG_SENSOR_AR0141=y
++CONFIG_SENSOR_AR0230=y
++# CONFIG_SENSOR_AR0230P is not set
++# CONFIG_SENSOR_AR0237 is not set
++# CONFIG_SENSOR_AR0237P is not set
++# CONFIG_SENSOR_AR0331 is not set
++# CONFIG_SENSOR_OV2710P is not set
++# CONFIG_SENSOR_OV2718_MIPI is not set
++# CONFIG_SENSOR_OV2732_MIPI is not set
++# CONFIG_SENSOR_OV2732_PARALLEL is not set
++# CONFIG_SENSOR_OV2735_MIPI is not set
++# CONFIG_SENSOR_OV2735_PARALLEL is not set
++CONFIG_SENSOR_OV4689_MIPI=y
++# CONFIG_SENSOR_OV5653 is not set
++# CONFIG_SENSOR_OV9710 is not set
++CONFIG_SENSOR_OV9718_MIPI=y
++# CONFIG_SENSOR_OV9732_MIPI is not set
++# CONFIG_SENSOR_OV9732_PARALLEL is not set
++# CONFIG_SENSOR_OV9750_MIPI is not set
++# CONFIG_SENSOR_OV9750_PARALLEL is not set
++CONFIG_SENSOR_OV5658_MIPI=y
++CONFIG_SENSOR_IMX122=y
++CONFIG_SENSOR_IMX104=y
++# CONFIG_SENSOR_IMX136 is not set
++CONFIG_SENSOR_IMX136P=y
++# CONFIG_SENSOR_IMX172 is not set
++# CONFIG_SENSOR_IMX226 is not set
++# CONFIG_SENSOR_IMX174 is not set
++CONFIG_SENSOR_IMX178=y
++CONFIG_SENSOR_IMX178_I2C=y
++# CONFIG_SENSOR_IMX178_SPI is not set
++# CONFIG_SENSOR_IMX185 is not set
++CONFIG_SENSOR_IMX123=y
++CONFIG_SENSOR_IMX322=y
++# CONFIG_SENSOR_IMX322_I2C is not set
++CONFIG_SENSOR_IMX322_SPI=y
++CONFIG_SENSOR_IMX124=y
++CONFIG_SENSOR_IMX224=y
++# CONFIG_SENSOR_IMX224_MIPI is not set
++CONFIG_SENSOR_IMX290=y
++CONFIG_SENSOR_IMX291=y
++# CONFIG_SENSOR_IMX291_MIPI is not set
++# CONFIG_SENSOR_IMX326 is not set
++CONFIG_SENSOR_MN34041PL=y
++# CONFIG_SENSOR_MN34210PL is not set
++CONFIG_SENSOR_MN34220PL=y
++# CONFIG_SENSOR_MN34227PL is not set
++# CONFIG_SENSOR_MN34420PL is not set
++# CONFIG_SENSOR_FPGA is not set
++# CONFIG_SENSOR_AMBDS is not set
++
++#
++# Ambarella TV decoder Configuration
++#
++CONFIG_YUV_ADV7441A=y
++# CONFIG_YUV_AMBDD is not set
++# CONFIG_AMBARELLA_VIN_DEBUG is not set
++# CONFIG_VIN_FPS_STAT is not set
++# BUILD_AMBARELLA_LENS is not set
++BUILD_AMBARELLA_VOUT=y
++# CONFIG_DVE_NULL is not set
++CONFIG_DVE_AMBTVE=y
++# CONFIG_DIGITAL_NULL is not set
++CONFIG_DIGITAL_AMBDBUS=y
++# CONFIG_HDMI_NULL is not set
++CONFIG_HDMI_AMBHDMI=y
++# BUILD_AMBARELLA_IT66121_HDMI is not set
++# CONFIG_AMBARELLA_VOUT_DEBUG is not set
++# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
++BUILD_AMBARELLA_HW_TIMER=y
++BUILD_AMBARELLA_DSP=y
++CONFIG_PRINT_DSP_CMD=y
++CONFIG_PRINT_DSP_CMD_MORE=y
++# CONFIG_PRINT_DSP_CMD_RAW is not set
++CONFIG_DSP_LOG_START_0X80000=y
++# CONFIG_DSP_LOG_START_IAVMEM is not set
++BUILD_AMBARELLA_IAV=y
++# CONFIG_AMBARELLA_IAV_DRAM_DECODE_ONLY is not set
++CONFIG_AMBARELLA_IAV_DRAM_VOUT_NONE=y
++# CONFIG_AMBARELLA_IAV_DRAM_VOUT_ONLY is not set
++# CONFIG_AMBARELLA_IAV_DRAM_VOUT_DISABLE is not set
++
++#
++# IAV memory options
++#
++DSP_BSB_SIZE=0x0600000
++DSP_IAVRSVD_SIZE=0x1000000
++IAV_MEM_USR_SIZE=0x0000000
++IAV_MEM_MV_SIZE=0x0000000
++IAV_MEM_OVERLAY_SIZE=0x0200000
++# CONFIG_AMBARELLA_IAV_ROI_IPB is not set
++IAV_MEM_QPM_SIZE=0x0018000
++CONFIG_AMBARELLA_IAV_DRAM_WARP_MEM=y
++IAV_MEM_PM_SIZE_S2L=0x03C0000
++IAV_MEM_VCA_SIZE=0x0000000
++# CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
++CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS=y
++BUILD_AMBARELLA_IMGPROC_DRV=y
++CONFIG_IMGPROC_MEM_SMALL=y
++# CONFIG_IMGPROC_MEM_LARGE is not set
++# BUILD_GYRO is not set
++# BUILD_EIS is not set
++BUILD_AMBARELLA_DEBUG=y
++BUILD_AMBARELLA_DSP_LOG=y
++CONFIG_AMBARELLA_DSP_LOG_SIZE=0x20000
++# BUILD_AMBARELLA_CRYPTO is not set
++# BUILD_PRIVATE_DRIVER_FOR_CRYPTOCHIP is not set
++# BUILD_AMBARELLA_UVC_CAMERA is not set
++CONFIG_DSP_FIRMWARE_GERNEIC=y
++# CONFIG_DSP_FIRMWARE_ENCODE_ONLY is not set
++# CONFIG_DSP_FIRMWARE_DEBUG is not set
++# BUILD_DRIVERS_FROM_BINARY is not set
++# BUILD_AMBARELLA_ORYX_MW is not set
++BUILD_AMBARELLA_PACKAGE=y
++BUILD_AMBARELLA_BSREADER_PACKAGE=y
++BUILD_AMBARELLA_DATATX_PACKAGE=y
++BUILD_AMBARELLA_IMGPROC_PACKAGE=y
++CONFIG_IMGPROC_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/imgproc"
++# CONFIG_IMGPROC_PACKAGE_DYNAMIC_LIB is not set
++BUILD_AMBARELLA_MIDDLEWARE=y
++
++#
++# MW Device configs
++#
++BUILD_AMBARELLA_IMAGE_DEVICE_PROC=y
++CONFIG_IMAGE_DEVICE_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/img_dev"
++
++#
++# MW IMAGE configs
++#
++BUILD_AMBARELLA_MIDDLEWARE_PROC=y
++CONFIG_MIDDLEWARE_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/img_mw"
++# BUILD_AMBARELLA_LBR_PACKAGE is not set
++BUILD_AMBARELLA_MAINPREPROC_PACKAGE=y
++# BUILD_AMBARELLA_MDMOTBUF_PACKAGE is not set
++# BUILD_AMBARELLA_SECURITY_PACKAGE is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE is not set
++BUILD_AMBARELLA_TEXTINSERT_PACKAGE=y
++BUILD_AMBARELLA_UTILITIES_PACKAGE=y
++CONFIG_AMBARELLA_PREBUILD=y
++CONFIG_AMBARELLA_DEWARP_LIBRARY=y
++CONFIG_AMBARELLA_EIS_LIBRARY=y
++CONFIG_AMBARELLA_SMARTRC_LIBRARY=y
++CONFIG_AMBARELLA_SMARTCAM_PREBUILD=y
++CONFIG_AMBARELLA_MDET_LIBRARY=y
++# CONFIG_AMBARELLA_FDET_LIBRARY is not set
++# CONFIG_AMBARELLA_FDET2_LIBRARY is not set
++# CONFIG_AMBARELLA_LENS_MASK_DET_LIBRARY is not set
++# CONFIG_AMBARELLA_MOTION_PROFILE_DET_LIBRARY is not set
++# CONFIG_AMBARELLA_STEREO_LIBRARY is not set
++CONFIG_AMBARELLA_IMAGE_DATA=y
++CONFIG_AMBARELLA_MKFS=y
++# CONFIG_AMBARELLA_ROOTFS_RAM is not set
++# CONFIG_AMBARELLA_ROOTFS_CPIO is not set
++# CONFIG_AMBARELLA_ROOTFS_JFFS2 is not set
++# CONFIG_AMBARELLA_ROOTFS_YAFFS is not set
++# CONFIG_AMBARELLA_ROOTFS_UBIFS is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT2 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT3 is not set
++CONFIG_AMBARELLA_ROOTFS_EXT4=y
++# CONFIG_AMBARELLA_ROOTFS_SQUASHFS is not set
++CONFIG_AMBARELLA_INIT_LINUXRC=y
++# CONFIG_AMBARELLA_INIT_LINUXRC_FASTBOOT is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_SMALLBOOT is not set
++# CONFIG_AMBARELLA_INIT_SYSTEMD is not set
++CONFIG_AMBARELLA_ROOT_PASSWORD=""
++# CONFIG_AMBARELLA_NORMAL_USER is not set
++# CONFIG_BACKUP_CPIO is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD_STATIC is not set
++CONFIG_AMBARELLA_BUSYBOX_PREBUILD=y
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN is not set
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN_STATIC is not set
++CONFIG_AMBARELLA_ROOTFS_SIZE=100000
++CONFIG_AMBARELLA_ROOTFS_INODES=1500
++CONFIG_AMBARELLA_ETH0=y
++# CONFIG_AMBARELLA_ETH0_DHCP is not set
++CONFIG_AMBARELLA_ETH0_ADDRESS="10.0.0.2"
++CONFIG_AMBARELLA_ETH0_GW_ADDRESS="10.0.0.1"
++CONFIG_AMBARELLA_ETH0_IP_MASK="255.255.255.0"
++CONFIG_AMBARELLA_MOUNT_MNT=""
++CONFIG_AMBARELLA_EXT_CMD_FILE=""
++CONFIG_AMBARELLA_RUN_DEMO_NONE=y
++# CONFIG_AMBARELLA_RUN_AUTO_DEMO is not set
++# CONFIG_AMBARELLA_RUN_AUTO_CLOUD_DEMO is not set
++# CONFIG_AMBARELLA_RUN_SHMOO_TEST is not set
++# CONFIG_AMBARELLA_RUN_MEDIASERVER is not set
++# CONFIG_AMBARELLA_RUN_DEWARP is not set
++
++#
++# Serial Port Configuration
++#
++CONFIG_AMBARELLA_SERIAL_PORT0_GETTY=y
++# CONFIG_AMBARELLA_SERIAL_PORT0_NA is not set
++# CONFIG_AMBARELLA_SERIAL_PORT1_GETTY is not set
++CONFIG_AMBARELLA_SERIAL_PORT1_NA=y
++# CONFIG_AMBARELLA_ASKFIRST_CONSOLE is not set
++CONFIG_AMBARELLA_ASKFIRST_CONSOLE_NA=y
++# CONFIG_AMBARELLA_SERIAL_PORT_USB0 is not set
++
++#
++# Audio Packages
++#
++
++#
++# ALSA
++#
++CONFIG_AMBARELLA_ALSA_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_SPEEKER_TEST_SUPPORT is not set
++CONFIG_AMBARELLA_ALSA_PLUGINS_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_PLUGINS_PULSEAUDIO_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_PLUGINS_LIBSAMPLERATE_SUPPORT is not set
++# CONFIG_AMBARELLA_ALSA_PLUGINS_SPEEX_SUPPORT is not set
++
++#
++# PulseAudio
++#
++CONFIG_AMBARELLA_PULSEAUDIO_SUPPORT=y
++# CONFIG_AMBARELLA_PULSEAUDIO_SIMPLE_LIBRARY is not set
++CONFIG_AMBARELLA_PULSEAUDIO_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PULSEAUDIO_AEC_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_SIMPLE_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_CLI_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_HTTP_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_RTP_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_TUNNEL_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_COMBINE_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_REMAP_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_VOLUME_CONTROL_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_MISC_MODULES is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_TEST_MODULES is not set
++# CONFIG_AMBARELLA_SYSTEM_SOUND_FILES is not set
++
++#
++# Libraries
++#
++# CONFIG_AMBARELLA_7ZDEC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBNL_1_SUPPORT is not set
++CONFIG_AMBARELLA_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBFFI_SUPPORT=y
++CONFIG_AMBARELLA_ZLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBBZIP2_SUPPORT=y
++# CONFIG_AMBARELLA_XZ_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBPCRE_SUPPORT=y
++CONFIG_AMBARELLA_LIBELF_SUPPORT=y
++CONFIG_AMBARELLA_FREETYPE_SUPPORT=y
++CONFIG_AMBARELLA_FREE_FONTS_SUPPORT=y
++# CONFIG_AMBARELLA_FREE_CHINESE_FONTS_SUPPORT is not set
++# CONFIG_AMBARELLA_LOCALE_SUPPORT is not set
++CONFIG_AMBARELLA_EXPAT_SUPPORT=y
++CONFIG_AMBARELLA_LIBXML2_SUPPORT=y
++CONFIG_AMBARELLA_MXML_SUPPORT=y
++CONFIG_AMBARELLA_CLEARSILVER_SUPPORT=y
++# CONFIG_AMBARELLA_LIBEVENT_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEV_SUPPORT is not set
++CONFIG_AMBARELLA_LIBNL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNL_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBTOOL_SUPPORT=y
++CONFIG_AMBARELLA_OPENSSL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSODIUM_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGPG_ERROR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGPG_ERROR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGCRYPT_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGCRYPT_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_GNUTLS_SUPPORT=y
++# CONFIG_AMBARELLA_GNUTLS_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_CA_CERTIFICATES_SUPPORT=y
++# CONFIG_AMBARELLA_LIBZRTPCPP_SUPPORT is not set
++CONFIG_AMBARELLA_JSONC_SUPPORT=y
++CONFIG_AMBARELLA_LIBOGG_SUPPORT=y
++# CONFIG_AMBARELLA_LIBARCHIVE_SUPPORT is not set
++CONFIG_AMBARELLA_SOXR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBG7XX_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBNE10_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOPUS_SUPPORT is not set
++# CONFIG_AMBARELLA_AUDIOFILE_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSAMPLERATE_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSAMPLERATE_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSNDFILE_SUPPORT=y
++# CONFIG_AMBARELLA_WEBRTC_AUDIO_PROCESSING_SUPPORT is not set
++CONFIG_AMBARELLA_SPEEX_SUPPORT=y
++CONFIG_AMBARELLA_SPEEX_DSP_SUPPORT=y
++# CONFIG_AMBARELLA_SPEEX_UTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_FFMPEG_SUPPORT is not set
++CONFIG_AMBARELLA_NCURSES_SUPPORT=y
++CONFIG_AMBARELLA_LIBSELINUX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSELINUX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSEPOL_SUPPORT=y
++# CONFIG_AMBARELLA_INIPARSER_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSSH2_SUPPORT is not set
++CONFIG_AMBARELLA_LIBIDN_SUPPORT=y
++# CONFIG_AMBARELLA_LIBCURL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBPNG_SUPPORT=y
++# CONFIG_AMBARELLA_LIBEXIF_SUPPORT is not set
++CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT=y
++# CONFIG_AMBARELLA_LIBJPEG_TURBO_UTIL_SUPPORT is not set
++# CONFIG_AMBARELLA_ZBAR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBDAEMON_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBICAL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBUSBX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBUSB_COMPAT_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMTP_SUPPORT is not set
++CONFIG_AMBARELLA_READLINE_SUPPORT=y
++# CONFIG_AMBARELLA_SBC_SUPPORT is not set
++CONFIG_AMBARELLA_BIND_LIB_SUPPORT=y
++# CONFIG_AMBARELLA_LIBPCAP_SUPPORT is not set
++CONFIG_AMBARELLA_LIBCAP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBCAP_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBATTR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBATTR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_PAM_SUPPORT=y
++CONFIG_AMBARELLA_OPENCV_SUPPORT=y
++CONFIG_AMBARELLA_OPENCV_CORE_LIB_SUPPORT=y
++CONFIG_AMBARELLA_OPENCV_IMGPROC_LIB_SUPPORT=y
++CONFIG_AMBARELLA_OPENCV_IMGCODECS_LIB_SUPPORT=y
++CONFIG_AMBARELLA_OPENCV_VIDEOIO_LIB_SUPPORT=y
++# CONFIG_AMBARELLA_OPENCV_VIDEO_LIB_SUPPORT is not set
++# CONFIG_AMBARELLA_OPENCV_VIDEOSTAB_LIB_SUPPORT is not set
++# CONFIG_AMBARELLA_OPENCV_COREMISC_LIB_SUPPORT is not set
++# CONFIG_AMBARELLA_OPENCV_CONTRIB_LIB_SUPPORT is not set
++# CONFIG_AMBARELLA_OPENCV_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_GMP_SUPPORT=y
++CONFIG_AMBARELLA_LIBTASN1_SUPPORT=y
++# CONFIG_AMBARELLA_LIBTASN1_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_NETTLE_SUPPORT=y
++# CONFIG_AMBARELLA_NETTLE_UTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMICROHTTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBAUDIOANALYTIC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOSIP2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEXOSIP2_SUPPORT is not set
++CONFIG_AMBARELLA_LIBNDP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNDP_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_X265_SUPPORT is not set
++# CONFIG_AMBARELLA_SQLITE_SUPPORT is not set
++
++#
++# Network/BlueTooth Packages
++#
++
++#
++# Wireless
++#
++# CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_BROADCOM_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_MARVELL_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
++# CONFIG_ATHEROS_TOOL_SUPPORT is not set
++# CONFIG_BROADCOM_TOOL_SUPPORT is not set
++# CONFIG_BROADCOM_GPS_SUPPORT is not set
++# CONFIG_MARVELL_TOOL_SUPPORT is not set
++# CONFIG_REALTEK_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT is not set
++CONFIG_AMBARELLA_WPA_SUPPLICANT_SUPPORT=y
++CONFIG_AMBARELLA_WPA_SUPPLICANT_LATEST_SUPPORT=y
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_FAST_SUPPORT is not set
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_RTW_11967 is not set
++CONFIG_AMBARELLA_IW_SUPPORT=y
++CONFIG_AMBARELLA_DNSMASQ_SUPPORT=y
++# CONFIG_AMBARELLA_HOSTAPD_SUPPORT is not set
++
++#
++# BlueTooth
++#
++CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT=y
++# CONFIG_AMBARELLA_BLUETOOTH5_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUEZ_TOOLS_SUPPORT is not set
++
++#
++# Network Utilities
++#
++# CONFIG_AMBARELLA_NO_NETWORK_MANAGEMENT is not set
++CONFIG_AMBARELLA_NETWORKMANAGER_SUPPORT=y
++# CONFIG_AMBARELLA_CONNMAN_SUPPORT is not set
++# CONFIG_AMBARELLA_IPTABLES_SUPPORT is not set
++CONFIG_AMBARELLA_DHCP_SUPPORT=y
++# CONFIG_AMBARELLA_DHCP_TOOL_OMSHELL is not set
++# CONFIG_AMBARELLA_DHCP_TOOL_DHCPD is not set
++CONFIG_AMBARELLA_DHCP_TOOL_DHCLIENT=y
++# CONFIG_AMBARELLA_DHCP_TOOL_DHCRELAY is not set
++CONFIG_AMBARELLA_DHCPCD_SUPPORT=y
++# CONFIG_AMBARELLA_SAMBA_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_AUTO_TELNETD=y
++# CONFIG_AMBARELLA_SSH_SUPPORT is not set
++# CONFIG_AMBARELLA_AVAHI_SUPPORT is not set
++CONFIG_AMBARELLA_TFTPD_SUPPORT=y
++# CONFIG_AMBARELLA_NFS_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT=y
++# CONFIG_AMBARELLA_PARTNER_Y_SUPPORT is not set
++CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT=y
++# CONFIG_AMBARELLA_NTP_SUPPORT is not set
++# CONFIG_AMBARELLA_TCPDUMP_SUPPORT is not set
++# CONFIG_AMBARELLA_USTREAM_SUPPORT is not set
++CONFIG_AMBARELLA_ETHTOOL_SUPPORT=y
++
++#
++# Filesystem Tools
++#
++# CONFIG_AMBARELLA_E2FSPROGS_SUPPORT is not set
++# CONFIG_AMBARELLA_DOSFSTOOS_SUPPORT is not set
++CONFIG_AMBARELLA_PARTED_SUPPORT=y
++CONFIG_AMBARELLA_UBI_TOOLS_SUPPORT=y
++CONFIG_AMBARELLA_F2FS_SUPPORT=y
++# CONFIG_AMBARELLA_FUSE_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_SSHFS_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_EXFAT_SUPPORT is not set
++# CONFIG_SONY_SD_LIBRARY is not set
++
++#
++# Script Language
++#
++CONFIG_AMBARELLA_LUA_SUPPORT=y
++# CONFIG_AMBARELLA_PYTHON_SUPPORT is not set
++
++#
++# Benchmark Tools
++#
++# CONFIG_AMBARELLA_LMBENCH_SUPPORT is not set
++# CONFIG_AMBARELLA_CYCLICTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_HALTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_IOZONE_SUPPORT is not set
++# CONFIG_AMBARELLA_I2C_TOOLS_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF3_SUPPORT is not set
++
++#
++# System Utils
++#
++
++#
++# Message Bus System
++#
++CONFIG_AMBARELLA_DBUS_SUPPORT=y
++CONFIG_AMBARELLA_DBUS_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_START_WATCHDOG=y
++CONFIG_AMBARELLA_PROCPS_SUPPORT=y
++CONFIG_AMBARELLA_ELFUTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PINFO_SUPPORT is not set
++CONFIG_UTIL_LINUX_SUPPORT=y
++
++#
++# Debug Tools
++#
++# CONFIG_AMBARELLA_GDB_SUPPORT is not set
++# CONFIG_AMBARELLA_GDBSERVER_SUPPORT is not set
++# CONFIG_AMBARELLA_STRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_LTRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_VTABLE_DUMPER_SUPPORT is not set
++# CONFIG_AMBARELLA_VALGRIND_SUPPORT is not set
++BUILD_AMBARELLA_UNIT_TESTS=y
++CONFIG_UNIT_TEST_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_UNIT_TEST_IMGPROC_PARAM_DIR="$(FAKEROOT_DIR)/etc/idsp"
++# BUILD_AMBARELLA_UNIT_TESTS_STATIC is not set
++BUILD_AMBARELLA_PUBLIC_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_AUDIO is not set
++BUILD_AMBARELLA_UNIT_TESTS_BENCHMARK=y
++BUILD_AMBARELLA_UNIT_TESTS_BANDWIDTH=y
++BUILD_AMBARELLA_UNIT_TESTS_NBENCH=y
++BUILD_AMBARELLA_UNIT_TESTS_PI_CSS5=y
++# BUILD_AMBARELLA_UNIT_TESTS_MEM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_WRITE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_BENCHMARK is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NET_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_MEMTESTER=y
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO_SOCKET is not set
++# BUILD_AMBARELLA_UNIT_TESTS_FLASH_FS is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IDE is not set
++BUILD_AMBARELLA_UNIT_TESTS_MISC=y
++# BUILD_AMBARELLA_UNIT_TESTS_NAND is not set
++# BUILD_AMBARELLA_UNIT_TESTS_UPGRADE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_USB_STREAM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_I2C_TOOL is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IIO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_EVTEST is not set
++BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_CALIBRATION is not set
++BUILD_AMBARELLA_UNIT_TESTS_AMBADEBUG=y
++BUILD_AMBARELLA_UNIT_TESTS_IAV=y
++# BUILD_AMBARELLA_IAV_AUTO_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_IDSP=y
++# BUILD_AMBARELLA_UNIT_TESTS_IDSP_EXP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CUSTOM_IDSP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IR_DEMO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MW is not set
++BUILD_AMBARELLA_UNIT_TESTS_PACKAGE=y
++BUILD_AMBARELLA_UNIT_TESTS_VIN=y
++BUILD_AMBARELLA_UNIT_TESTS_VOUT=y
++# BUILD_AMBARELLA_UNIT_TESTS_VSYNC is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SHMOO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_HW_TIMER is not set
+diff --git a/config/s2l_ipcam_config b/config/s2l_ipcam_config
+index bf407d0..ed7c749 100644
+--- a/config/s2l_ipcam_config
++++ b/config/s2l_ipcam_config
+@@ -425,7 +425,7 @@ IAV_MEM_QPM_SIZE=0x0018000
+ CONFIG_AMBARELLA_IAV_DRAM_WARP_MEM=y
+ IAV_MEM_PM_SIZE_S2L=0x03C0000
+ # CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
+-# CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS is not set
++CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS=y
+ BUILD_AMBARELLA_IMGPROC_DRV=y
+ CONFIG_IMGPROC_MEM_SMALL=y
+ # CONFIG_IMGPROC_MEM_LARGE is not set
+diff --git a/config/s2l_ipcam_emmc_config b/config/s2l_ipcam_emmc_config
+new file mode 100644
+index 0000000..f91ad06
+--- /dev/null
++++ b/config/s2l_ipcam_emmc_config
+@@ -0,0 +1,645 @@
++#
++# Automatically generated make config: don't edit
++# Ambarella Build Configuration
++# Mon Dec 26 12:06:48 2016
++#
++# CONFIG_ARCH_A5S is not set
++# CONFIG_ARCH_A7L is not set
++# CONFIG_ARCH_S2 is not set
++# CONFIG_ARCH_S2E is not set
++CONFIG_ARCH_S2L=y
++# CONFIG_ARCH_S3 is not set
++# CONFIG_ARCH_S3L is not set
++# CONFIG_CPU_CORTEXA9 is not set
++CONFIG_CPU_CORTEXA9_HF=y
++
++#
++# Ambarella Board Configuration
++#
++CONFIG_BSP_BOARD_HAWTHORN=y
++# CONFIG_BSP_BOARD_S2LM_IRONMAN is not set
++# CONFIG_BSP_BOARD_S2LM_KIWI is not set
++CONFIG_BOARD_VERSION_HAWTHORN_S2L66=y
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L22 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L33EX is not set
++# CONFIG_HAWTHORN_DSP_BOOT is not set
++BUILD_AMBARELLA_FIRMWARE=y
++
++#
++# Memory Options
++#
++
++#
++# AMBoot memory options
++#
++AMBOOT_BLD_RAM_START=0x00000000
++AMBOOT_BLD_STACK_SIZE=0x00008000
++AMBOOT_BLD_HEAP_SIZE=0x00008000
++
++#
++# RTOS memory options
++#
++KERNEL_RAM_START=0x00208000
++AMBARELLA_INITRD_PHYS=0x00800000
++IDSP_RAM_START=0x2BE00000
++DSP_FASTDATA_SIZE=0x0000000
++DSP_FASTAUDIO_SIZE=0x0000000
++FRAMEBUFFER_SIZE=0x0000000
++
++#
++# Hardware Options
++#
++ARCH_SUPPORT_BCH_ID5=y
++ARCH_SUPPORT_SPINOR=y
++# CONFIG_FLASH_PAGE_256 is not set
++# CONFIG_FLASH_PAGE_512 is not set
++# CONFIG_FLASH_PAGE_2K is not set
++# CONFIG_FLASH_PAGE_4K is not set
++# CONFIG_FLASH_ERASE_4k is not set
++# CONFIG_FLASH_ERASE_16k is not set
++# CONFIG_FLASH_ERASE_64k is not set
++# CONFIG_FLASH_ERASE_128k is not set
++# CONFIG_FLASH_ERASE_256k is not set
++# CONFIG_AMBOOT_ENABLE_NAND is not set
++# CONFIG_AMBOOT_ENABLE_CRYPTO_CHIP is not set
++CONFIG_AMBOOT_ENABLE_SD=y
++
++#
++# SD Subsystem Options
++#
++# CONFIG_AMBOOT_ENABLE_SPINOR is not set
++# CONFIG_AMBOOT_ENABLE_SPINAND is not set
++# CONFIG_AMBOOT_ENABLE_SPI is not set
++CONFIG_AMBOOT_ENABLE_IDC=y
++
++#
++# IDC Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_ISL12022M=y
++CONFIG_AMBOOT_ENABLE_PCA953X=y
++CONFIG_AMBOOT_ENABLE_ETH=y
++
++#
++# ETH Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_USB=y
++
++#
++# USB Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_GPIO=y
++# CONFIG_AMBOOT_DISABLE_UART is not set
++CONFIG_AMBOOT_ENABLE_UART0=y
++
++#
++# UART Subsystem Options
++#
++# AMBOOT_UART_19200 is not set
++# AMBOOT_UART_38400 is not set
++# AMBOOT_UART_57600 is not set
++AMBOOT_UART_115200=y
++# CONFIG_AMBOOT_ENABLE_ADC is not set
++# CONFIG_AMBOOT_ENABLE_IR is not set
++
++#
++# AMBoot (boot loader)
++#
++CONFIG_BOOT_MEDIA_EMMC=y
++# CONFIG_4K_BOOT_IMAGE is not set
++
++#
++# eMMC Boot Options
++#
++CONFIG_EMMC_BOOT_INTERFACE="sd0"
++CONFIG_EMMC_BOOT_PARTITION_BP1=y
++# CONFIG_EMMC_BOOT_PARTITION_BP2 is not set
++# CONFIG_EMMC_BOOT_PARTITION_USER is not set
++CONFIG_EMMC_BOOT_RST_ENABLE=y
++# CONFIG_EMMC_BOOT_RST_DISABLE is not set
++
++#
++# Common Boot Options
++#
++CONFIG_AMBOOT_COMMAND_SUPPORT=y
++CONFIG_AMBOOT_BD_FDT_SUPPORT=y
++# CONFIG_AMBOOT_BD_ATAG_SUPPORT is not set
++# CONFIG_AMBOOT_BD_NONE_SUPPORT is not set
++# CONFIG_AMBOOT_FDT_LOW_ADDR is not set
++# CONFIG_AMBOOT_SEARCH_PTB is not set
++CONFIG_AMBOOT_BD_CMDLINE="console=ttyS0 noinitrd root=/dev/mmcblk0p8 rw rootfstype=ext4 init=/linuxrc"
++AMBOOT_DEFAULT_SN=""
++AMBOOT_DEFAULT_LINUX_MACHINE_ID=4603
++AMBOOT_DEV_AUTO_BOOT=y
++# AMBOOT_DEV_FAST_BOOT is not set
++AMBOOT_DEV_NORMAL_MODE=y
++# AMBOOT_DEV_USBDL_MODE is not set
++# DRAM_TYPE_DDR3 is not set
++# DRAM_TYPE_DDR2 is not set
++# DRAM_TYPE_LPDDR3 is not set
++BUILD_DEVFW=y
++# SECURE_BOOT is not set
++# AMBOOT_THAW_HIBERNATION is not set
++MINIMAL_FIRMWARE_COMBO=y
++# BUILD_DEBUG_MEMFWPROG is not set
++
++#
++# Persistent BIOS App Partition
++#
++PBA=""
++PBA_VIF=""
++
++#
++# Primary Partition
++#
++KERNEL="$(AMB_BOARD_OUT)/kernel/Image"
++KERNEL_VIF="$(AMB_TOPDIR)/amboot/vif/linux.info"
++
++#
++# Secondary Partition
++#
++SECONDARY=""
++SECONDARY_VIF=""
++
++#
++# Backup Partition
++#
++BACKUP=""
++BACKUP_VIF=""
++
++#
++# Ramdisk Partition
++#
++RAMDISK=""
++RAMDISK_VIF=""
++
++#
++# ROMFS Partition
++#
++ROMFS=""
++ROMFS_VIF=""
++
++#
++# Linux Partition
++#
++LNX="$(AMB_BOARD_OUT)/rootfs/ext4"
++LNX_VIF="$(AMB_TOPDIR)/amboot/vif/extx.info"
++
++#
++# Swap Partition
++#
++SWP=""
++SWP_VIF=""
++
++#
++# Android Data Partition
++#
++ADD=""
++ADD_VIF=""
++
++#
++# Android Cache Partition
++#
++ADC=""
++ADC_VIF=""
++# AMBOOT_BOOT_DSP is not set
++# AMBOOT_DSP_LOG_CAPTURE is not set
++# BUILD_AMBARELLA_APPLICATION is not set
++BUILD_AMBARELLA_LINUX_KERNEL=y
++CONFIG_LINUX_KERNEL_VERSION="3.10"
++CONFIG_KERNEL_DEFCONFIG_STRING="ambarella_s2l_defconfig"
++CONFIG_KERNEL_MODULES_INSTALL_DIR="$(FAKEROOT_DIR)"
++# BUILD_AMBARELLA_EXTERNAL_MODULES is not set
++BUILD_AMBARELLA_PRIVATE_MODULES=y
++BUILD_AMBARELLA_VIN=y
++
++#
++# Ambarella Sensor Configuration
++#
++CONFIG_SENSOR_MT9T002=y
++CONFIG_SENSOR_MT9T002_MIPI=y
++# CONFIG_SENSOR_MT9T002_PARALLEL is not set
++CONFIG_SENSOR_AR0130=y
++# CONFIG_SENSOR_AR0141 is not set
++# CONFIG_SENSOR_AR0230 is not set
++# CONFIG_SENSOR_AR0230P is not set
++# CONFIG_SENSOR_AR0237 is not set
++# CONFIG_SENSOR_AR0237P is not set
++# CONFIG_SENSOR_AR0331 is not set
++CONFIG_SENSOR_OV2710P=y
++# CONFIG_SENSOR_OV2718_MIPI is not set
++CONFIG_SENSOR_OV4689_MIPI=y
++# CONFIG_SENSOR_OV5653 is not set
++# CONFIG_SENSOR_OV9710 is not set
++CONFIG_SENSOR_OV9718_MIPI=y
++# CONFIG_SENSOR_OV9732_MIPI is not set
++# CONFIG_SENSOR_OV9732_PARALLEL is not set
++# CONFIG_SENSOR_OV9750_MIPI is not set
++# CONFIG_SENSOR_OV9750_PARALLEL is not set
++CONFIG_SENSOR_OV5658_MIPI=y
++CONFIG_SENSOR_IMX122=y
++CONFIG_SENSOR_IMX104=y
++# CONFIG_SENSOR_IMX136 is not set
++CONFIG_SENSOR_IMX136P=y
++CONFIG_SENSOR_IMX172=y
++# CONFIG_SENSOR_IMX226 is not set
++# CONFIG_SENSOR_IMX174 is not set
++CONFIG_SENSOR_IMX178=y
++CONFIG_SENSOR_IMX178_I2C=y
++# CONFIG_SENSOR_IMX178_SPI is not set
++# CONFIG_SENSOR_IMX185 is not set
++# CONFIG_SENSOR_IMX123 is not set
++# CONFIG_SENSOR_IMX322 is not set
++CONFIG_SENSOR_IMX124=y
++# CONFIG_SENSOR_IMX224 is not set
++# CONFIG_SENSOR_IMX224_MIPI is not set
++# CONFIG_SENSOR_IMX290 is not set
++# CONFIG_SENSOR_IMX291 is not set
++# CONFIG_SENSOR_IMX291_MIPI is not set
++# CONFIG_SENSOR_IMX326 is not set
++CONFIG_SENSOR_MN34041PL=y
++# CONFIG_SENSOR_MN34210PL is not set
++CONFIG_SENSOR_MN34220PL=y
++# CONFIG_SENSOR_MN34227PL is not set
++# CONFIG_SENSOR_MN34420PL is not set
++# CONFIG_SENSOR_FPGA is not set
++# CONFIG_SENSOR_AMBDS is not set
++
++#
++# Ambarella TV decoder Configuration
++#
++CONFIG_YUV_ADV7441A=y
++# CONFIG_YUV_AMBDD is not set
++# CONFIG_AMBARELLA_VIN_DEBUG is not set
++# CONFIG_VIN_FPS_STAT is not set
++# BUILD_AMBARELLA_LENS is not set
++BUILD_AMBARELLA_VOUT=y
++# CONFIG_DVE_NULL is not set
++CONFIG_DVE_AMBTVE=y
++# CONFIG_DIGITAL_NULL is not set
++CONFIG_DIGITAL_AMBDBUS=y
++# CONFIG_HDMI_NULL is not set
++CONFIG_HDMI_AMBHDMI=y
++# BUILD_AMBARELLA_IT66121_HDMI is not set
++# CONFIG_AMBARELLA_VOUT_DEBUG is not set
++# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
++# BUILD_AMBARELLA_HW_TIMER is not set
++BUILD_AMBARELLA_DSP=y
++CONFIG_PRINT_DSP_CMD=y
++CONFIG_PRINT_DSP_CMD_MORE=y
++# CONFIG_PRINT_DSP_CMD_RAW is not set
++CONFIG_DSP_LOG_START_0X80000=y
++# CONFIG_DSP_LOG_START_IAVMEM is not set
++BUILD_AMBARELLA_IAV=y
++# CONFIG_AMBARELLA_IAV_DRAM_DECODE_ONLY is not set
++# CONFIG_AMBARELLA_IAV_DRAM_VOUT_ONLY is not set
++
++#
++# IAV memory options
++#
++DSP_BSB_SIZE=0x0600000
++DSP_IAVRSVD_SIZE=0x1000000
++IAV_MEM_USR_SIZE=0x0000000
++IAV_MEM_MV_SIZE=0x0000000
++IAV_MEM_OVERLAY_SIZE=0x0200000
++# CONFIG_AMBARELLA_IAV_ROI_IPB is not set
++IAV_MEM_QPM_SIZE=0x0018000
++CONFIG_AMBARELLA_IAV_DRAM_WARP_MEM=y
++IAV_MEM_PM_SIZE_S2L=0x03C0000
++IAV_MEM_VCA_SIZE=0x0000000
++# CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
++# CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS is not set
++BUILD_AMBARELLA_IMGPROC_DRV=y
++CONFIG_IMGPROC_MEM_SMALL=y
++# CONFIG_IMGPROC_MEM_LARGE is not set
++# BUILD_GYRO is not set
++# BUILD_EIS is not set
++BUILD_AMBARELLA_DEBUG=y
++BUILD_AMBARELLA_DSP_LOG=y
++CONFIG_AMBARELLA_DSP_LOG_SIZE=0x20000
++# BUILD_AMBARELLA_CRYPTO is not set
++# BUILD_PRIVATE_DRIVER_FOR_CRYPTOCHIP is not set
++# BUILD_AMBARELLA_UVC_CAMERA is not set
++CONFIG_DSP_FIRMWARE_GERNEIC=y
++# CONFIG_DSP_FIRMWARE_ENCODE_ONLY is not set
++# CONFIG_DSP_FIRMWARE_DEBUG is not set
++# BUILD_DRIVERS_FROM_BINARY is not set
++# BUILD_AMBARELLA_ORYX_MW is not set
++BUILD_AMBARELLA_PACKAGE=y
++BUILD_AMBARELLA_PACKAGES_PROPRIETARY_SOURCES=y
++# BUILD_AMBARELLA_BSREADER_PACKAGE is not set
++BUILD_AMBARELLA_DATATX_PACKAGE=y
++# BUILD_AMBARELLA_IMGPROC_PACKAGE is not set
++# BUILD_AMBARELLA_IMGPROC is not set
++# BUILD_AMBARELLA_MIDDLEWARE is not set
++# BUILD_AMBARELLA_LBR_PACKAGE is not set
++# BUILD_AMBARELLA_MAINPREPROC_PACKAGE is not set
++# BUILD_AMBARELLA_MDMOTBUF_PACKAGE is not set
++BUILD_AMBARELLA_SECURITY_PACKAGE=y
++BUILD_OPENSSL_WRAPPER_LIBRARY=y
++BUILD_AMBARELLA_LW_CRYPTOGRAPHY=y
++BUILD_AMBARELLA_DIGITAL_SIGNATURE=y
++CONFIG_DIGITAL_SIGNATURE_LIBRARY_NATIVE=y
++# CONFIG_DIGITAL_SIGNATURE_LIBRARY_OPENSSL is not set
++# BUILD_AMBARELLA_CRYPTOCHIP_LIBRARY is not set
++# BUILD_AMBARELLA_UNIQUEID_PUF_BPP is not set
++# BUILD_AMBARELLA_DIGITAL_WATERMARKER is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE is not set
++# BUILD_AMBARELLA_TEXTINSERT_PACKAGE is not set
++# BUILD_AMBARELLA_UTILITIES_PACKAGE is not set
++# CONFIG_AMBARELLA_PREBUILD is not set
++CONFIG_AMBARELLA_MKFS=y
++# CONFIG_AMBARELLA_ROOTFS_RAM is not set
++# CONFIG_AMBARELLA_ROOTFS_CPIO is not set
++# CONFIG_AMBARELLA_ROOTFS_JFFS2 is not set
++# CONFIG_AMBARELLA_ROOTFS_YAFFS is not set
++# CONFIG_AMBARELLA_ROOTFS_UBIFS is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT2 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT3 is not set
++CONFIG_AMBARELLA_ROOTFS_EXT4=y
++# CONFIG_AMBARELLA_ROOTFS_SQUASHFS is not set
++CONFIG_AMBARELLA_INIT_LINUXRC=y
++# CONFIG_AMBARELLA_INIT_LINUXRC_FASTBOOT is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_SMALLBOOT is not set
++# CONFIG_AMBARELLA_INIT_SYSTEMD is not set
++CONFIG_AMBARELLA_ROOT_PASSWORD=""
++# CONFIG_AMBARELLA_NORMAL_USER is not set
++# CONFIG_BACKUP_CPIO is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD_STATIC is not set
++CONFIG_AMBARELLA_BUSYBOX_PREBUILD=y
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN is not set
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN_STATIC is not set
++CONFIG_AMBARELLA_ROOTFS_SIZE=65536
++CONFIG_AMBARELLA_ROOTFS_INODES=1500
++CONFIG_AMBARELLA_ETH0=y
++# CONFIG_AMBARELLA_ETH0_DHCP is not set
++CONFIG_AMBARELLA_ETH0_ADDRESS="10.0.0.2"
++CONFIG_AMBARELLA_ETH0_GW_ADDRESS="10.0.0.1"
++CONFIG_AMBARELLA_ETH0_IP_MASK="255.255.255.0"
++CONFIG_AMBARELLA_MOUNT_MNT=""
++CONFIG_AMBARELLA_EXT_CMD_FILE=""
++CONFIG_AMBARELLA_RUN_DEMO_NONE=y
++# CONFIG_AMBARELLA_RUN_AUTO_DEMO is not set
++# CONFIG_AMBARELLA_RUN_AUTO_CLOUD_DEMO is not set
++# CONFIG_AMBARELLA_RUN_SHMOO_TEST is not set
++# CONFIG_AMBARELLA_RUN_MEDIASERVER is not set
++# CONFIG_AMBARELLA_RUN_DEWARP is not set
++
++#
++# Serial Port Configuration
++#
++CONFIG_AMBARELLA_SERIAL_PORT0_GETTY=y
++# CONFIG_AMBARELLA_SERIAL_PORT0_NA is not set
++# CONFIG_AMBARELLA_SERIAL_PORT1_GETTY is not set
++CONFIG_AMBARELLA_SERIAL_PORT1_NA=y
++# CONFIG_AMBARELLA_ASKFIRST_CONSOLE is not set
++CONFIG_AMBARELLA_ASKFIRST_CONSOLE_NA=y
++# CONFIG_AMBARELLA_SERIAL_PORT_USB0 is not set
++
++#
++# Audio Packages
++#
++
++#
++# ALSA
++#
++CONFIG_AMBARELLA_ALSA_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_SPEEKER_TEST_SUPPORT is not set
++# CONFIG_AMBARELLA_ALSA_PLUGINS_SUPPORT is not set
++
++#
++# PulseAudio
++#
++# CONFIG_AMBARELLA_PULSEAUDIO_SUPPORT is not set
++# CONFIG_AMBARELLA_SYSTEM_SOUND_FILES is not set
++
++#
++# Libraries
++#
++# CONFIG_AMBARELLA_7ZDEC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBNL_1_SUPPORT is not set
++# CONFIG_AMBARELLA_GLIB_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBFFI_SUPPORT is not set
++CONFIG_AMBARELLA_ZLIB_SUPPORT=y
++# CONFIG_AMBARELLA_LIBBZIP2_SUPPORT is not set
++# CONFIG_AMBARELLA_XZ_UTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBPCRE_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBELF_SUPPORT is not set
++# CONFIG_AMBARELLA_FREETYPE_SUPPORT is not set
++# CONFIG_AMBARELLA_LOCALE_SUPPORT is not set
++# CONFIG_AMBARELLA_EXPAT_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBXML2_SUPPORT is not set
++# CONFIG_AMBARELLA_MXML_SUPPORT is not set
++# CONFIG_AMBARELLA_CLEARSILVER_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEVENT_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEV_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBNL_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBTOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_OPENSSL_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSODIUM_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBGPG_ERROR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBGCRYPT_SUPPORT is not set
++# CONFIG_AMBARELLA_GNUTLS_SUPPORT is not set
++# CONFIG_AMBARELLA_CA_CERTIFICATES_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBZRTPCPP_SUPPORT is not set
++# CONFIG_AMBARELLA_JSONC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOGG_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBARCHIVE_SUPPORT is not set
++# CONFIG_AMBARELLA_SOXR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBG7XX_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBNE10_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOPUS_SUPPORT is not set
++# CONFIG_AMBARELLA_AUDIOFILE_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSAMPLERATE_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSNDFILE_SUPPORT is not set
++# CONFIG_AMBARELLA_WEBRTC_AUDIO_PROCESSING_SUPPORT is not set
++# CONFIG_AMBARELLA_SPEEX_SUPPORT is not set
++# CONFIG_AMBARELLA_FFMPEG_SUPPORT is not set
++CONFIG_AMBARELLA_NCURSES_SUPPORT=y
++CONFIG_AMBARELLA_LIBSELINUX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSELINUX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSEPOL_SUPPORT=y
++# CONFIG_AMBARELLA_INIPARSER_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBSSH2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBIDN_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBCURL_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBPNG_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEXIF_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT is not set
++# CONFIG_AMBARELLA_ZBAR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBDAEMON_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBICAL_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBUSBX_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBUSB_COMPAT_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMTP_SUPPORT is not set
++# CONFIG_AMBARELLA_READLINE_SUPPORT is not set
++# CONFIG_AMBARELLA_SBC_SUPPORT is not set
++# CONFIG_AMBARELLA_BIND_LIB_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBPCAP_SUPPORT is not set
++CONFIG_AMBARELLA_LIBCAP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBCAP_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBATTR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBATTR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_PAM_SUPPORT=y
++# CONFIG_AMBARELLA_OPENCV_SUPPORT is not set
++# CONFIG_AMBARELLA_GMP_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBTASN1_SUPPORT is not set
++# CONFIG_AMBARELLA_NETTLE_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMICROHTTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBAUDIOANALYTIC_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBOSIP2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBEXOSIP2_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBNDP_SUPPORT is not set
++# CONFIG_AMBARELLA_X265_SUPPORT is not set
++# CONFIG_AMBARELLA_SQLITE_SUPPORT is not set
++
++#
++# Network/BlueTooth Packages
++#
++
++#
++# Wireless
++#
++# CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_BROADCOM_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_MARVELL_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
++# CONFIG_ATHEROS_TOOL_SUPPORT is not set
++# CONFIG_BROADCOM_TOOL_SUPPORT is not set
++# CONFIG_BROADCOM_GPS_SUPPORT is not set
++# CONFIG_MARVELL_TOOL_SUPPORT is not set
++# CONFIG_REALTEK_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_SUPPORT is not set
++# CONFIG_AMBARELLA_IW_SUPPORT is not set
++# CONFIG_AMBARELLA_DNSMASQ_SUPPORT is not set
++# CONFIG_AMBARELLA_HOSTAPD_SUPPORT is not set
++
++#
++# BlueTooth
++#
++CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT=y
++# CONFIG_AMBARELLA_BLUETOOTH5_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUEZ_TOOLS_SUPPORT is not set
++
++#
++# Network Utilities
++#
++CONFIG_AMBARELLA_NO_NETWORK_MANAGEMENT=y
++# CONFIG_AMBARELLA_NETWORKMANAGER_SUPPORT is not set
++# CONFIG_AMBARELLA_CONNMAN_SUPPORT is not set
++# CONFIG_AMBARELLA_IPTABLES_SUPPORT is not set
++# CONFIG_AMBARELLA_DHCP_SUPPORT is not set
++# CONFIG_AMBARELLA_DHCPCD_SUPPORT is not set
++# CONFIG_AMBARELLA_SAMBA_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_AUTO_TELNETD=y
++# CONFIG_AMBARELLA_SSH_SUPPORT is not set
++# CONFIG_AMBARELLA_AVAHI_SUPPORT is not set
++# CONFIG_AMBARELLA_TFTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_NFS_SERVICE_SUPPORT is not set
++# CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT is not set
++# CONFIG_AMBARELLA_PARTNER_Y_SUPPORT is not set
++# CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT is not set
++# CONFIG_AMBARELLA_NTP_SUPPORT is not set
++# CONFIG_AMBARELLA_TCPDUMP_SUPPORT is not set
++# CONFIG_AMBARELLA_USTREAM_SUPPORT is not set
++# CONFIG_AMBARELLA_ETHTOOL_SUPPORT is not set
++
++#
++# Filesystem Tools
++#
++# CONFIG_AMBARELLA_E2FSPROGS_SUPPORT is not set
++# CONFIG_AMBARELLA_DOSFSTOOS_SUPPORT is not set
++# CONFIG_AMBARELLA_PARTED_SUPPORT is not set
++# CONFIG_AMBARELLA_UBI_TOOLS_SUPPORT is not set
++# CONFIG_AMBARELLA_F2FS_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_SSHFS_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_EXFAT_SUPPORT is not set
++# CONFIG_SONY_SD_LIBRARY is not set
++
++#
++# Script Language
++#
++# CONFIG_AMBARELLA_LUA_SUPPORT is not set
++# CONFIG_AMBARELLA_PYTHON_SUPPORT is not set
++
++#
++# Benchmark Tools
++#
++# CONFIG_AMBARELLA_LMBENCH_SUPPORT is not set
++# CONFIG_AMBARELLA_CYCLICTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_HALTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_IOZONE_SUPPORT is not set
++# CONFIG_AMBARELLA_I2C_TOOLS_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF3_SUPPORT is not set
++
++#
++# System Utils
++#
++
++#
++# Message Bus System
++#
++# CONFIG_AMBARELLA_DBUS_SUPPORT is not set
++CONFIG_AMBARELLA_START_WATCHDOG=y
++# CONFIG_AMBARELLA_PROCPS_SUPPORT is not set
++# CONFIG_AMBARELLA_ELFUTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_PINFO_SUPPORT is not set
++CONFIG_UTIL_LINUX_SUPPORT=y
++
++#
++# Debug Tools
++#
++# CONFIG_AMBARELLA_GDB_SUPPORT is not set
++# CONFIG_AMBARELLA_GDBSERVER_SUPPORT is not set
++# CONFIG_AMBARELLA_STRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_LTRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_VTABLE_DUMPER_SUPPORT is not set
++# CONFIG_AMBARELLA_VALGRIND_SUPPORT is not set
++BUILD_AMBARELLA_UNIT_TESTS=y
++CONFIG_UNIT_TEST_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_UNIT_TEST_IMGPROC_PARAM_DIR="$(FAKEROOT_DIR)/etc/idsp"
++# BUILD_AMBARELLA_UNIT_TESTS_STATIC is not set
++BUILD_AMBARELLA_PUBLIC_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_AUDIO is not set
++BUILD_AMBARELLA_UNIT_TESTS_BENCHMARK=y
++BUILD_AMBARELLA_UNIT_TESTS_BANDWIDTH=y
++BUILD_AMBARELLA_UNIT_TESTS_NBENCH=y
++BUILD_AMBARELLA_UNIT_TESTS_PI_CSS5=y
++# BUILD_AMBARELLA_UNIT_TESTS_MEM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_WRITE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_BENCHMARK is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NET_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MEMTESTER is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO_SOCKET is not set
++# BUILD_AMBARELLA_UNIT_TESTS_FLASH_FS is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IDE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MISC is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NAND is not set
++# BUILD_AMBARELLA_UNIT_TESTS_UPGRADE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_USB_STREAM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_I2C_TOOL is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IIO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_EVTEST is not set
++BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_CALIBRATION is not set
++BUILD_AMBARELLA_UNIT_TESTS_AMBADEBUG=y
++BUILD_AMBARELLA_UNIT_TESTS_IAV=y
++# BUILD_AMBARELLA_IAV_AUTO_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IDSP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CUSTOM_IDSP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MW is not set
++# BUILD_AMBARELLA_UNIT_TESTS_PACKAGE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_VIN is not set
++# BUILD_AMBARELLA_UNIT_TESTS_VOUT is not set
++# BUILD_AMBARELLA_UNIT_TESTS_VSYNC is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SHMOO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_HW_TIMER is not set
+diff --git a/devices.h b/devices.h
+index f2a1a58..e8c8dec 100644
+--- a/devices.h
++++ b/devices.h
+@@ -3,18 +3,38 @@
+  * History:
+  * 2014/09/17 - [Bin Wang] Created this file
+  *
+- * Copyright (C) 2014-2018 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
+- *********************************************************************/
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ 
+ #ifndef __DEVICES_H__
+ #define __DEVICES_H__
+ 
+-#define SUPPORT_DC_IRIS         1
++#define SUPPORT_DC_IRIS         0
+ #define SUPPORT_IR_LED          0
+ #define SUPPORT_IR_CUT          0
+ 
+diff --git a/rootfs/default/etc/init.d/S10syscfg b/rootfs/default/etc/init.d/S10syscfg
+index 398b581..2ed4250 100755
+--- a/rootfs/default/etc/init.d/S10syscfg
++++ b/rootfs/default/etc/init.d/S10syscfg
+@@ -1,47 +1,16 @@
+ #!/bin/sh
+ #
+-# Init S2 sys config
++# Init system config
+ #
+ 
+-vm_dir=/proc/sys/vm
+-
+-
+ start()
+ {
+-	#disable kswapd write
+-	echo "Disable kswapd write"
+-	echo 1 > $vm_dir/laptop_mode
+-
+-	#update free mem to 20M more than default
+-	echo 20000 > $vm_dir/min_free_kbytes
+-	echo 160 > $vm_dir/vfs_cache_pressure
+-
+-	#if you want to make system flush disk faster, uncomment below
+-	#enable below will reduce write peak, but slightly reduce throughput
+-	#echo 100 > $vm_dir/dirty_writeback_centisecs
+-	#echo 5 > $vm_dir/dirty_ratio
+-	#echo 5 > $vm_dir/dirty_background_ratio
+-
+-	#remount sd card if there is
+-	#if (grep mmcblk0p1 /proc/mounts); then
+-	#	echo "remount sd card to improve performance"
+-	#	mount -o remount,noatime,nodiratime /tmp/mmcblk0p1
+-	#fi
+-
++	find /etc/sysctl.d -type f -name "*.conf" -exec /sbin/sysctl -p "{}" \;
+ }
+ 
+ stop()
+ {
+-	echo "turn off laptop_mode and restore to default"
+-	echo 0 > $vm_dir/laptop_mode
+-
+-	echo 2048 > $vm_dir/min_free_kbytes
+-	echo 100 > $vm_dir/vfs_cache_pressure
+-
+-	#if (grep mmcblk0p1 /proc/mounts); then
+-	#	echo "remount sd in default mode"
+-	#	mount -o remount,atime,diratime,relatime /tmp/mmcblk0p1
+-	#fi
++	/bin/true
+ }
+ 
+ restart() {
+diff --git a/rootfs/default/etc/pulse/daemon.conf b/rootfs/default/etc/pulse/daemon.conf
+index 9eb48c0..84ff1f6 100644
+--- a/rootfs/default/etc/pulse/daemon.conf
++++ b/rootfs/default/etc/pulse/daemon.conf
+@@ -71,11 +71,11 @@ resample-method = trivial
+ ; rlimit-msgqueue = -1
+ ; rlimit-nice = 31
+ ; rlimit-rtprio = 9
+-; rlimit-rttime = 1000000
++rlimit-rttime = 300000
+ 
+ default-sample-format = s16le
+ default-sample-rate = 48000
+-alternate-sample-rate = 48000
++alternate-sample-rate = 16000
+ ; default-sample-channels = 2
+ ; default-channel-map = front-left,front-right
+ 
+diff --git a/config/s2l_cloudcam_config b/config/s2l_cloudcam_config
+new file mode 100644
+index 0000000..e93de3a
+--- /dev/null
++++ b/config/s2l_cloudcam_config
+@@ -0,0 +1,910 @@
++#
++# Automatically generated make config: don't edit
++# Ambarella Build Configuration
++# Thu Nov  6 10:56:44 2014
++#
++# CONFIG_ARCH_A5S is not set
++# CONFIG_ARCH_S2 is not set
++# CONFIG_ARCH_S2E is not set
++CONFIG_ARCH_S2L=y
++# CONFIG_ARCH_S3 is not set
++# CONFIG_ARCH_S3L is not set
++# CONFIG_CPU_CORTEXA9 is not set
++CONFIG_CPU_CORTEXA9_HF=y
++
++#
++# Ambarella Board Configuration
++#
++CONFIG_BSP_BOARD_HAWTHORN=y
++# CONFIG_BSP_BOARD_S2LM_IRONMAN is not set
++# CONFIG_BSP_BOARD_S2LM_KIWI is not set
++CONFIG_BOARD_VERSION_HAWTHORN_S2L66=y
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L66_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63 is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L63_EVKB is not set
++# CONFIG_BOARD_VERSION_HAWTHORN_S2L22 is not set
++# CONFIG_HAWTHORN_DSP_BOOT is not set
++BUILD_AMBARELLA_FIRMWARE=y
++
++#
++# Memory Options
++#
++
++#
++# AMBoot memory options
++#
++AMBOOT_BLD_RAM_START=0x00000000
++AMBOOT_BLD_STACK_SIZE=0x00008000
++AMBOOT_BLD_HEAP_SIZE=0x00008000
++
++#
++# RTOS memory options
++#
++KERNEL_RAM_START=0x00208000
++AMBARELLA_INITRD_PHYS=0x00800000
++IDSP_RAM_START=0x2BE00000
++DSP_FASTDATA_SIZE=0x0000000
++DSP_FASTAUDIO_SIZE=0x0000000
++FRAMEBUFFER_SIZE=0x0000000
++
++#
++# Hardware Options
++#
++ARCH_SUPPORT_BCH_ID5=y
++ARCH_SUPPORT_SPINOR=y
++# CONFIG_FLASH_PAGE_256 is not set
++# CONFIG_FLASH_PAGE_512 is not set
++CONFIG_FLASH_PAGE_2K=y
++# CONFIG_FLASH_PAGE_4K is not set
++# CONFIG_FLASH_ERASE_4k is not set
++# CONFIG_FLASH_ERASE_16k is not set
++# CONFIG_FLASH_ERASE_64k is not set
++CONFIG_FLASH_ERASE_128k=y
++# CONFIG_FLASH_ERASE_256k is not set
++CONFIG_AMBOOT_ENABLE_NAND=y
++
++#
++# NAND Subsystem Options
++#
++CONFIG_NAND_ERASE_UNUSED_BLOCK=y
++CONFIG_NAND_USE_FLASH_BBT=y
++# CONFIG_NAND_P512_E16K is not set
++# CONFIG_NAND_P2K_E64K is not set
++CONFIG_NAND_P2K_E128K=y
++# CONFIG_NAND_P4K_E64K is not set
++# CONFIG_NAND_P4K_E128K is not set
++# CONFIG_NAND_K9F2808 is not set
++# CONFIG_NAND_K9F5608 is not set
++# CONFIG_NAND_K9F1208 is not set
++# CONFIG_NAND_K9F1208X0C is not set
++# CONFIG_NAND_K9F1G08 is not set
++# CONFIG_NAND_K9F1G08U0B is not set
++# CONFIG_NAND_K9F1G08U0E is not set
++# CONFIG_NAND_K9F4G08U0E is not set
++CONFIG_NAND_K9F2G08=y
++# CONFIG_NAND_K9F2G08U0C is not set
++# CONFIG_NAND_K9W8G08 is not set
++# CONFIG_NAND_K9K4G08 is not set
++# CONFIG_NAND_K9K8G08 is not set
++# CONFIG_NAND_K9WAG08 is not set
++# CONFIG_NAND_K9NBG08 is not set
++# CONFIG_NAND_HY27US08281A is not set
++# CONFIG_NAND_HY27US08561A is not set
++# CONFIG_NAND_HY27US08561M is not set
++# CONFIG_NAND_HY27US08121M is not set
++# CONFIG_NAND_HY27US08121A is not set
++# CONFIG_NAND_HY27UA081G1M is not set
++# CONFIG_NAND_HY27UF081G2A is not set
++# CONFIG_NAND_HY27UF082G2A is not set
++# CONFIG_NAND_HY27UF082G2B is not set
++# CONFIG_NAND_HY27UF084G2B is not set
++# CONFIG_NAND_HY27UF084G2M is not set
++# CONFIG_NAND_HY27U1G8F2B is not set
++# CONFIG_NAND_H27U518S2c is not set
++# CONFIG_NAND_HY27US4G86F2D is not set
++# CONFIG_NAND_H27U2G8F2C is not set
++# CONFIG_NAND_H27U2G8F2D is not set
++# CONFIG_NAND_MX30LF1G08AA is not set
++# CONFIG_NAND_MX30LF1GE8AB is not set
++# CONFIG_NAND_MX30LF2GE8AB is not set
++# CONFIG_NAND_ST128W3A is not set
++# CONFIG_NAND_ST256W3A is not set
++# CONFIG_NAND_ST512W3A is not set
++# CONFIG_NAND_ST01GW3A is not set
++# CONFIG_NAND_ST01GW3B is not set
++# CONFIG_NAND_ST02GW3B is not set
++# CONFIG_NAND_NUMONYX02GW3B2D is not set
++# CONFIG_NAND_TC58BVG0S3H is not set
++# CONFIG_NAND_TC58BVG1S3H is not set
++# CONFIG_NAND_TC58DVM72A is not set
++# CONFIG_NAND_TC58DVM82A is not set
++# CONFIG_NAND_TC58DVM92A is not set
++# CONFIG_NAND_TC58NVG0S3C is not set
++# CONFIG_NAND_TC58NVG0S3E is not set
++# CONFIG_NAND_TC58NVG0S3H is not set
++# CONFIG_NAND_TC58NVG1S3H is not set
++# CONFIG_NAND_TC58NVG1S3E is not set
++# CONFIG_NAND_TC58NVG2S3E is not set
++# CONFIG_NAND_TC58NVM9S3C is not set
++# CONFIG_NAND_MT29F2G08AAC is not set
++# CONFIG_NAND_MT29F1G08ABAEA is not set
++# CONFIG_NAND_MT29F2G08ABA is not set
++# CONFIG_NAND_MT29F8G08DAA is not set
++# CONFIG_NAND_MT29F4G08ABADA is not set
++# CONFIG_NAND_MT29F2G08ABAFA is not set
++# CONFIG_NAND_CT48248NS486G1 is not set
++# CONFIG_NAND_ASU1GA30HT is not set
++# CONFIG_NAND_K9F4G08U0A is not set
++# CONFIG_NAND_F59L1G81A is not set
++# CONFIG_NAND_F59L1G81LA is not set
++# CONFIG_NAND_F59L1G81MA is not set
++# CONFIG_NAND_F59L2G81A is not set
++# CONFIG_NAND_F59L4G81A is not set
++# CONFIG_NAND_S34ML01G1 is not set
++# CONFIG_NAND_S34ML02G1 is not set
++# CONFIG_NAND_S34ML04G1 is not set
++# CONFIG_NAND_S34ML01G2 is not set
++# CONFIG_NAND_S34ML02G2 is not set
++# CONFIG_NAND_S34ML04G2 is not set
++# CONFIG_NAND_W29N01GVSCAA is not set
++# CONFIG_NAND_W29N02GVSIAA is not set
++CONFIG_NAND_1DEVICE=y
++# CONFIG_NAND_2DEVICE is not set
++# CONFIG_NAND_4DEVICE is not set
++CONFIG_AMBOOT_ENABLE_SD=y
++
++#
++# SD Subsystem Options
++#
++# CONFIG_AMBOOT_ENABLE_SPINOR is not set
++# CONFIG_AMBOOT_ENABLE_SPINAND is not set
++# CONFIG_AMBOOT_ENABLE_SPI is not set
++CONFIG_AMBOOT_ENABLE_IDC=y
++
++#
++# IDC Subsystem Options
++#
++# CONFIG_AMBOOT_ENABLE_ISL12022M is not set
++CONFIG_AMBOOT_ENABLE_PCA953X=y
++CONFIG_AMBOOT_ENABLE_ETH=y
++
++#
++# ETH Subsystem Options
++#
++CONFIG_AMBOOT_ENABLE_USB=y
++CONFIG_AMBOOT_ENABLE_GPIO=y
++# CONFIG_AMBOOT_DISABLE_UART is not set
++CONFIG_AMBOOT_ENABLE_UART0=y
++
++#
++# UART Subsystem Options
++#
++# AMBOOT_UART_19200 is not set
++# AMBOOT_UART_38400 is not set
++# AMBOOT_UART_57600 is not set
++AMBOOT_UART_115200=y
++# CONFIG_AMBOOT_ENABLE_ADC is not set
++# CONFIG_AMBOOT_ENABLE_IR is not set
++
++#
++# AMBoot (boot loader)
++#
++CONFIG_BOOT_MEDIA_NAND=y
++# CONFIG_BOOT_MEDIA_EMMC is not set
++# CONFIG_4K_BOOT_IMAGE is not set
++
++#
++# Common Boot Options
++#
++CONFIG_AMBOOT_COMMAND_SUPPORT=y
++# CONFIG_AMBOOT_FDT_LOW_ADDR is not set
++# CONFIG_AMBOOT_SEARCH_PTB is not set
++CONFIG_AMBOOT_BD_CMDLINE=""
++AMBOOT_DEFAULT_SN=""
++AMBOOT_DEFAULT_LINUX_MACHINE_ID=4603
++AMBOOT_DEV_AUTO_BOOT=y
++# AMBOOT_DEV_FAST_BOOT is not set
++AMBOOT_DEV_NORMAL_MODE=y
++# AMBOOT_DEV_USBDL_MODE is not set
++# DRAM_TYPE_DDR3 is not set
++# DRAM_TYPE_DDR2 is not set
++# DRAM_TYPE_LPDDR3 is not set
++BUILD_DEVFW=y
++# SECURE_BOOT is not set
++# AMBOOT_THAW_HIBERNATION is not set
++MINIMAL_FIRMWARE_COMBO=y
++# BUILD_DEBUG_MEMFWPROG is not set
++
++#
++# Persistent BIOS App Partition
++#
++PBA=""
++PBA_VIF=""
++
++#
++# Primary Partition
++#
++KERNEL="$(AMB_BOARD_OUT)/kernel/Image"
++KERNEL_VIF="$(AMB_TOPDIR)/amboot/vif/linux.info"
++
++#
++# Secondary Partition
++#
++SECONDARY=""
++SECONDARY_VIF=""
++
++#
++# Backup Partition
++#
++BACKUP=""
++BACKUP_VIF=""
++
++#
++# Ramdisk Partition
++#
++RAMDISK=""
++RAMDISK_VIF=""
++
++#
++# ROMFS Partition
++#
++ROMFS=""
++ROMFS_VIF=""
++
++#
++# Linux Partition
++#
++LNX="$(AMB_BOARD_OUT)/rootfs/ubifs"
++LNX_VIF="$(AMB_TOPDIR)/amboot/vif/ubifs.info"
++
++#
++# Swap Partition
++#
++SWP=""
++SWP_VIF=""
++
++#
++# Android Data Partition
++#
++ADD=""
++ADD_VIF=""
++
++#
++# Android Cache Partition
++#
++ADC=""
++ADC_VIF=""
++# AMBOOT_BOOT_DSP is not set
++BUILD_AMBARELLA_APPLICATION=y
++CONFIG_APP_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_APP_IPCAM_CONFIG_DIR="$(FAKEROOT_DIR)/etc/ambaipcam"
++BUILD_AMBARELLA_APP_DEBUG=y
++# BUIDL_AMBARELLA_APP_DEBUG_SANITIZE_ADDRESS is not set
++BUILD_AMBAREALLA_CLOUD_LIB=y
++# BUILD_AMBAREALLA_CLOUD_AGENT is not set
++BUILD_AMBARELLA_APP_IPCAM=y
++BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON=y
++# BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_C is not set
++BUILD_AMBARELLA_APP_IPCAM_RTSP=y
++# BUILD_AMBARELLA_APP_IPCAM_AUTORUN_SERVICES is not set
++BUILD_AMBARELLA_APP_IPCAM_SMART_LDC=y
++# BUILD_AMBARELLA_APP_HTTP_UPLOADER is not set
++# BUILD_AMBARELLA_APP_WOWL is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_AUDIO is not set
++# BUILD_AMBARELLA_APP_FASTBOOT_APP is not set
++# BUILD_AMBARELLA_APP_SMARTCAM is not set
++BUILD_AMBAREALLA_APP_UTILITY=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS=y
++BUILD_AMBAREALLA_UTILITY_SCRIPTS_ALL=y
++# BUILD_AMBAREALLA_APP_UTILITY_DNG_TOOL is not set
++BUILD_AMBARELLA_APP_UTILITY_DSP=y
++BUILD_AMBARELLA_APP_UTILITY_LOAD_UCODE=y
++BUILD_AMBARELLA_APP_UTILITY_DSPLOG=y
++# BUILD_AMBARELLA_APP_UTILITY_GEN_FASTBOOT_UCODE is not set
++# BUILD_AMBARELLA_APP_UTILITY_JPG is not set
++# BUILD_AMBARELLA_ORYX_MPTOOL is not set
++BUILD_AMBAREALLA_APP_UTILITY_UPGRADE=y
++BUILD_UPGRADE_FOR_3_10=y
++# BUILD_UPGRADE_FOR_3_8 is not set
++# BUILD_UPGRADE_FOR_4_4 is not set
++# BUILD_SONY_SD_TOOL is not set
++BUILD_AMBARELLA_LINUX_KERNEL=y
++CONFIG_LINUX_KERNEL_VERSION="3.10"
++CONFIG_KERNEL_DEFCONFIG_STRING="ambarella_s2l_defconfig"
++CONFIG_KERNEL_MODULES_INSTALL_DIR="$(FAKEROOT_DIR)"
++# BUILD_AMBARELLA_EXTERNAL_MODULES is not set
++BUILD_AMBARELLA_PRIVATE_MODULES=y
++BUILD_AMBARELLA_VIN=y
++
++#
++# Ambarella Sensor Configuration
++#
++CONFIG_SENSOR_MT9T002=y
++CONFIG_SENSOR_MT9T002_MIPI=y
++# CONFIG_SENSOR_MT9T002_PARALLEL is not set
++CONFIG_SENSOR_AR0130=y
++# CONFIG_SENSOR_AR0141 is not set
++CONFIG_SENSOR_AR0230=y
++CONFIG_SENSOR_AR0230P=y
++# CONFIG_SENSOR_AR0237 is not set
++# CONFIG_SENSOR_AR0237P is not set
++# CONFIG_SENSOR_AR0331 is not set
++CONFIG_SENSOR_OV2710P=y
++# CONFIG_SENSOR_OV2718_MIPI is not set
++CONFIG_SENSOR_OV4689_MIPI=y
++# CONFIG_SENSOR_OV5653 is not set
++# CONFIG_SENSOR_OV9710 is not set
++CONFIG_SENSOR_OV9718_MIPI=y
++# CONFIG_SENSOR_OV9732_MIPI is not set
++# CONFIG_SENSOR_OV9732_PARALLEL is not set
++# CONFIG_SENSOR_OV9750_MIPI is not set
++# CONFIG_SENSOR_OV9750_PARALLEL is not set
++CONFIG_SENSOR_OV5658_MIPI=y
++CONFIG_SENSOR_IMX122=y
++CONFIG_SENSOR_IMX104=y
++# CONFIG_SENSOR_IMX136 is not set
++CONFIG_SENSOR_IMX136P=y
++CONFIG_SENSOR_IMX172=y
++# CONFIG_SENSOR_IMX226 is not set
++# CONFIG_SENSOR_IMX174 is not set
++CONFIG_SENSOR_IMX178=y
++CONFIG_SENSOR_IMX178_I2C=y
++# CONFIG_SENSOR_IMX178_SPI is not set
++# CONFIG_SENSOR_IMX185 is not set
++# CONFIG_SENSOR_IMX123 is not set
++# CONFIG_SENSOR_IMX322 is not set
++CONFIG_SENSOR_IMX124=y
++# CONFIG_SENSOR_IMX224 is not set
++# CONFIG_SENSOR_IMX224_MIPI is not set
++# CONFIG_SENSOR_IMX290 is not set
++# CONFIG_SENSOR_IMX291 is not set
++CONFIG_SENSOR_MN34041PL=y
++# CONFIG_SENSOR_MN34210PL is not set
++CONFIG_SENSOR_MN34220PL=y
++# CONFIG_SENSOR_MN34227PL is not set
++# CONFIG_SENSOR_MN34420PL is not set
++# CONFIG_SENSOR_FPGA is not set
++# CONFIG_SENSOR_AMBDS is not set
++
++#
++# Ambarella TV decoder Configuration
++#
++CONFIG_YUV_ADV7441A=y
++# CONFIG_YUV_AMBDD is not set
++# CONFIG_AMBARELLA_VIN_DEBUG is not set
++# CONFIG_VIN_FPS_STAT is not set
++# BUILD_AMBARELLA_LENS is not set
++BUILD_AMBARELLA_VOUT=y
++# CONFIG_DVE_NULL is not set
++CONFIG_DVE_AMBTVE=y
++# CONFIG_DIGITAL_NULL is not set
++CONFIG_DIGITAL_AMBDBUS=y
++# CONFIG_HDMI_NULL is not set
++CONFIG_HDMI_AMBHDMI=y
++# BUILD_AMBARELLA_IT66121_HDMI is not set
++# CONFIG_AMBARELLA_VOUT_DEBUG is not set
++# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
++BUILD_AMBARELLA_HW_TIMER=y
++BUILD_AMBARELLA_DSP=y
++CONFIG_PRINT_DSP_CMD=y
++CONFIG_PRINT_DSP_CMD_MORE=y
++# CONFIG_PRINT_DSP_CMD_RAW is not set
++CONFIG_DSP_LOG_START_0X80000=y
++# CONFIG_DSP_LOG_START_IAVMEM is not set
++BUILD_AMBARELLA_IAV=y
++# CONFIG_AMBARELLA_IAV_DRAM_DECODE_ONLY is not set
++# CONFIG_AMBARELLA_IAV_DRAM_VOUT_ONLY is not set
++
++#
++# IAV memory options
++#
++DSP_BSB_SIZE=0x0600000
++DSP_IAVRSVD_SIZE=0x1000000
++IAV_MEM_USR_SIZE=0x0000000
++IAV_MEM_MV_SIZE=0x0000000
++IAV_MEM_OVERLAY_SIZE=0x0200000
++# CONFIG_AMBARELLA_IAV_ROI_IPB is not set
++IAV_MEM_QPM_SIZE=0x0018000
++CONFIG_AMBARELLA_IAV_DRAM_WARP_MEM=y
++IAV_MEM_PM_SIZE_S2L=0x03C0000
++IAV_MEM_VCA_SIZE=0x0000000
++# CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
++# CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS is not set
++BUILD_AMBARELLA_IMGPROC_DRV=y
++CONFIG_IMGPROC_MEM_SMALL=y
++# CONFIG_IMGPROC_MEM_LARGE is not set
++# BUILD_GYRO is not set
++# BUILD_EIS is not set
++BUILD_AMBARELLA_DEBUG=y
++BUILD_AMBARELLA_DSP_LOG=y
++# BUILD_AMBARELLA_CRYPTO is not set
++# BUILD_PRIVATE_DRIVER_FOR_CRYPTOCHIP is not set
++# BUILD_AMBARELLA_UVC_CAMERA is not set
++CONFIG_DSP_FIRMWARE_GERNEIC=y
++# CONFIG_DSP_FIRMWARE_ENCODE_ONLY is not set
++# CONFIG_DSP_FIRMWARE_DEBUG is not set
++# BUILD_DRIVERS_FROM_BINARY is not set
++BUILD_AMBARELLA_ORYX_MW=y
++
++#
++# Ambarella Oryx MW File Path
++#
++BUILD_AMBARELLA_ORYX_LIB_DIR="/usr/lib"
++BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN_DIR="/usr/lib/oryx/video"
++BUILD_AMBARELLA_ORYX_DEMUXER_DIR="/usr/lib/oryx/demuxer"
++BUILD_AMBARELLA_ORYX_MUXER_DIR="/usr/lib/oryx/muxer"
++BUILD_AMBARELLA_ORYX_CODEC_DIR="/usr/lib/oryx/codec"
++BUILD_AMBARELLA_ORYX_FILTER_DIR="/usr/lib/oryx/filter"
++BUILD_AMBARELLA_ORYX_BIN_DIR="/usr/bin"
++BUILD_AMBARELLA_ORYX_CONF_DIR="/etc/oryx"
++# BUILD_AMBARELLA_ORYX_VENDORS is not set
++# BUILD_AMBARELLA_ORYX_APP is not set
++# BUILD_AMBARELLA_ORYX_ANALYTICS is not set
++BUILD_AMBARELLA_ORYX_AUDIO=y
++BUILD_AMBARELLA_ORYX_AUDIO_CAPTURE=y
++BUILD_AMBARELLA_ORYX_AUDIO_CAPTURE_PULSE=y
++BUILD_AMBARELLA_ORYX_AUDIO_DEVICE=y
++BUILD_AMBARELLA_ORYX_AUDIO_DEVICE_PULSE=y
++# BUILD_AMBARELLA_ORYX_CLOUD_STORAGE is not set
++BUILD_AMBARELLA_ORYX_CFG_SET=y
++# BUILD_AMBARELLA_ORYX_CFG_SET_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_CONFIG=y
++# BUILD_AMBARELLA_ORYX_CONFIG_UNIT_TEST is not set
++# BUILD_AMBARELLA_ORYX_DISCOVERY is not set
++BUILD_AMBARELLA_ORYX_EVENTMONITOR=y
++BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_DIR="/usr/lib/oryx/event"
++BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_AUDIO_ALERT=y
++BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_KEY_INPUT=y
++BUILD_AMBARELLA_ORYX_IMAGE_QUALITY=y
++# BUILD_AMBARELLA_ORYX_IMAGE_QUALITY_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_IPC=y
++# BUILD_AMBARELLA_ORYX_IPC_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_LED=y
++# BUILD_AMBARELLA_ORYX_LED_UNIT_TEST is not set
++# BUILD_AMBARELLA_ORYX_NETWORK is not set
++BUILD_AMBARELLA_ORYX_PROTOCOL=y
++BUILD_AMBARELLA_ORYX_PROTOCOL_RTSP=y
++# BUILD_AMBARELLA_ORYX_PROTOCOL_SIP is not set
++BUILD_AMBARELLA_ORYX_SERVICES=y
++BUILD_AMBARELLA_ORYX_SERVICE_API_PROXY=y
++BUILD_AMBARELLA_ORYX_SERVICE_APPS_LAUNCHER=y
++BUILD_AMBARELLA_ORYX_SERVICE_AUDIO=y
++BUILD_AMBARELLA_ORYX_SERVICE_EVENT=y
++BUILD_AMBARELLA_ORYX_SERVICE_IMAGE=y
++# BUILD_AMBARELLA_ORYX_SERVICE_IMAGE_SELF_TEST is not set
++BUILD_AMBARELLA_ORYX_SERVICE_MEDIA=y
++BUILD_AMBARELLA_ORYX_SERVICE_NETWORK=y
++BUILD_AMBARELLA_ORYX_RTSP_SERVICE=y
++BUILD_AMBARELLA_ORYX_SERVICE_FRAME=y
++BUILD_AMBARELLA_ORYX_SERVICE_MANAGER=y
++# BUILD_AMBARELLA_ORYX_SIP_SERVICE is not set
++BUILD_AMBARELLA_ORYX_SERVICE_SYSTEM=y
++BUILD_AMBARELLA_ORYX_SERVICE_VIDEO=y
++BUILD_AMBARELLA_ORYX_SERVICE_PLAYBACK=y
++BUILD_AMBARELLA_ORYX_SERVICE_VIDEO_EDIT=y
++BUILD_AMBARELLA_ORYX_SERVICE_EFM_SOURCE=y
++BUILD_AMBARELLA_ORYX_CGI=y
++BUILD_AMBARELLA_ORYX_WEB_APPS=y
++BUILD_AMBARELLA_ORYX_WEB_DOCUMENT=y
++BUILD_AMBARELLA_ORYX_STREAM=y
++BUILD_AMBARELLA_ORYX_STREAM_RECORD=y
++BUILD_AMBARELLA_ORYX_STREAM_PLAYBACK=y
++# BUILD_AMBARELLA_ORYX_STREAM_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_UPGRADE=y
++BUILD_AMBARELLA_ORYX_UPGRADE_MTD_MOUNT_FS_TYPE="ubifs"
++# BUILD_AMBARELLA_ORYX_UPGRADE_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_UTILITY=y
++BUILD_AMBARELLA_ORYX_DEC7Z=y
++BUILD_AMBARELLA_ORYX_JPEG_ENCODER=y
++# BUILD_AMBARELLA_ORYX_JPEG_SNAPSHOT is not set
++BUILD_AMBARELLA_ORYX_LIBARCHIVE=y
++# BUILD_AMBARELLA_ORYX_LIBARCHIVE_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_OSAL=y
++BUILD_AMBARELLA_ORYX_UTIL=y
++# BUILD_AMBARELLA_ORYX_UTILITY_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_VIDEO=y
++CONFIG_AMBARELLA_ORYX_VIDEO_IAV2=y
++BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_OVERLAY=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_DPTZ=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_WARP=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_LBR=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_EIS=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_MD=y
++BUILD_AMBARELLA_ORYX_VIDEO_TEST=y
++BUILD_AMBARELLA_ORYX_WATCHDOG=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_UNIT_TEST=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_DEMUXER_RTSP=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_DEMUXER_MP4=y
++# BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_DEMUXER_TS is not set
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_MUXER_MP4=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_LINUXFB=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_ALSA_LIBRARY=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_FFMPEG_LIBRARY=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_AUDIO_AMBA_AAC_LIBRARY=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_LINUX_UVC=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_AMBA_DSP=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_VIDEO_DECODER_AMBA=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_VIDEO_RENDERER_AMBA=y
++# ENABLE_ORYX_PERFORMANCE_PROFILE is not set
++BUILD_AMBARELLA_PACKAGE=y
++# BUILD_AMBARELLA_PACKAGES_PROPRIETARY_SOURCES is not set
++BUILD_AMBARELLA_BSREADER_PACKAGE=y
++BUILD_AMBARELLA_DATATX_PACKAGE=y
++BUILD_AMBARELLA_DEWARP_PACKAGE=y
++CONFIG_DEWARP_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/dewarp"
++BUILD_AMBARELLA_DEWARP_DYNAMIC=y
++# BUILD_AMBARELLA_DEWARP_STATIC is not set
++BUILD_AMBARELLA_EIS_PACKAGE=y
++CONFIG_EIS_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/eis"
++BUILD_AMBARELLA_EIS_DYNAMIC=y
++# BUILD_AMBARELLA_EIS_STATIC is not set
++BUILD_AMBARELLA_IMGPROC_PACKAGE=y
++CONFIG_IMGPROC_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/imgproc"
++# CONFIG_IMGPROC_PACKAGE_DYNAMIC_LIB is not set
++BUILD_AMBARELLA_MIDDLEWARE=y
++
++#
++# MW Device configs
++#
++BUILD_AMBARELLA_IMAGE_DEVICE_PROC=y
++CONFIG_IMAGE_DEVICE_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/img_dev"
++
++#
++# MW IMAGE configs
++#
++BUILD_AMBARELLA_MIDDLEWARE_PROC=y
++CONFIG_MIDDLEWARE_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/img_mw"
++BUILD_AMBARELLA_LBR_PACKAGE=y
++# BUILD_AMBARELLA_MAINPREPROC_PACKAGE is not set
++# BUILD_AMBARELLA_MDMOTBUF_PACKAGE is not set
++BUILD_AMBARELLA_SECURITY_PACKAGE=y
++BUILD_OPENSSL_WRAPPER_LIBRARY=y
++BUILD_AMBARELLA_LW_CRYPTOGRAPHY=y
++BUILD_AMBARELLA_DIGITAL_SIGNATURE=y
++CONFIG_DIGITAL_SIGNATURE_LIBRARY_NATIVE=y
++# CONFIG_DIGITAL_SIGNATURE_LIBRARY_OPENSSL is not set
++# BUILD_AMBARELLA_CRYPTOCHIP_LIBRARY is not set
++# BUILD_AMBARELLA_UNIQUEID_PUF_BPP is not set
++# BUILD_AMBARELLA_DIGITAL_WATERMARKER is not set
++BUILD_AMBARELLA_SMARTCAM_PACKAGE=y
++BUILD_AMBARELLA_SMARTCAM_PACKAGE_MDET=y
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_FDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_HDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_MHDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_PEDESTRIAN is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_HUMAN is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_FREC is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_DEFOG is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_PDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_STEREO is not set
++BUILD_AMBARELLA_TEXTINSERT_PACKAGE=y
++BUILD_AMBARELLA_UTILITIES_PACKAGE=y
++CONFIG_AMBARELLA_PREBUILD=y
++CONFIG_AMBARELLA_IMAGE_DATA=y
++CONFIG_AMBARELLA_MKFS=y
++# CONFIG_AMBARELLA_ROOTFS_RAM is not set
++# CONFIG_AMBARELLA_ROOTFS_CPIO is not set
++# CONFIG_AMBARELLA_ROOTFS_JFFS2 is not set
++# CONFIG_AMBARELLA_ROOTFS_YAFFS is not set
++CONFIG_AMBARELLA_ROOTFS_UBIFS=y
++# CONFIG_AMBARELLA_ROOTFS_EXT2 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT3 is not set
++# CONFIG_AMBARELLA_ROOTFS_EXT4 is not set
++# CONFIG_AMBARELLA_ROOTFS_SQUASHFS is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_FASTBOOT is not set
++# CONFIG_AMBARELLA_INIT_LINUXRC_SMALLBOOT is not set
++CONFIG_AMBARELLA_INIT_SYSTEMD=y
++
++#
++# Systemd Features
++#
++# CONFIG_AMBARELLA_SYSTEMD_JOURNAL_GATEWAY is not set
++# CONFIG_AMBARELLA_SYSTEMD_NETWORKD is not set
++# CONFIG_AMBARELLA_SYSTEMD_RESOLVD is not set
++# CONFIG_AMBARELLA_SYSTEMD_TIMESYNCD is not set
++CONFIG_AMBARELLA_ROOT_PASSWORD=""
++# CONFIG_AMBARELLA_NORMAL_USER is not set
++CONFIG_BACKUP_CPIO=y
++# CONFIG_AMBARELLA_BUSYBOX_BUILD is not set
++# CONFIG_AMBARELLA_BUSYBOX_BUILD_STATIC is not set
++CONFIG_AMBARELLA_BUSYBOX_PREBUILD=y
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN is not set
++# CONFIG_AMBARELLA_BUSYBOX_TOOLCHAIN_STATIC is not set
++CONFIG_AMBARELLA_ETH0=y
++# CONFIG_AMBARELLA_ETH0_DHCP is not set
++CONFIG_AMBARELLA_ETH0_ADDRESS="10.0.0.2"
++CONFIG_AMBARELLA_ETH0_GW_ADDRESS="10.0.0.1"
++CONFIG_AMBARELLA_ETH0_IP_MASK="255.255.255.0"
++CONFIG_AMBARELLA_MOUNT_MNT=""
++CONFIG_AMBARELLA_EXT_CMD_FILE=""
++
++#
++# Serial Port Configuration
++#
++CONFIG_AMBARELLA_SERIAL_PORT0_GETTY=y
++# CONFIG_AMBARELLA_SERIAL_PORT0_NA is not set
++# CONFIG_AMBARELLA_SERIAL_PORT1_GETTY is not set
++CONFIG_AMBARELLA_SERIAL_PORT1_NA=y
++# CONFIG_AMBARELLA_ASKFIRST_CONSOLE is not set
++CONFIG_AMBARELLA_ASKFIRST_CONSOLE_NA=y
++# CONFIG_AMBARELLA_SERIAL_PORT_USB0 is not set
++
++#
++# Audio Packages
++#
++
++#
++# ALSA
++#
++CONFIG_AMBARELLA_ALSA_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_SPEEKER_TEST_SUPPORT is not set
++CONFIG_AMBARELLA_ALSA_PLUGINS_SUPPORT=y
++CONFIG_AMBARELLA_ALSA_PLUGINS_PULSEAUDIO_SUPPORT=y
++# CONFIG_AMBARELLA_ALSA_PLUGINS_LIBSAMPLERATE_SUPPORT is not set
++# CONFIG_AMBARELLA_ALSA_PLUGINS_SPEEX_SUPPORT is not set
++
++#
++# PulseAudio
++#
++CONFIG_AMBARELLA_PULSEAUDIO_SUPPORT=y
++# CONFIG_AMBARELLA_PULSEAUDIO_SIMPLE_LIBRARY is not set
++CONFIG_AMBARELLA_PULSEAUDIO_UTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PULSEAUDIO_AEC_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_SIMPLE_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_CLI_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_HTTP_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_RTP_PROTOCOL is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_TUNNEL_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_COMBINE_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_REMAP_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_VOLUME_CONTROL_SUPPORT is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_MISC_MODULES is not set
++# CONFIG_AMBARELLA_PULSEAUDIO_TEST_MODULES is not set
++# CONFIG_AMBARELLA_SYSTEM_SOUND_FILES is not set
++
++#
++# Libraries
++#
++CONFIG_AMBARELLA_7ZDEC_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNL_1_SUPPORT is not set
++CONFIG_AMBARELLA_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBFFI_SUPPORT=y
++CONFIG_AMBARELLA_ZLIB_SUPPORT=y
++CONFIG_AMBARELLA_LIBBZIP2_SUPPORT=y
++# CONFIG_AMBARELLA_XZ_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBPCRE_SUPPORT=y
++CONFIG_AMBARELLA_LIBELF_SUPPORT=y
++CONFIG_AMBARELLA_FREETYPE_SUPPORT=y
++CONFIG_AMBARELLA_FREE_FONTS_SUPPORT=y
++# CONFIG_AMBARELLA_FREE_CHINESE_FONTS_SUPPORT is not set
++# CONFIG_AMBARELLA_LOCALE_SUPPORT is not set
++CONFIG_AMBARELLA_EXPAT_SUPPORT=y
++CONFIG_AMBARELLA_LIBXML2_SUPPORT=y
++CONFIG_AMBARELLA_MXML_SUPPORT=y
++CONFIG_AMBARELLA_CLEARSILVER_SUPPORT=y
++# CONFIG_AMBARELLA_LIBEVENT_SUPPORT is not set
++CONFIG_AMBARELLA_LIBNL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNL_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBTOOL_SUPPORT=y
++CONFIG_AMBARELLA_OPENSSL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSODIUM_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGPG_ERROR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGPG_ERROR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBGCRYPT_SUPPORT=y
++# CONFIG_AMBARELLA_LIBGCRYPT_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_GNUTLS_SUPPORT=y
++# CONFIG_AMBARELLA_GNUTLS_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_CA_CERTIFICATES_SUPPORT=y
++# CONFIG_AMBARELLA_LIBZRTPCPP_SUPPORT is not set
++CONFIG_AMBARELLA_JSONC_SUPPORT=y
++CONFIG_AMBARELLA_LIBOGG_SUPPORT=y
++CONFIG_AMBARELLA_LIBARCHIVE_SUPPORT=y
++CONFIG_AMBARELLA_SOXR_SUPPORT=y
++CONFIG_AMBARELLA_LIBG7XX_SUPPORT=y
++CONFIG_AMBARELLA_LIBOPUS_SUPPORT=y
++# CONFIG_AMBARELLA_LIBOPUSFILE_SUPPORT is not set
++# CONFIG_AMBARELLA_OPUS_TOOLS_SUPPORT is not set
++# CONFIG_AMBARELLA_AUDIOFILE_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSAMPLERATE_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSAMPLERATE_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSNDFILE_SUPPORT=y
++CONFIG_AMBARELLA_WEBRTC_AUDIO_PROCESSING_SUPPORT=y
++CONFIG_AMBARELLA_SPEEX_SUPPORT=y
++CONFIG_AMBARELLA_SPEEX_DSP_SUPPORT=y
++# CONFIG_AMBARELLA_SPEEX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_FFMPEG_SUPPORT=y
++CONFIG_AMBARELLA_NCURSES_SUPPORT=y
++CONFIG_AMBARELLA_LIBSELINUX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBSELINUX_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSEPOL_SUPPORT=y
++# CONFIG_AMBARELLA_INIPARSER_SUPPORT is not set
++CONFIG_AMBARELLA_LIBSSH2_SUPPORT=y
++CONFIG_AMBARELLA_LIBIDN_SUPPORT=y
++CONFIG_AMBARELLA_LIBCURL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBPNG_SUPPORT is not set
++CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT=y
++# CONFIG_AMBARELLA_LIBJPEG_TURBO_UTIL_SUPPORT is not set
++# CONFIG_AMBARELLA_ZBAR_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBDAEMON_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBICAL_SUPPORT is not set
++CONFIG_AMBARELLA_LIBUSBX_SUPPORT=y
++# CONFIG_AMBARELLA_LIBUSB_COMPAT_SUPPORT is not set
++CONFIG_AMBARELLA_READLINE_SUPPORT=y
++# CONFIG_AMBARELLA_SBC_SUPPORT is not set
++CONFIG_AMBARELLA_BIND_LIB_SUPPORT=y
++# CONFIG_AMBARELLA_LIBPCAP_SUPPORT is not set
++CONFIG_AMBARELLA_LIBCAP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBCAP_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_LIBATTR_SUPPORT=y
++# CONFIG_AMBARELLA_LIBATTR_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_PAM_SUPPORT=y
++# CONFIG_AMBARELLA_OPENCV_SUPPORT is not set
++CONFIG_AMBARELLA_GMP_SUPPORT=y
++CONFIG_AMBARELLA_LIBTASN1_SUPPORT=y
++# CONFIG_AMBARELLA_LIBTASN1_UTILS_SUPPORT is not set
++CONFIG_AMBARELLA_NETTLE_SUPPORT=y
++# CONFIG_AMBARELLA_NETTLE_UTILS_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBMICROHTTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_LIBAUDIOANALYTIC_SUPPORT is not set
++CONFIG_AMBARELLA_LIBOSIP2_SUPPORT=y
++CONFIG_AMBARELLA_LIBEXOSIP2_SUPPORT=y
++CONFIG_AMBARELLA_LIBNDP_SUPPORT=y
++# CONFIG_AMBARELLA_LIBNDP_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_X265_SUPPORT is not set
++# CONFIG_AMBARELLA_SQLITE_SUPPORT is not set
++
++#
++# Network/BlueTooth Packages
++#
++
++#
++# Wireless
++#
++# CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_BROADCOM_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_MARVELL_WIFI_SUPPORT is not set
++# CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
++# CONFIG_ATHEROS_TOOL_SUPPORT is not set
++# CONFIG_BROADCOM_TOOL_SUPPORT is not set
++# CONFIG_BROADCOM_GPS_SUPPORT is not set
++# CONFIG_MARVELL_TOOL_SUPPORT is not set
++# CONFIG_REALTEK_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT is not set
++CONFIG_AMBARELLA_WPA_SUPPLICANT_SUPPORT=y
++CONFIG_AMBARELLA_WPA_SUPPLICANT_LATEST_SUPPORT=y
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_FAST_SUPPORT is not set
++# CONFIG_AMBARELLA_WPA_SUPPLICANT_RTW_11967 is not set
++CONFIG_AMBARELLA_IW_SUPPORT=y
++CONFIG_AMBARELLA_DNSMASQ_SUPPORT=y
++# CONFIG_AMBARELLA_HOSTAPD_SUPPORT is not set
++
++#
++# BlueTooth
++#
++CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT=y
++# CONFIG_AMBARELLA_BLUETOOTH5_TOOL_SUPPORT is not set
++# CONFIG_AMBARELLA_BLUEZ_TOOLS_SUPPORT is not set
++
++#
++# Network Utilities
++#
++CONFIG_AMBARELLA_NO_IPTABLES_SUPPORT=y
++# CONFIG_AMBARELLA_IPTABLES_3_10_SUPPORT is not set
++CONFIG_AMBARELLA_DHCP_SUPPORT=y
++# CONFIG_AMBARELLA_DHCP_TOOL_OMSHELL is not set
++# CONFIG_AMBARELLA_DHCP_TOOL_DHCPD is not set
++CONFIG_AMBARELLA_DHCP_TOOL_DHCLIENT=y
++# CONFIG_AMBARELLA_DHCP_TOOL_DHCRELAY is not set
++CONFIG_AMBARELLA_DHCPCD_SUPPORT=y
++CONFIG_AMBARELLA_NETWORKMANAGER_SUPPORT=y
++# CONFIG_AMBARELLA_SAMBA_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_AUTO_TELNETD=y
++# CONFIG_AMBARELLA_SSH_SUPPORT is not set
++# CONFIG_AMBARELLA_AVAHI_SUPPORT is not set
++# CONFIG_AMBARELLA_TFTPD_SUPPORT is not set
++# CONFIG_AMBARELLA_NFS_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT=y
++# CONFIG_AMBARELLA_PARTNER_Y_SUPPORT is not set
++CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT=y
++CONFIG_AMBARELLA_NTP_SUPPORT=y
++# CONFIG_AMBARELLA_TCPDUMP_SUPPORT is not set
++# CONFIG_AMBARELLA_USTREAM_SUPPORT is not set
++CONFIG_AMBARELLA_ETHTOOL_SUPPORT=y
++
++#
++# Filesystem Tools
++#
++# CONFIG_AMBARELLA_E2FSPROGS_SUPPORT is not set
++# CONFIG_AMBARELLA_DOSFSTOOS_SUPPORT is not set
++CONFIG_AMBARELLA_PARTED_SUPPORT=y
++CONFIG_AMBARELLA_UBI_TOOLS_SUPPORT=y
++CONFIG_AMBARELLA_F2FS_SUPPORT=y
++# CONFIG_AMBARELLA_FUSE_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_SSHFS_SUPPORT is not set
++# CONFIG_AMBARELLA_FUSE_EXFAT_SUPPORT is not set
++
++#
++# Script Language
++#
++CONFIG_AMBARELLA_LUA_SUPPORT=y
++# CONFIG_AMBARELLA_PYTHON_SUPPORT is not set
++
++#
++# Benchmark Tools
++#
++# CONFIG_AMBARELLA_LMBENCH_SUPPORT is not set
++# CONFIG_AMBARELLA_CYCLICTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_HALTEST_SUPPORT is not set
++# CONFIG_AMBARELLA_IOZONE_SUPPORT is not set
++# CONFIG_AMBARELLA_I2C_TOOLS_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF_SUPPORT is not set
++# CONFIG_AMBARELLA_IPERF3_SUPPORT is not set
++
++#
++# System Utils
++#
++
++#
++# Message Bus System
++#
++CONFIG_AMBARELLA_DBUS_SUPPORT=y
++CONFIG_AMBARELLA_DBUS_GLIB_SUPPORT=y
++CONFIG_AMBARELLA_START_WATCHDOG=y
++CONFIG_AMBARELLA_PROCPS_SUPPORT=y
++CONFIG_AMBARELLA_ELFUTILS_SUPPORT=y
++# CONFIG_AMBARELLA_PINFO_SUPPORT is not set
++CONFIG_UTIL_LINUX_SUPPORT=y
++
++#
++# Debug Tools
++#
++# CONFIG_AMBARELLA_GDB_SUPPORT is not set
++# CONFIG_AMBARELLA_GDBSERVER_SUPPORT is not set
++# CONFIG_AMBARELLA_STRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_LTRACE_SUPPORT is not set
++# CONFIG_AMBARELLA_VALGRIND_SUPPORT is not set
++BUILD_AMBARELLA_UNIT_TESTS=y
++CONFIG_UNIT_TEST_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
++CONFIG_UNIT_TEST_IMGPROC_PARAM_DIR="$(FAKEROOT_DIR)/etc/idsp"
++# BUILD_AMBARELLA_UNIT_TESTS_STATIC is not set
++BUILD_AMBARELLA_PUBLIC_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_AUDIO is not set
++BUILD_AMBARELLA_UNIT_TESTS_BENCHMARK=y
++BUILD_AMBARELLA_UNIT_TESTS_BANDWIDTH=y
++BUILD_AMBARELLA_UNIT_TESTS_NBENCH=y
++BUILD_AMBARELLA_UNIT_TESTS_PI_CSS5=y
++# BUILD_AMBARELLA_UNIT_TESTS_MEM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_WRITE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_BENCHMARK is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NET_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_MEMTESTER=y
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CRYPTO_SOCKET is not set
++# BUILD_AMBARELLA_UNIT_TESTS_FLASH_FS is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IDE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MISC is not set
++# BUILD_AMBARELLA_UNIT_TESTS_NAND is not set
++# BUILD_AMBARELLA_UNIT_TESTS_UPGRADE is not set
++# BUILD_AMBARELLA_UNIT_TESTS_USB_STREAM is not set
++# BUILD_AMBARELLA_UNIT_TESTS_I2C_TOOL is not set
++BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS=y
++# BUILD_AMBARELLA_UNIT_TESTS_CALIBRATION is not set
++BUILD_AMBARELLA_UNIT_TESTS_AMBADEBUG=y
++BUILD_AMBARELLA_UNIT_TESTS_IAV=y
++# BUILD_AMBARELLA_IAV_AUTO_TEST is not set
++BUILD_AMBARELLA_UNIT_TESTS_IDSP=y
++# BUILD_AMBARELLA_UNIT_TESTS_IDSP_EXP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_CUSTOM_IDSP is not set
++# BUILD_AMBARELLA_UNIT_TESTS_IR_DEMO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_MW is not set
++BUILD_AMBARELLA_UNIT_TESTS_PACKAGE=y
++BUILD_AMBARELLA_UNIT_TESTS_VIN=y
++BUILD_AMBARELLA_UNIT_TESTS_VOUT=y
++BUILD_AMBARELLA_UNIT_TESTS_VSYNC=y
++# BUILD_AMBARELLA_UNIT_TESTS_SHMOO is not set
++# BUILD_AMBARELLA_UNIT_TESTS_HW_TIMER is not set

@@ -1,0 +1,12 @@
+[ucode]
+# format: [filename]  [is_single_post_load]  [pre_load_size]
+# filename (mandatory):
+#    Must be selected from the ucode binary files.
+# is_single_post_load (optional):
+#    0 for partial load (pre-load & post-load), 1 for full post-load.
+# pre_load_size (optional):
+#    It's only useful when "is_single_post_load" is zero.  Non-zero value means the
+#    pre-load size.  Post-load starts from this offset to the file end.
+orccode.bin 0 0xe0640
+orcme.bin 1
+default_binary.bin 0 0x20800

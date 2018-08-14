@@ -1,0 +1,366 @@
+##
+## package/AmbaConfig
+##
+## History:
+##    2012/01/16 - [Anthony Ginger] Create
+##
+## Copyright (c) 2016 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+menuconfig BUILD_AMBARELLA_PACKAGE
+	bool "Ambarella Package Configuration"
+	default n
+	help
+		Build Ambarella Package.
+
+if BUILD_AMBARELLA_PACKAGE
+
+config BUILD_AMBARELLA_PACKAGES_PROPRIETARY_SOURCES
+	bool "Build sources for proprietary packages"
+	default n
+	help
+		Build sources for proprietary packages
+
+config BUILD_AMBARELLA_PACKAGES_OPT_NEON
+	depends on BUILD_AMBARELLA_PACKAGES_OPT_ARMV7
+	bool "Neon Instruction Support"
+	default y
+	help
+		Neon Instruction Support
+
+##
+## packages/AmbaConfig
+##
+## Following content are generated automatically by
+##  create_mkcfg: DO NOT EDIT!!
+##
+
+##### bsreader
+
+config BUILD_AMBARELLA_BSREADER_PACKAGE
+	bool "Build Ambarella bsreader library (bit stream reader)"
+	default n
+	help
+		Build Ambarella bsreader library
+
+
+
+##### data_transfer
+
+config BUILD_AMBARELLA_DATATX_PACKAGE
+	bool "Build Ambarella data transfer library"
+	default y
+	help
+		Build Ambarella data transfer library (tcp/usb/nfs)
+
+
+
+##### dewarp
+
+menuconfig BUILD_AMBARELLA_DEWARP_PACKAGE
+	bool "Build Ambarella dewarp library"
+	select BUILD_AMBARELLA_UTILITIES_PACKAGE
+	default n
+	help
+		Build Ambarella private dewarp library
+
+if BUILD_AMBARELLA_DEWARP_PACKAGE
+
+config CONFIG_DEWARP_INSTALL_DIR
+	string "Install dewarp library"
+	default "$(AMBABUILD_TOPDIR)/prebuild/dewarp"
+	help
+		Install Dewarp library to the defined DIR.
+
+choice
+	prompt "Choose library format"
+	default BUILD_AMBARELLA_DEWARP_DYNAMIC
+	help
+		Select the dewarp library format
+
+config BUILD_AMBARELLA_DEWARP_DYNAMIC
+	bool "Dynamic Library (.so)"
+
+config BUILD_AMBARELLA_DEWARP_STATIC
+	bool "Static Library (.a)"
+
+endchoice
+
+endif
+
+
+
+##### eis
+
+menuconfig BUILD_AMBARELLA_EIS_PACKAGE
+	bool "Build Ambarella eis library"
+	select BUILD_AMBARELLA_UTILITIES_PACKAGE
+	default n
+	help
+		Build Ambarella private EIS library
+
+if BUILD_AMBARELLA_EIS_PACKAGE
+
+config CONFIG_EIS_INSTALL_DIR
+	string "Install EIS library"
+	default "$(AMBABUILD_TOPDIR)/prebuild/eis"
+	help
+		Install EIS library to the defined DIR.
+
+choice
+depends on BUILD_AMBARELLA_EIS_PACKAGE
+	prompt "Choose library format"
+	default BUILD_AMBARELLA_EIS_DYNAMIC
+	help
+		Select the EIS library format
+
+config BUILD_AMBARELLA_EIS_DYNAMIC
+	bool "Dynamic Library (.so)"
+
+config BUILD_AMBARELLA_EIS_STATIC
+	bool "Static Library (.a)"
+
+endchoice
+
+endif
+
+
+
+##### img_algo
+
+menuconfig BUILD_AMBARELLA_IMGPROC_PACKAGE
+	bool "Build Ambarella private IMGPROC module"
+	default n
+	help
+		Build Ambarella private image processing module for Linux.
+
+if BUILD_AMBARELLA_IMGPROC_PACKAGE
+
+config CONFIG_IMGPROC_INSTALL_DIR
+	string "Install img_algo"
+	default "$(AMB_TOPDIR)/prebuild/imgproc"
+	help
+		Install Unit imgproc lib to the defined DIR.
+
+config CONFIG_IMGPROC_PACKAGE_DYNAMIC_LIB
+	bool "Build libimg_algo_$(arch).so"
+	depends on CONFIG_ARCH_S2L
+	default n
+
+endif
+
+
+
+##### img_mw
+
+menuconfig BUILD_AMBARELLA_MIDDLEWARE
+	bool "Build Ambarella image middleware library"
+	default n
+	help
+		Build Ambarella Image Middleware Library.
+
+if BUILD_AMBARELLA_MIDDLEWARE
+
+source packages/img_mw/dev/AmbaConfig
+source packages/img_mw/mw/AmbaConfig
+
+endif
+
+
+
+##### low_bitrate
+
+config BUILD_AMBARELLA_LBR_PACKAGE
+	bool "Build Ambarella LBR (Low Bitrate) library"
+	default n
+	help
+		Build Ambarella Low Bitrate library
+
+
+
+##### main_preproc
+
+config BUILD_AMBARELLA_MAINPREPROC_PACKAGE
+	bool "Build Ambarella main preproc library"
+	default n
+	depends on (CONFIG_ARCH_S2L)
+	help
+		Build Ambarella main pre-processing library
+
+
+##### md_motbuf
+
+config BUILD_AMBARELLA_MDMOTBUF_PACKAGE
+	bool "Build Ambarella motion detect library (using motion buffer)"
+	default n
+	help
+		Build Ambarella motion detect library
+
+
+
+##### security
+
+menuconfig BUILD_AMBARELLA_SECURITY_PACKAGE
+	bool "Build Ambarella Security Package"
+	default y
+	help
+		Build Ambarella Security Package
+
+if BUILD_AMBARELLA_SECURITY_PACKAGE
+
+config BUILD_OPENSSL_WRAPPER_LIBRARY
+	bool "Build OpenSSL Wrapper Library"
+	select CONFIG_AMBARELLA_OPENSSL_SUPPORT
+	default y
+	help
+		Build OpenSSL Wrapper Library.
+
+config BUILD_AMBARELLA_LW_CRYPTOGRAPHY
+	bool "Build Ambarella Lightweight Cryptography Library"
+	default y
+	help
+		Build Ambarella Lightweight Cryptography Library.
+
+menuconfig BUILD_AMBARELLA_DIGITAL_SIGNATURE
+	bool "Build Ambarella Digital Signature Library"
+	default y
+	help
+		Build Ambarella Digital Signature Library.
+
+choice
+depends on BUILD_AMBARELLA_DIGITAL_SIGNATURE
+	prompt "Digital Signature Library"
+	default CONFIG_DIGITAL_SIGNATURE_LIBRARY_NATIVE
+	help
+		Select cryptography library.
+
+config CONFIG_DIGITAL_SIGNATURE_LIBRARY_NATIVE
+	bool "Based on native library"
+	depends on BUILD_AMBARELLA_DIGITAL_SIGNATURE
+
+config CONFIG_DIGITAL_SIGNATURE_LIBRARY_OPENSSL
+	bool "Based on OpenSSL"
+	depends on BUILD_AMBARELLA_DIGITAL_SIGNATURE
+
+endchoice
+
+config BUILD_AMBARELLA_CRYPTOCHIP_LIBRARY
+	bool "Build Cryptochip Library"
+	select BUILD_PRIVATE_DRIVER_FOR_CRYPTOCHIP
+	select CONFIG_CRYPTOCHIP_ATSHA204
+	default n
+	help
+		Build Cryptochip Library.
+
+config BUILD_AMBARELLA_CRYPTOCHIP_LIBRARY_FROM_SOURCE
+	depends on BUILD_AMBARELLA_CRYPTOCHIP_LIBRARY
+	bool "Build Cryptochip Library from source code"
+	default n
+	help
+		Build Cryptochip Library from source code.
+
+config BUILD_AMBARELLA_UNIQUEID_PUF_BPP
+	bool "Build Ambarella Unique ID based on PUF BPP"
+	select BUILD_AMBARELLA_LW_CRYPTOGRAPHY
+	default n
+	help
+		Build Ambarella Unique ID, based on PUF BPP (Bad Pixel Pattern).
+
+config BUILD_AMBARELLA_DIGITAL_WATERMARKER
+	bool "Build Ambarella Digital Watermarker"
+	default n
+	help
+		Build Ambarella Digital Watermarker.
+
+endif
+
+
+##### smartcam
+
+menuconfig BUILD_AMBARELLA_SMARTCAM_PACKAGE
+	bool "Build Ambarella Smartcam Package"
+	default n
+	help
+		Build Build Smartcam Package.
+
+if BUILD_AMBARELLA_SMARTCAM_PACKAGE
+
+config BUILD_AMBARELLA_SMARTCAM_PACKAGE_MDET
+	bool "Build Motion Detection Library"
+	default n
+	help
+		Build Motion Detection Library.
+
+config BUILD_AMBARELLA_SMARTCAM_PACKAGE_FDET
+	bool "Build Face Detection Library"
+	default n
+	help
+		Build Face Detection Library.
+
+config BUILD_AMBARELLA_SMARTCAM_PACKAGE_DEFOG
+	bool "Build Defog Library"
+	default n
+	help
+		Build Defog Library.
+
+config BUILD_AMBARELLA_SMARTCAM_PACKAGE_PDET
+	bool "Build Plate Detection Library"
+	default n
+	help
+		Build Plate Detection Library.
+
+config BUILD_AMBARELLA_SMARTCAM_PACKAGE_STEREO
+	bool "Build Stereo Vision Library"
+	default n
+	help
+		Build Stereo Vision Library.
+
+endif
+
+
+
+##### textinsert
+
+config BUILD_AMBARELLA_TEXTINSERT_PACKAGE
+	bool "Build Ambarella textinsert library"
+	select CONFIG_AMBARELLA_FREETYPE_SUPPORT
+	default n
+	help
+		Build Ambarella textinsert library
+
+
+
+##### utils
+
+config BUILD_AMBARELLA_UTILITIES_PACKAGE
+	bool "Build Ambarella utilities library"
+	default n
+	help
+		Build Ambarella utilities library
+
+
+## The end of AmbaConfig file
+endif
+

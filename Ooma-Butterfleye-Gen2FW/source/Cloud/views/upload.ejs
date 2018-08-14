@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <h1><a href="/">Home</a></h1>
+  <br>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <form action="upload" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+    <input type="file" name="file" /><br/>
+    <input type="submit" value="Upload" />
+    </form>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+##
+## /S2l/oryx/audio/codecs/AmbaConfig
+##
+## History:
+##   Apr 13, 2017 - [ypchang] created file
+##
+## Copyright (c) 2015 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+##
+
+menuconfig BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  bool "Audio Codec Plugin"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO
+  default y
+  help
+    Build Oryx Audio Codec Plugin (Encoder / Decoder)
+
+menuconfig BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC
+  bool "Audio Codec Plugin AAC"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  default y
+  help
+    Build Oryx Audio Codec Plugin for AAC
+
+choice
+  bool "AAC Codec Type"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC
+  default BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC_OLD
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC_OLD
+  bool "AAC codec using library version 201412"
+  depends on !CONFIG_ARCH_S5
+  depends on !CONFIG_ARCH_S5L
+  help
+    AAC codec using library version 201412
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC_NEW
+  bool "AAC codec using library version 20170413"
+  help
+    AAC codec using library version 20170413
+endchoice
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_G711
+  bool "Audio Codec Plugin G.711"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  default y
+  help
+    Build Oryx Audio Codec Plugin for G.711
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_G726
+  bool "Audio Codec Plugin G.726"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  default y
+  help
+    Build Oryx Audio Codec Plugin for G.726
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_MP3
+  bool "Audio Codec Plugin MP3"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  select CONFIG_AMBARELLA_MPG123_SUPPORT
+  default y
+  help
+    Build Oryx Audio Codec Plugin for MP3
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_OPUS
+  bool "Audio Codec Plugin OPUS"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  default y
+  help
+    Build Oryx Audio Codec Plugin for OPUS
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_SPEEX
+  bool "Audio Codec Plugin SPEEX"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  select BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  default y
+  help
+    Build Oryx Audio Codec Plugin for SPEEX
+
+config BUILD_AMBARELLA_ORYX_AUDIO_CODEC_BASE
+  bool "Audio Codec Plugin base library"
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC
+  depends on BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC_OLD || BUILD_AMBARELLA_ORYX_AUDIO_CODEC_AAC_NEW || BUILD_AMBARELLA_ORYX_AUDIO_CODEC_OPUS || BUILD_AMBARELLA_ORYX_AUDIO_CODEC_G711 || BUILD_AMBARELLA_ORYX_AUDIO_CODEC_G726 || BUILD_AMBARELLA_ORYX_AUDIO_CODEC_SPEEX
+  default n
+  help
+    Build Oryx Audio Codec Plugin base library
+

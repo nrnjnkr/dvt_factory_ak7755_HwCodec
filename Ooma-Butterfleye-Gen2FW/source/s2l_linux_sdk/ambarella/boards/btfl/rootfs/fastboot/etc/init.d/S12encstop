@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# Stop encoding after boot...
+#
+
+/usr/local/bin/test_encode -A -s -B -s -C -s -D -s

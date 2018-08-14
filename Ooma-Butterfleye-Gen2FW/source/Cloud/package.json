@@ -1,0 +1,26 @@
+{
+  "name": "BPCamSvr",
+  "version": "0.5.4",
+  "private": true,
+  "author": "codwine",
+  "email": "jywang@ambarella.com",
+  "description": "File Upload & Share Web Server for Battery Powered Camera",
+  "license": "Copyright © 2016 Ambarella Inc. All rights reserved.",
+
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.12.0",
+    "cookie-parser": "~1.3.4",
+    "debug": "~2.1.1",
+    "ejs": "~2.3.1",
+    "express": "~4.12.2",
+    "morgan": "~1.5.1",
+    "serve-favicon": "~2.2.0",
+    "formidable": "~1.0.17",
+    "moment": "~2.10.2",
+    "sqlite3": "~3.0.5",
+    "async": "~0.9.0"
+  }
+}

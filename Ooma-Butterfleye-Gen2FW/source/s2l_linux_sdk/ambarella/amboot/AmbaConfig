@@ -1,0 +1,104 @@
+##
+## amboot/AmbaConfig
+##
+## History:
+##    2008/02/19 - [Anthony Ginger] Create
+##
+## Copyright (c) 2016 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+choice
+	prompt "Chip"
+	default CONFIG_ARCH_S2L
+	help
+		Select the target arch.
+
+config CONFIG_ARCH_S2L
+        bool "S2L"
+
+config CONFIG_ARCH_S3
+        bool "S3"
+
+config CONFIG_ARCH_S3L
+        bool "S3L"
+
+config CONFIG_ARCH_S5
+	select CONFIG_4K_BOOT_IMAGE
+        bool "S5"
+
+config CONFIG_ARCH_H2
+	select CONFIG_4K_BOOT_IMAGE
+        bool "H2"
+
+config CONFIG_ARCH_S5L
+	select CONFIG_4K_BOOT_IMAGE
+        bool "S5L"
+
+config CONFIG_ARCH_CV1
+	select CONFIG_4K_BOOT_IMAGE
+        bool "CV1"
+
+endchoice
+
+choice
+	prompt "Build for CPU"
+	default CONFIG_CPU_CORTEXA53
+	help
+		Select the CPU of the chip.
+
+config CONFIG_CPU_CORTEXA9
+	depends on CONFIG_ARCH_S2L || CONFIG_ARCH_S3 || CONFIG_ARCH_S3L
+	bool "Cortex A9 / CodeSourcery"
+
+config CONFIG_CPU_CORTEXA9_HF
+	depends on CONFIG_ARCH_S2L || CONFIG_ARCH_S3 || CONFIG_ARCH_S3L
+	bool "Cortex A9 / Linaro Hard Float"
+
+config CONFIG_CPU_CORTEXA53
+	depends on CONFIG_ARCH_S5 || CONFIG_ARCH_H2 || CONFIG_ARCH_S5L || CONFIG_ARCH_CV1
+	bool "Cortex A53"
+
+endchoice
+
+menu "Ambarella Board Configuration"
+depends on BUILD_AMBARELLA_FIRMWARE
+
+source boards/AmbaConfig
+
+endmenu
+
+menuconfig BUILD_AMBARELLA_FIRMWARE
+	bool "Ambarella Firmware Configuration"
+	default n
+	help
+		Build Ambarella Firmware.
+
+if BUILD_AMBARELLA_FIRMWARE
+
+source amboot/config/amboot.mem.in
+source amboot/config/amboot.hw.in
+source amboot/config/amboot.amboot.in
+
+endif

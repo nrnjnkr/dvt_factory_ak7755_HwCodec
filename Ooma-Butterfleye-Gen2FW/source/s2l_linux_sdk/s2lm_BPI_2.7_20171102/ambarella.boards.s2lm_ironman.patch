@@ -1,0 +1,2222 @@
+diff --git a/AmbaConfig b/AmbaConfig
+index 3b14f84..92212af 100644
+--- a/AmbaConfig
++++ b/AmbaConfig
+@@ -4,12 +4,29 @@
+ ## History:
+ ##    2014/03/20 - [Cao Rongrong] Create
+ ##
+-## Copyright (C) 2012-2016, Ambarella, Inc.
++## Copyright (c) 2015 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ config CONFIG_BSP_BOARD_S2LM_IRONMAN
+@@ -26,6 +43,8 @@ choice
+ config CONFIG_BOARD_VERSION_S2LMIRONMAN_S2L55M
+         bool "IRONMAN (S2L55M)"
+ 
++config CONFIG_BOARD_VERSION_S2LMIRONMAN_S2L55MHC
++	bool "IRONMAN (S2L55M High Clock)"
+ endchoice
+ 
+ menuconfig CONFIG_S2LMIRONMAN_DSP_BOOT
+diff --git a/Makefile b/Makefile
+index e7f3a59..cb810d8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -4,12 +4,29 @@
+ ## History:
+ ##    2012/06/06 - [Cao Rongrong] Create
+ ##
+-## Copyright (C) 2011-2015, Ambarella, Inc.
++## Copyright (c) 2015 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
++##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
+ ##
+ 
+ .PHONY: all
+diff --git a/bsp/bsp.c b/bsp/bsp.c
+index ebcb1c6..7bba6e9 100644
+--- a/bsp/bsp.c
++++ b/bsp/bsp.c
+@@ -3,16 +3,35 @@
+  *
+  * Author: Cao Rongrong <rrcao@ambarella.com>
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #include <bldfunc.h>
+-#include <bapi.h>
+ #include <ambhw/drctl.h>
+ #include <ambhw/idc.h>
+ #include <eth/network.h>
+@@ -20,6 +39,10 @@
+ #include <dsp/dsp.h>
+ #include "adc.h"
+ 
++#if defined(AMBOOT_BOOT_DSP)
++#include "iav_fastboot.h"
++#endif
++
+ #if defined(CONFIG_S2LMIRONMAN_IAV_OV4689)
+ #include "iav/sensor_ov4689.c"
+ #endif
+@@ -68,7 +91,9 @@ void amboot_fast_boot(flpart_table_t *pptb)
+ 		u32 *p_iav_status = NULL;
+ 		u32 iav_status = IAV_STATE_IDLE;
+ 		/* Change the value after call dsp_boot() */
+-		p_iav_status = (u32*)(DSP_STATUS_STORE_START);
++		struct iav_fb_hdr *fb_hdr =
++			(struct iav_fb_hdr *)DSP_FASTDATA_START;
++		p_iav_status = &(fb_hdr->dsp_status);
+ #endif
+ 
+ #if defined(BUILD_AMBARELLA_APP_FASTBOOT_SMART3A)
+@@ -135,10 +160,6 @@ int amboot_bsp_entry(flpart_table_t *pptb)
+ 	int retval = 0;
+ 	flpart_table_t ptb;
+ 
+-#if defined(CONFIG_AMBOOT_BAPI_SUPPORT)
+-	bld_bapi_set_fb_info(0, 0, 320, 240, 320, 480, 16, 32);
+-#endif
+-
+ 	amboot_fast_boot(pptb);
+ 
+ #if defined(CONFIG_S2LMIRONMAN_AUDIO_BOOT)
+diff --git a/bsp/bsp.h b/bsp/bsp.h
+index 3dfcdd4..cd3be1b 100644
+--- a/bsp/bsp.h
++++ b/bsp/bsp.h
+@@ -3,14 +3,34 @@
+  *
+  * Author: Cao Rongrong <rrcao@ambarella.com>
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #ifndef __BSP_H__
+ #define __BSP_H__
+ 
+diff --git a/bsp/bsp_fw.c b/bsp/bsp_fw.c
+index b62ee8f..b41a0c2 100644
+--- a/bsp/bsp_fw.c
++++ b/bsp/bsp_fw.c
+@@ -3,14 +3,34 @@
+  *
+  * Author: Cao Rongrong <rrcao@ambarella.com>
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ #include <bldfunc.h>
+ 
+ static flpart_table_t gPtb;
+@@ -96,7 +116,7 @@ void hook_post_memfwprog(fwprog_cmd_t *fwprog_cmd)
+ 			} else {
+ 				if (strlen((const char*)fwprog_cmd->data) > 0) {
+ 					memset(gPtb.dev.sn, 0, sizeof(gPtb.dev.sn));
+-					strncpy(gPtb.dev.sn, (const char*)fwprog_cmd->data, strlen((const char*)fwprog_cmd->data));
++					strncpy(gPtb.dev.sn, (const char*)fwprog_cmd->data, (sizeof(gPtb.dev.sn)-1));
+ 				}
+ 			}
+ 			update_ptb_info(&ptb, &gPtb);
+diff --git a/bsp/iav/codec_ak4954.c b/bsp/iav/codec_ak4954.c
+index 96d33a1..f176c66 100644
+--- a/bsp/iav/codec_ak4954.c
++++ b/bsp/iav/codec_ak4954.c
+@@ -4,13 +4,33 @@
+  * History:
+  *    2014/11/18 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
++
+ static int ak4954_init(void)
+ {
+ 	/* ak4954 cannot work with 400K I2C */
+diff --git a/bsp/iav/iav_cvbs.c b/bsp/iav/iav_cvbs.c
+index 3bf857e..317bd99 100644
+--- a/bsp/iav/iav_cvbs.c
++++ b/bsp/iav/iav_cvbs.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/07 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ static u32 vout_display_setup_dram[] = {
+ 	0x10000021, 0x00000000, 0x06B30105, 0x00000106,
+ 	0x01120016, 0x06B10105, 0x01120017, 0x06B10106,
+diff --git a/bsp/iav/iav_td043.c b/bsp/iav/iav_td043.c
+index f4ce679..4b17cab 100644
+--- a/bsp/iav/iav_td043.c
++++ b/bsp/iav/iav_td043.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/11 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ static u32 vout_display_setup_dram[] = {
+ 	0x08000000, 0x00000000, 0x03AB01F7, 0x000001F7,
+ 	0x00780014, 0x039701F3, 0x00780015, 0x039701F4,
+diff --git a/bsp/iav/sensor_ov4689.c b/bsp/iav/sensor_ov4689.c
+index 873cc22..bb09090 100644
+--- a/bsp/iav/sensor_ov4689.c
++++ b/bsp/iav/sensor_ov4689.c
+@@ -4,14 +4,34 @@
+  * History:
+  *    2014/08/11 - [Cao Rongrong] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
++
+ struct vin_reg_16_8 {
+ 	u16 addr;
+ 	u8 data;
+@@ -119,7 +139,6 @@ static struct vin_video_format vin_video_boot_format = {
+ 	.bayer_pattern = 0,
+ 	.hdr_mode = BOOT_HDR_MODE,
+ 	.readout_mode = 0,
+-	.sync_start = 0,
+ 
+ 	.max_fps = 0,
+ 	.default_fps = 0,
+@@ -570,12 +589,14 @@ static dsp_debug_level_setup_t dsp_debug_level_setup =  {
+ static int ov4689_init(void)
+ {
+ 	int i;
++	struct iav_fb_hdr *fb_hdr =
++		(struct iav_fb_hdr *)DSP_FASTDATA_START;
+ 
+ 	/* set pll sent to sensor */
+ 	rct_set_so_pll();
+ 
+-	/* ov4689 can work with 800K I2C, so we use it to reduce timing */
+-	idc_bld_init(IDC_MASTER1, 800000);
++	/* ov4689 can work with 400K I2C, so we use it to reduce timing */
++	idc_bld_init(IDC_MASTER1, 400000);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ov4689_4lane_4m_regs); i++) {
+ 		idc_bld_write_16_8(IDC_MASTER1, 0x6c,
+@@ -583,12 +604,19 @@ static int ov4689_init(void)
+ 				ov4689_4lane_4m_regs[i].data);
+ 	}
+ 
++	fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset = sizeof(struct iav_fb_hdr);
++	fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].size = sizeof(struct vin_video_format);
++
++	fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].offset = fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset +
++		fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].size;
++	fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].size = set_vin_config.config_data_size;
++
+ 	/* store vin video format in amboot, restore it after enter Linux IAV */
+-	memcpy((void *)(DSP_VIN_VIDEO_FORMAT_STORE_START),
++	memcpy((void *)((u8 *)fb_hdr + fb_hdr->bin[IAV_FB_VIN_VIDEO_FORMAT].offset),
+ 		&vin_video_boot_format, sizeof(vin_video_boot_format));
+ 
+-	/* store dsp vin config in amboot, restore it after enter Linux IAV*/
+-	memcpy((void *)(DSP_VIN_CONFIG_STORE_START),
++	/* store dsp vin config in amboot, restore it after enter Linux IAV */
++	memcpy((void *)((u8 *)fb_hdr + fb_hdr->bin[IAV_FB_VIN_DSP_CONFIG].offset),
+ 		set_vin_config_dram, sizeof(set_vin_config_dram));
+ 
+ 	putstr_debug("ov4689_init");
+diff --git a/bsp/iav/smart3a.c b/bsp/iav/smart3a.c
+index 245b542..8d33ab5 100644
+--- a/bsp/iav/smart3a.c
++++ b/bsp/iav/smart3a.c
+@@ -4,18 +4,36 @@
+  * History:
+  *    2015/02/11 - [Tao Wu] created file
+  *
+- * Copyright (C) 2012-2016, Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
+  */
+ 
+-//#define SMART_3A_DEBUG
++#include "iav_fastboot.h"
+ 
+-#define DEFAULT_BINARY_IDSPCFG_OFFSET	(8208)
+-#define IDSPCFG_BINARY_HEAD_SIZE			(64)
++//#define SMART_3A_DEBUG
+ 
+ struct rtc_time {
+ 	int tm_sec;
+@@ -232,6 +250,7 @@ int find_idsp_cfg(flpart_table_t *pptb, struct adcfw_header **p_hdr,
+ int load_3A_param(struct adcfw_header *hdr, int idsp_cfg_index)
+ {
+ 	u32 addr=0, size=0;
++	struct iav_fb_hdr *fb_hdr = (struct iav_fb_hdr *)DSP_FASTDATA_START;
+ 
+ #ifdef SMART_3A_DEBUG
+ 	u32 time3_MS = 0, time4_MS = 0, delta3_MS = 0;
+@@ -247,6 +266,12 @@ int load_3A_param(struct adcfw_header *hdr, int idsp_cfg_index)
+ 		putstr("Invalid idspcfg partition size\r\n");
+ 	}
+ 
++	fb_hdr->pre_aeb.r_gain = hdr->smart3a[idsp_cfg_index].r_gain;
++	fb_hdr->pre_aeb.b_gain = hdr->smart3a[idsp_cfg_index].b_gain;
++	fb_hdr->pre_aeb.d_gain = hdr->smart3a[idsp_cfg_index].d_gain;
++	fb_hdr->pre_aeb.shutter = hdr->smart3a[idsp_cfg_index].shutter;
++	fb_hdr->pre_aeb.agc = hdr->smart3a[idsp_cfg_index].agc;
++
+ #ifdef SMART_3A_DEBUG
+ 	time4_MS = rct_timer_get_count();
+ 	delta3_MS = time4_MS - time3_MS;
+diff --git a/bsp/make.amboot b/bsp/make.amboot
+index 6cf60e6..59201a9 100644
+--- a/bsp/make.amboot
++++ b/bsp/make.amboot
+@@ -4,13 +4,33 @@
+ ## History:
+ ##    2015/01/22 - [Tao Wu] created file
+ ##
+-## Copyright (C) 2012-2016, Ambarella, Inc.
++## Copyright (c) 2015 Ambarella, Inc.
+ ##
+-## All rights reserved. No Part of this file may be reproduced, stored
+-## in a retrieval system, or transmitted, in any form, or by any means,
+-## electronic, mechanical, photocopying, recording, or otherwise,
+-## without the prior consent of Ambarella, Inc.
++## This file and its contents ("Software") are protected by intellectual
++## property rights including, without limitation, U.S. and/or foreign
++## copyrights. This Software is also the confidential and proprietary
++## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++## disclose, distribute, modify, or otherwise prepare derivative works of this
++## Software or any portion thereof except pursuant to a signed license agreement
++## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++## In the absence of such an agreement, you agree to promptly notify and return
++## this Software to Ambarella, Inc.
+ ##
++## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++## POSSIBILITY OF SUCH DAMAGE.
++##
++
++## variable imported from Makefile.amboot
++INCLUDES	+= -I$(AMB_TOPDIR)/include/arch_s2l
+ 
+ DSP_FILE_LIST	:= $(AMB_TOPDIR)/kernel/private/lib/firmware_s2l/encode_only/ucode.list
+ DSP_FILE_LIST	+= $(AMB_TOPDIR)/unit_test/private/iav_test/data/fastosd.list
+diff --git a/bsp/s2lm_ironman.dts b/bsp/s2lm_ironman.dts
+index 45cabb5..5581c39 100644
+--- a/bsp/s2lm_ironman.dts
++++ b/bsp/s2lm_ironman.dts
+@@ -39,6 +39,13 @@
+ 				compatible = "ambarella,ambvin";
+ 				reg = <0x01>;	/* fake address, will be overwritten in runtime */
+ 			};
++
++			mpu6500@68 {
++				compatible = "ambarella,mpu6500";
++				reg = <0x68>;
++				gpios = <&gpio 113 0x0>;
++			};
++
+ 	        };
+ 
+ 		ir@e8006000 {
+@@ -69,6 +76,7 @@
+ 		mac0: ethernet@e000e000 {
+ 			phy@0 {
+ 				rst-gpios = <&gpio 104 0x0>;
++				amb,clk-invert;
+ 			};
+ 		};
+ 	};
+diff --git a/bsp/s2lmironman_s2l55mhc.ini b/bsp/s2lmironman_s2l55mhc.ini
+new file mode 100644
+index 0000000..88e5ca2
+--- /dev/null
++++ b/bsp/s2lmironman_s2l55mhc.ini
+@@ -0,0 +1,58 @@
++<?xml version="1.0" encoding="utf-8"?>
++<BSTConfig version="20140808">
++  <T_XSR value="1526786"/>
++  <T_WTR value="7500"/>
++  <T_WR value="15000"/>
++  <T_WL value="7"/>
++  <T_RTP value="7500"/>
++  <T_RRD value="7500"/>
++  <T_RP value="13125"/>
++  <T_RFC value="160000"/>
++  <T_REFI value="7800"/>
++  <T_RCD value="13125"/>
++  <T_RC value="48125"/>
++  <T_RAS value="35000"/>
++  <T_FAW value="40000"/>
++  <T_CL value="9"/>
++  <SW_PAD_ZQ_CTL value="0x0"/>
++  <SW_DQS_SYNC_EN value="Disable"/>
++  <SW_DQS_SYNC_CTL value="0x0"/>
++  <S2L_CHIP value="S2L55M"/>
++  <PLL_OVERCLOCK value="Enable"/>
++  <PLL_PROGRAM_DELAY value="0x50000"/>
++  <PLL_DDR_CTRL3_PARAM value="0x00068300"/>
++  <PLL_DDR_CTRL2_PARAM value="0x3f770000"/>
++  <PAGE_SIZE value="2 KBytes"/>
++  <PAD_TERM value="0x2002d"/>
++  <LPDDR2_DRIVE_STRENGTH value="40-ohm"/>
++  <DRAM_ZQ_CALIB value="0x26"/>
++  <DRAM_SIZE value="2 Gbits"/>
++  <DRAM_RSVD_SPACE value="0x00100000"/>
++  <DRAM_BYTE_MAP value="0xe4"/>
++  <DLL_RESET_DELAY value="0x1000"/>
++  <DLL_PROGRAM_DELAY value="0x30000"/>
++  <DLL_CTRL_SEL_MISC value="0x12e50000"/>
++  <DLL_CTRL_SEL_3 value="0x8001"/>
++  <DLL_CTRL_SEL_2 value="0x8001"/>
++  <DLL_CTRL_SEL_1 value="0x8001"/>
++  <DLL_CTRL_SEL_0 value="0x8001"/>
++  <DLL3_SEL2 value="0x24"/>
++  <DLL3_SEL1 value="0x00"/>
++  <DLL3_SEL0 value="0x24"/>
++  <DLL2_SEL2 value="0x24"/>
++  <DLL2_SEL1 value="0x00"/>
++  <DLL2_SEL0 value="0x24"/>
++  <DLL1_SEL2 value="0x24"/>
++  <DLL1_SEL1 value="0x00"/>
++  <DLL1_SEL0 value="0x24"/>
++  <DLL0_SEL2 value="0x24"/>
++  <DLL0_SEL1 value="0x00"/>
++  <DLL0_SEL0 value="0x24"/>
++  <DDS value="100%"/>
++  <CTRL_ODT_CFG value="RZQ/2"/>
++  <BANK_SIZE value="8 Banks"/>
++  <AUTO_DQS_SYNC_CFG value="4 refreshes"/>
++  <AMBOOT_BLD_RAM_ADDRESS value="0x00000000"/>
++  <AMBOOT_BLD_MEDIA_START value="0x00020000"/>
++  <AMBOOT_BLD_MEDIA_SIZE value="0x00040000"/>
++</BSTConfig>
+diff --git a/config/kernel/s2lmironman_fastboot_kernel_config b/config/kernel/s2lmironman_fastboot_kernel_config
+index da41f79..3b075dd 100644
+--- a/config/kernel/s2lmironman_fastboot_kernel_config
++++ b/config/kernel/s2lmironman_fastboot_kernel_config
+@@ -40,7 +40,7 @@ CONFIG_KERNEL_GZIP=y
+ # CONFIG_KERNEL_XZ is not set
+ # CONFIG_KERNEL_LZO is not set
+ CONFIG_DEFAULT_HOSTNAME="Ambarella"
+-CONFIG_SWAP=y
++# CONFIG_SWAP is not set
+ CONFIG_SYSVIPC=y
+ CONFIG_SYSVIPC_SYSCTL=y
+ CONFIG_POSIX_MQUEUE=y
+@@ -90,7 +90,8 @@ CONFIG_PREEMPT_RCU=y
+ # CONFIG_RCU_STALL_COMMON is not set
+ # CONFIG_TREE_RCU_TRACE is not set
+ # CONFIG_RCU_BOOST is not set
+-# CONFIG_IKCONFIG is not set
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_CGROUPS=y
+ # CONFIG_CGROUP_DEBUG is not set
+@@ -123,7 +124,7 @@ CONFIG_RD_BZIP2=y
+ CONFIG_RD_LZMA=y
+ CONFIG_RD_XZ=y
+ CONFIG_RD_LZO=y
+-# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
++CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_SYSCTL=y
+ CONFIG_ANON_INODES=y
+ CONFIG_HAVE_UID16=y
+@@ -152,9 +153,10 @@ CONFIG_PERF_USE_VMALLOC=y
+ #
+ # CONFIG_PERF_EVENTS is not set
+ CONFIG_VM_EVENT_COUNTERS=y
++CONFIG_SLUB_DEBUG=y
+ # CONFIG_COMPAT_BRK is not set
+-CONFIG_SLAB=y
+-# CONFIG_SLUB is not set
++# CONFIG_SLAB is not set
++CONFIG_SLUB=y
+ # CONFIG_PROFILING is not set
+ CONFIG_HAVE_OPROFILE=y
+ # CONFIG_KPROBES is not set
+@@ -197,8 +199,8 @@ CONFIG_MODULE_UNLOAD=y
+ # CONFIG_MODULE_SRCVERSION_ALL is not set
+ # CONFIG_MODULE_SIG is not set
+ CONFIG_BLOCK=y
+-# CONFIG_LBDAF is not set
+-# CONFIG_BLK_DEV_BSG is not set
++CONFIG_LBDAF=y
++CONFIG_BLK_DEV_BSG=y
+ # CONFIG_BLK_DEV_BSGLIB is not set
+ # CONFIG_BLK_DEV_INTEGRITY is not set
+ 
+@@ -291,7 +293,7 @@ CONFIG_INLINE_WRITE_UNLOCK_BH=y
+ CONFIG_INLINE_WRITE_UNLOCK_IRQ=y
+ CONFIG_INLINE_WRITE_UNLOCK_IRQRESTORE=y
+ CONFIG_ARCH_SUPPORTS_ATOMIC_RMW=y
+-# CONFIG_FREEZER is not set
++CONFIG_FREEZER=y
+ 
+ #
+ # System Type
+@@ -345,7 +347,7 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_VIC=y
+ # CONFIG_PLAT_AMBARELLA_HAVE_ARM11 is not set
+ CONFIG_PLAT_AMBARELLA_CORTEX=y
+ # CONFIG_PLAT_AMBARELLA_CORTEX_SMP is not set
+-# CONFIG_PLAT_AMBARELLA_SUPPORT_PM is not set
++CONFIG_PLAT_AMBARELLA_SUPPORT_PM=y
+ CONFIG_PLAT_AMBARELLA_MEM_START_LOW=y
+ CONFIG_PLAT_AMBARELLA_AHB_APB_HIGH=y
+ CONFIG_PLAT_AMBARELLA_SUPPORT_HW_CRYPTO=y
+@@ -366,12 +368,13 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_MMAP_DBGBUS=y
+ # CONFIG_PLAT_AMBARELLA_A8_CORTEX is not set
+ CONFIG_PLAT_AMBARELLA_S2L=y
+ # CONFIG_PLAT_AMBARELLA_S3 is not set
++# CONFIG_PLAT_AMBARELLA_S3L is not set
+ 
+ #
+ # Generic Platform Configuration
+ #
++# CONFIG_AMBARELLA_CALC_PLL is not set
+ # CONFIG_AMBARELLA_RAW_BOOT is not set
+-# CONFIG_AMBARELLA_SUPPORT_BAPI is not set
+ # CONFIG_AMBARELLA_PMUSERENR_EN is not set
+ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ 
+@@ -379,7 +382,6 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ # Sys file system support
+ #
+ # CONFIG_AMBARELLA_SYS_CACHE_CALL is not set
+-# CONFIG_AMBARELLA_SYS_BAPI_CALL is not set
+ 
+ #
+ # Proc file system support
+@@ -401,6 +403,7 @@ CONFIG_AMBARELLA_TIMER_HZ=100
+ CONFIG_AMBARELLA_TIMER_HIGHRES=y
+ CONFIG_AMBARELLA_EXT_IRQ_NUM=16
+ CONFIG_AMBARELLA_EXT_GPIO_NUM=16
++CONFIG_AMBARELLA_SREF_FIFO_EXEC=y
+ CONFIG_GPIO_PCA953X=y
+ # CONFIG_KEYBOARD_GPIO_POLLED is not set
+ # CONFIG_PLAT_SPEAR is not set
+@@ -433,7 +436,7 @@ CONFIG_ARM_VIRT_EXT=y
+ # CONFIG_CPU_ICACHE_DISABLE is not set
+ # CONFIG_CPU_DCACHE_DISABLE is not set
+ # CONFIG_CPU_BPREDICT_DISABLE is not set
+-# CONFIG_KUSER_HELPERS is not set
++CONFIG_KUSER_HELPERS=y
+ CONFIG_OUTER_CACHE=y
+ CONFIG_OUTER_CACHE_SYNC=y
+ CONFIG_MIGHT_HAVE_CACHE_L2X0=y
+@@ -503,7 +506,6 @@ CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
+ # CONFIG_CROSS_MEMORY_ATTACH is not set
+ CONFIG_NEED_PER_CPU_KM=y
+ # CONFIG_CLEANCACHE is not set
+-# CONFIG_FRONTSWAP is not set
+ CONFIG_FORCE_MAX_ZONEORDER=11
+ CONFIG_ALIGNMENT_TRAP=y
+ # CONFIG_UACCESS_WITH_MEMCPY is not set
+@@ -515,11 +517,15 @@ CONFIG_CC_STACKPROTECTOR=y
+ # Boot options
+ #
+ CONFIG_USE_OF=y
+-# CONFIG_ATAGS is not set
++CONFIG_ATAGS=y
++# CONFIG_DEPRECATED_PARAM_STRUCT is not set
+ CONFIG_ZBOOT_ROM_TEXT=0
+ CONFIG_ZBOOT_ROM_BSS=0
+ # CONFIG_ARM_APPENDED_DTB is not set
+ CONFIG_CMDLINE="console=ttyS0"
++CONFIG_CMDLINE_FROM_BOOTLOADER=y
++# CONFIG_CMDLINE_EXTEND is not set
++# CONFIG_CMDLINE_FORCE is not set
+ # CONFIG_XIP_KERNEL is not set
+ # CONFIG_KEXEC is not set
+ # CONFIG_CRASH_DUMP is not set
+@@ -561,11 +567,19 @@ CONFIG_COREDUMP=y
+ #
+ # Power management options
+ #
+-# CONFIG_SUSPEND is not set
+-# CONFIG_HIBERNATION is not set
++CONFIG_SUSPEND=y
++CONFIG_SUSPEND_FREEZER=y
++CONFIG_PM_SLEEP=y
++# CONFIG_PM_AUTOSLEEP is not set
++# CONFIG_PM_WAKELOCKS is not set
+ # CONFIG_PM_RUNTIME is not set
++CONFIG_PM=y
++# CONFIG_PM_DEBUG is not set
++# CONFIG_APM_EMULATION is not set
++CONFIG_PM_CLK=y
++CONFIG_CPU_PM=y
+ CONFIG_ARCH_SUSPEND_POSSIBLE=y
+-# CONFIG_ARM_CPU_SUSPEND is not set
++CONFIG_ARM_CPU_SUSPEND=y
+ CONFIG_ARCH_HIBERNATION_POSSIBLE=y
+ CONFIG_NET=y
+ 
+@@ -614,6 +628,7 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_TCP_CONG_CUBIC=y
+ CONFIG_DEFAULT_TCP_CONG="cubic"
+ # CONFIG_TCP_MD5SIG is not set
++# CONFIG_WLAN_UPDATE_SEQ is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_NETWORK_SECMARK is not set
+ # CONFIG_NETWORK_PHY_TIMESTAMPING is not set
+@@ -637,6 +652,7 @@ CONFIG_HAVE_NET_DSA=y
+ # CONFIG_IEEE802154 is not set
+ # CONFIG_NET_SCHED is not set
+ # CONFIG_DCB is not set
++CONFIG_DNS_RESOLVER=m
+ # CONFIG_BATMAN_ADV is not set
+ # CONFIG_OPENVSWITCH is not set
+ # CONFIG_VSOCKETS is not set
+@@ -653,7 +669,31 @@ CONFIG_BQL=y
+ # CONFIG_HAMRADIO is not set
+ # CONFIG_CAN is not set
+ # CONFIG_IRDA is not set
+-# CONFIG_BT is not set
++CONFIG_BT=m
++CONFIG_BT_RFCOMM=m
++CONFIG_BT_RFCOMM_TTY=y
++CONFIG_BT_BNEP=m
++CONFIG_BT_BNEP_MC_FILTER=y
++CONFIG_BT_BNEP_PROTO_FILTER=y
++# CONFIG_BT_HIDP is not set
++
++#
++# Bluetooth device drivers
++#
++CONFIG_BT_HCIBTUSB=m
++# CONFIG_BT_HCIBTSDIO is not set
++CONFIG_BT_HCIUART=m
++CONFIG_BT_HCIUART_H4=y
++CONFIG_BT_HCIUART_BCSP=y
++# CONFIG_BT_HCIUART_ATH3K is not set
++CONFIG_BT_HCIUART_LL=y
++# CONFIG_BT_HCIUART_3WIRE is not set
++# CONFIG_BT_HCIBCM203X is not set
++# CONFIG_BT_HCIBPA10X is not set
++# CONFIG_BT_HCIBFUSB is not set
++# CONFIG_BT_HCIVHCI is not set
++# CONFIG_BT_MRVL is not set
++# CONFIG_BT_ATH3K is not set
+ # CONFIG_AF_RXRPC is not set
+ CONFIG_WIRELESS=y
+ CONFIG_WEXT_CORE=y
+@@ -678,7 +718,9 @@ CONFIG_MAC80211_RC_DEFAULT="minstrel_ht"
+ # CONFIG_MAC80211_MESSAGE_TRACING is not set
+ # CONFIG_MAC80211_DEBUG_MENU is not set
+ # CONFIG_WIMAX is not set
+-# CONFIG_RFKILL is not set
++CONFIG_RFKILL=m
++CONFIG_RFKILL_INPUT=y
++# CONFIG_RFKILL_GPIO is not set
+ # CONFIG_NET_9P is not set
+ # CONFIG_CAIF is not set
+ # CONFIG_CEPH_LIB is not set
+@@ -700,7 +742,7 @@ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_FW_LOADER=y
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_EXTRA_FIRMWARE=""
+-# CONFIG_FW_LOADER_USER_HELPER is not set
++CONFIG_FW_LOADER_USER_HELPER=y
+ # CONFIG_SYS_HYPERVISOR is not set
+ # CONFIG_GENERIC_CPU_DEVICES is not set
+ CONFIG_REGMAP=y
+@@ -736,7 +778,6 @@ CONFIG_MTD_BLOCK_AMBRO=y
+ # CONFIG_SSFDC is not set
+ # CONFIG_SM_FTL is not set
+ # CONFIG_MTD_OOPS is not set
+-# CONFIG_MTD_SWAP is not set
+ 
+ #
+ # RAM/ROM/Flash chip drivers
+@@ -786,6 +827,8 @@ CONFIG_MTD_NAND_BCH=y
+ CONFIG_MTD_NAND_ECC_BCH=y
+ # CONFIG_MTD_SM_COMMON is not set
+ CONFIG_MTD_NAND_AMBARELLA=y
++# CONFIG_MTD_SPINAND_AMBARELLA is not set
++# CONFIG_MTD_SPINAND_ONDIEECC is not set
+ # CONFIG_MTD_NAND_DENALI is not set
+ # CONFIG_MTD_NAND_GPIO is not set
+ CONFIG_MTD_NAND_IDS=y
+@@ -891,9 +934,9 @@ CONFIG_BLK_DEV_XIP=y
+ #
+ # SCSI device support
+ #
+-CONFIG_SCSI_MOD=m
++CONFIG_SCSI_MOD=y
+ # CONFIG_RAID_ATTRS is not set
+-CONFIG_SCSI=m
++CONFIG_SCSI=y
+ CONFIG_SCSI_DMA=y
+ # CONFIG_SCSI_TGT is not set
+ # CONFIG_SCSI_NETLINK is not set
+@@ -1020,6 +1063,7 @@ CONFIG_MICREL_PHY_KSZ80X1R=m
+ # CONFIG_USB_RTL8150 is not set
+ # CONFIG_USB_RTL8152 is not set
+ # CONFIG_USB_USBNET is not set
++# CONFIG_USB_HSO is not set
+ # CONFIG_USB_IPHETH is not set
+ CONFIG_WLAN=y
+ # CONFIG_LIBERTAS_THINFIRM is not set
+@@ -1028,16 +1072,7 @@ CONFIG_WLAN=y
+ # CONFIG_USB_NET_RNDIS_WLAN is not set
+ # CONFIG_RTL8187 is not set
+ # CONFIG_MAC80211_HWSIM is not set
+-CONFIG_ATH_CARDS=m
+-# CONFIG_ATH_DEBUG is not set
+-# CONFIG_ATH9K is not set
+-# CONFIG_ATH9K_HTC is not set
+-# CONFIG_CARL9170 is not set
+-CONFIG_ATH6KL=m
+-CONFIG_ATH6KL_SDIO=m
+-# CONFIG_ATH6KL_USB is not set
+-# CONFIG_ATH6KL_DEBUG is not set
+-# CONFIG_AR5523 is not set
++# CONFIG_ATH_CARDS is not set
+ # CONFIG_B43 is not set
+ # CONFIG_B43LEGACY is not set
+ # CONFIG_BRCMFMAC is not set
+@@ -1048,9 +1083,7 @@ CONFIG_ATH6KL_SDIO=m
+ # CONFIG_RTLWIFI is not set
+ # CONFIG_WL_TI is not set
+ # CONFIG_ZD1211RW is not set
+-CONFIG_MWIFIEX=m
+-CONFIG_MWIFIEX_SDIO=m
+-# CONFIG_MWIFIEX_USB is not set
++# CONFIG_MWIFIEX is not set
+ 
+ #
+ # Enable WiMAX (Networking options) to see the WiMAX drivers
+@@ -1070,10 +1103,7 @@ CONFIG_INPUT=y
+ #
+ # Userland interfaces
+ #
+-CONFIG_INPUT_MOUSEDEV=y
+-# CONFIG_INPUT_MOUSEDEV_PSAUX is not set
+-CONFIG_INPUT_MOUSEDEV_SCREEN_X=1024
+-CONFIG_INPUT_MOUSEDEV_SCREEN_Y=768
++# CONFIG_INPUT_MOUSEDEV is not set
+ # CONFIG_INPUT_JOYDEV is not set
+ CONFIG_INPUT_EVDEV=m
+ # CONFIG_INPUT_EVBUG is not set
+@@ -1141,6 +1171,7 @@ CONFIG_TTY=y
+ CONFIG_VT=y
+ CONFIG_CONSOLE_TRANSLATIONS=y
+ CONFIG_VT_CONSOLE=y
++CONFIG_VT_CONSOLE_SLEEP=y
+ CONFIG_HW_CONSOLE=y
+ CONFIG_VT_HW_CONSOLE_BINDING=y
+ CONFIG_UNIX98_PTYS=y
+@@ -1253,7 +1284,7 @@ CONFIG_SPI_SPIDEV=m
+ #
+ # SPI Slave Controller Drivers
+ #
+-# CONFIG_SPI_SLAVE_AMBARELLA is not set
++CONFIG_SPI_SLAVE_AMBARELLA=m
+ 
+ #
+ # Qualcomm MSM SSBI bus support
+@@ -1542,7 +1573,11 @@ CONFIG_SND_JACK=y
+ # CONFIG_SND_DRIVERS is not set
+ # CONFIG_SND_ARM is not set
+ # CONFIG_SND_SPI is not set
+-# CONFIG_SND_USB is not set
++CONFIG_SND_USB=y
++# CONFIG_SND_USB_AUDIO is not set
++# CONFIG_SND_USB_UA101 is not set
++# CONFIG_SND_USB_CAIAQ is not set
++# CONFIG_SND_USB_6FIRE is not set
+ CONFIG_SND_SOC=m
+ CONFIG_SND_SOC_DMAENGINE_PCM=y
+ CONFIG_SND_SOC_GENERIC_DMAENGINE_PCM=y
+@@ -1555,10 +1590,14 @@ CONFIG_SND_AMBARELLA_CODEC=m
+ CONFIG_SND_SOC_AK4951_AMB=m
+ CONFIG_SND_SOC_AK4954_AMB=m
+ CONFIG_SND_SOC_AK7719_DSP=m
++# CONFIG_SND_SOC_AK7755 is not set
++# CONFIG_SND_SOC_TLV320ADC3xxx is not set
+ # CONFIG_SND_SOC_ES8388 is not set
++# CONFIG_SND_SOC_ES8374 is not set
+ # CONFIG_SND_SOC_WM8974_AMB is not set
+ # CONFIG_SND_SOC_WM8940_AMB is not set
+-# CONFIG_SND_SOC_AMBARELLA_DUMMY is not set
++# CONFIG_SND_SOC_ZL380TW is not set
++CONFIG_SND_SOC_AMBARELLA_DUMMY=m
+ # CONFIG_SND_ATMEL_SOC is not set
+ CONFIG_SND_SOC_I2C_AND_SPI=m
+ # CONFIG_SND_SOC_ALL_CODECS is not set
+@@ -1859,6 +1898,7 @@ CONFIG_USB_MASS_STORAGE=m
+ CONFIG_USB_G_SERIAL=m
+ # CONFIG_USB_MIDI_GADGET is not set
+ # CONFIG_USB_G_PRINTER is not set
++# CONFIG_USB_AMB_STREAM is not set
+ # CONFIG_USB_CDC_COMPOSITE is not set
+ # CONFIG_USB_G_ACM_MS is not set
+ CONFIG_USB_G_MULTI=m
+@@ -1884,6 +1924,7 @@ CONFIG_MMC_BLOCK_MINORS=32
+ # MMC/SD/SDIO Host Controller Drivers
+ #
+ CONFIG_MMC_AMBARELLA=m
++# CONFIG_AMBARELLA_EMMC_BOOT is not set
+ # CONFIG_MMC_SDHCI is not set
+ # CONFIG_MMC_SPI is not set
+ # CONFIG_MMC_DW is not set
+@@ -2043,6 +2084,7 @@ CONFIG_DCACHE_WORD_ACCESS=y
+ # CONFIG_REISERFS_FS is not set
+ # CONFIG_JFS_FS is not set
+ # CONFIG_XFS_FS is not set
++# CONFIG_GFS2_FS is not set
+ # CONFIG_OCFS2_FS is not set
+ # CONFIG_BTRFS_FS is not set
+ # CONFIG_NILFS2_FS is not set
+@@ -2056,7 +2098,8 @@ CONFIG_INOTIFY_USER=y
+ # CONFIG_QUOTA is not set
+ # CONFIG_QUOTACTL is not set
+ # CONFIG_AUTOFS4_FS is not set
+-# CONFIG_FUSE_FS is not set
++CONFIG_FUSE_FS=y
++# CONFIG_CUSE is not set
+ CONFIG_GENERIC_ACL=y
+ 
+ #
+@@ -2095,26 +2138,30 @@ CONFIG_CONFIGFS_FS=y
+ CONFIG_MISC_FILESYSTEMS=y
+ # CONFIG_ADFS_FS is not set
+ # CONFIG_AFFS_FS is not set
++# CONFIG_ECRYPT_FS is not set
+ # CONFIG_HFS_FS is not set
+ # CONFIG_HFSPLUS_FS is not set
+ # CONFIG_BEFS_FS is not set
+ # CONFIG_BFS_FS is not set
+ # CONFIG_EFS_FS is not set
+-# CONFIG_JFFS2_FS is not set
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_FS_DEBUG=0
++CONFIG_JFFS2_FS_WRITEBUFFER=y
++# CONFIG_JFFS2_FS_WBUF_VERIFY is not set
++# CONFIG_JFFS2_SUMMARY is not set
++# CONFIG_JFFS2_FS_XATTR is not set
++# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
++CONFIG_JFFS2_ZLIB=y
++# CONFIG_JFFS2_LZO is not set
++CONFIG_JFFS2_RTIME=y
++# CONFIG_JFFS2_RUBIN is not set
+ CONFIG_UBIFS_FS=y
+ CONFIG_UBIFS_FS_ADVANCED_COMPR=y
+ CONFIG_UBIFS_FS_LZO=y
+ CONFIG_UBIFS_FS_ZLIB=y
+ # CONFIG_LOGFS is not set
+ # CONFIG_CRAMFS is not set
+-CONFIG_SQUASHFS=y
+-# CONFIG_SQUASHFS_XATTR is not set
+-CONFIG_SQUASHFS_ZLIB=y
+-CONFIG_SQUASHFS_LZO=y
+-CONFIG_SQUASHFS_XZ=y
+-CONFIG_SQUASHFS_4K_DEVBLK_SIZE=y
+-# CONFIG_SQUASHFS_EMBEDDED is not set
+-CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3
++# CONFIG_SQUASHFS is not set
+ # CONFIG_VXFS_FS is not set
+ # CONFIG_MINIX_FS is not set
+ # CONFIG_OMFS_FS is not set
+@@ -2126,7 +2173,33 @@ CONFIG_SQUASHFS_FRAGMENT_CACHE_SIZE=3
+ # CONFIG_SYSV_FS is not set
+ # CONFIG_UFS_FS is not set
+ # CONFIG_F2FS_FS is not set
+-# CONFIG_NETWORK_FILESYSTEMS is not set
++CONFIG_NETWORK_FILESYSTEMS=y
++CONFIG_NFS_FS=m
++CONFIG_NFS_V2=m
++CONFIG_NFS_V3=m
++# CONFIG_NFS_V3_ACL is not set
++# CONFIG_NFS_V4 is not set
++# CONFIG_NFS_SWAP is not set
++# CONFIG_NFSD is not set
++CONFIG_LOCKD=m
++CONFIG_LOCKD_V4=y
++CONFIG_NFS_COMMON=y
++CONFIG_SUNRPC=m
++# CONFIG_SUNRPC_DEBUG is not set
++# CONFIG_CEPH_FS is not set
++CONFIG_CIFS=y
++CONFIG_CIFS_STATS=y
++# CONFIG_CIFS_STATS2 is not set
++# CONFIG_CIFS_WEAK_PW_HASH is not set
++# CONFIG_CIFS_UPCALL is not set
++# CONFIG_CIFS_XATTR is not set
++CONFIG_CIFS_DEBUG=y
++# CONFIG_CIFS_DEBUG2 is not set
++# CONFIG_CIFS_DFS_UPCALL is not set
++# CONFIG_CIFS_SMB2 is not set
++# CONFIG_NCP_FS is not set
++# CONFIG_CODA_FS is not set
++# CONFIG_AFS_FS is not set
+ CONFIG_NLS=y
+ CONFIG_NLS_DEFAULT="utf8"
+ CONFIG_NLS_CODEPAGE_437=y
+@@ -2197,6 +2270,8 @@ CONFIG_DEBUG_SECTION_MISMATCH=y
+ # CONFIG_DEBUG_KERNEL is not set
+ # CONFIG_PANIC_ON_OOPS is not set
+ CONFIG_PANIC_ON_OOPS_VALUE=0
++# CONFIG_SLUB_DEBUG_ON is not set
++# CONFIG_SLUB_STATS is not set
+ CONFIG_HAVE_DEBUG_KMEMLEAK=y
+ CONFIG_DEBUG_BUGVERBOSE=y
+ CONFIG_DEBUG_MEMORY_INIT=y
+@@ -2223,7 +2298,7 @@ CONFIG_HAVE_ARCH_KGDB=y
+ # CONFIG_TEST_KSTRTOX is not set
+ # CONFIG_STRICT_DEVMEM is not set
+ CONFIG_ARM_UNWIND=y
+-# CONFIG_DEBUG_USER is not set
++CONFIG_DEBUG_USER=y
+ CONFIG_DEBUG_LL_INCLUDE="mach/debug-macro.S"
+ CONFIG_UNCOMPRESS_INCLUDE="mach/uncompress.h"
+ # CONFIG_PID_IN_CONTEXTIDR is not set
+@@ -2231,7 +2306,9 @@ CONFIG_UNCOMPRESS_INCLUDE="mach/uncompress.h"
+ #
+ # Security options
+ #
+-# CONFIG_KEYS is not set
++CONFIG_KEYS=y
++# CONFIG_ENCRYPTED_KEYS is not set
++# CONFIG_KEYS_DEBUG_PROC_KEYS is not set
+ # CONFIG_SECURITY_DMESG_RESTRICT is not set
+ # CONFIG_SECURITY is not set
+ # CONFIG_SECURITYFS is not set
+@@ -2344,6 +2421,7 @@ CONFIG_CRYPTO_USER_API_HASH=y
+ CONFIG_CRYPTO_USER_API_SKCIPHER=y
+ CONFIG_CRYPTO_HW=y
+ CONFIG_CRYPTO_DEV_AMBARELLA=m
++# CONFIG_ASYMMETRIC_KEY_TYPE is not set
+ # CONFIG_BINARY_PRINTF is not set
+ 
+ #
+diff --git a/config/kernel/s2lmironman_kernel_config b/config/kernel/s2lmironman_kernel_config
+index 061edef..ec5bacb 100644
+--- a/config/kernel/s2lmironman_kernel_config
++++ b/config/kernel/s2lmironman_kernel_config
+@@ -111,7 +111,7 @@ CONFIG_NAMESPACES=y
+ # CONFIG_IPC_NS is not set
+ # CONFIG_USER_NS is not set
+ # CONFIG_PID_NS is not set
+-# CONFIG_NET_NS is not set
++CONFIG_NET_NS=y
+ CONFIG_UIDGID_CONVERTED=y
+ # CONFIG_UIDGID_STRICT_TYPE_CHECKS is not set
+ # CONFIG_SCHED_AUTOGROUP is not set
+@@ -368,12 +368,13 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_MMAP_DBGBUS=y
+ # CONFIG_PLAT_AMBARELLA_A8_CORTEX is not set
+ CONFIG_PLAT_AMBARELLA_S2L=y
+ # CONFIG_PLAT_AMBARELLA_S3 is not set
++# CONFIG_PLAT_AMBARELLA_S3L is not set
+ 
+ #
+ # Generic Platform Configuration
+ #
++# CONFIG_AMBARELLA_CALC_PLL is not set
+ # CONFIG_AMBARELLA_RAW_BOOT is not set
+-CONFIG_AMBARELLA_SUPPORT_BAPI=y
+ # CONFIG_AMBARELLA_PMUSERENR_EN is not set
+ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ 
+@@ -381,7 +382,6 @@ CONFIG_PLAT_AMBARELLA_SUPPORT_GDMA=y
+ # Sys file system support
+ #
+ # CONFIG_AMBARELLA_SYS_CACHE_CALL is not set
+-# CONFIG_AMBARELLA_SYS_BAPI_CALL is not set
+ 
+ #
+ # Proc file system support
+@@ -403,6 +403,7 @@ CONFIG_AMBARELLA_TIMER_HZ=100
+ CONFIG_AMBARELLA_TIMER_HIGHRES=y
+ CONFIG_AMBARELLA_EXT_IRQ_NUM=16
+ CONFIG_AMBARELLA_EXT_GPIO_NUM=16
++CONFIG_AMBARELLA_SREF_FIFO_EXEC=y
+ CONFIG_GPIO_PCA953X=y
+ # CONFIG_KEYBOARD_GPIO_POLLED is not set
+ # CONFIG_PLAT_SPEAR is not set
+@@ -627,6 +628,7 @@ CONFIG_IP_PNP_BOOTP=y
+ CONFIG_TCP_CONG_CUBIC=y
+ CONFIG_DEFAULT_TCP_CONG="cubic"
+ # CONFIG_TCP_MD5SIG is not set
++# CONFIG_WLAN_UPDATE_SEQ is not set
+ # CONFIG_IPV6 is not set
+ # CONFIG_NETWORK_SECMARK is not set
+ # CONFIG_NETWORK_PHY_TIMESTAMPING is not set
+@@ -825,6 +827,8 @@ CONFIG_MTD_NAND_BCH=y
+ CONFIG_MTD_NAND_ECC_BCH=y
+ # CONFIG_MTD_SM_COMMON is not set
+ CONFIG_MTD_NAND_AMBARELLA=y
++# CONFIG_MTD_SPINAND_AMBARELLA is not set
++# CONFIG_MTD_SPINAND_ONDIEECC is not set
+ # CONFIG_MTD_NAND_DENALI is not set
+ # CONFIG_MTD_NAND_GPIO is not set
+ CONFIG_MTD_NAND_IDS=y
+@@ -1586,9 +1590,13 @@ CONFIG_SND_AMBARELLA_CODEC=m
+ CONFIG_SND_SOC_AK4951_AMB=m
+ CONFIG_SND_SOC_AK4954_AMB=m
+ CONFIG_SND_SOC_AK7719_DSP=m
++# CONFIG_SND_SOC_AK7755 is not set
++# CONFIG_SND_SOC_TLV320ADC3xxx is not set
+ # CONFIG_SND_SOC_ES8388 is not set
++# CONFIG_SND_SOC_ES8374 is not set
+ # CONFIG_SND_SOC_WM8974_AMB is not set
+ # CONFIG_SND_SOC_WM8940_AMB is not set
++# CONFIG_SND_SOC_ZL380TW is not set
+ CONFIG_SND_SOC_AMBARELLA_DUMMY=m
+ # CONFIG_SND_ATMEL_SOC is not set
+ CONFIG_SND_SOC_I2C_AND_SPI=m
+@@ -1890,6 +1898,7 @@ CONFIG_USB_MASS_STORAGE=m
+ CONFIG_USB_G_SERIAL=m
+ # CONFIG_USB_MIDI_GADGET is not set
+ # CONFIG_USB_G_PRINTER is not set
++# CONFIG_USB_AMB_STREAM is not set
+ # CONFIG_USB_CDC_COMPOSITE is not set
+ # CONFIG_USB_G_ACM_MS is not set
+ CONFIG_USB_G_MULTI=m
+@@ -1915,6 +1924,7 @@ CONFIG_MMC_BLOCK_MINORS=32
+ # MMC/SD/SDIO Host Controller Drivers
+ #
+ CONFIG_MMC_AMBARELLA=m
++# CONFIG_AMBARELLA_EMMC_BOOT is not set
+ # CONFIG_MMC_SDHCI is not set
+ # CONFIG_MMC_SPI is not set
+ # CONFIG_MMC_DW is not set
+diff --git a/config/s2lm_ironman_config b/config/s2lm_ironman_config
+index b3658ca..206484a 100644
+--- a/config/s2lm_ironman_config
++++ b/config/s2lm_ironman_config
+@@ -4,7 +4,6 @@
+ # Fri Sep 11 11:13:22 2015
+ #
+ # CONFIG_ARCH_A5S is not set
+-# CONFIG_ARCH_A7L is not set
+ # CONFIG_ARCH_S2 is not set
+ # CONFIG_ARCH_S2E is not set
+ CONFIG_ARCH_S2L=y
+@@ -16,17 +15,9 @@ CONFIG_CPU_CORTEXA9_HF=y
+ #
+ # Ambarella Board Configuration
+ #
+-# CONFIG_BSP_BOARD_DOORMAN is not set
+ # CONFIG_BSP_BOARD_HAWTHORN is not set
+-# CONFIG_BSP_BOARD_S2LBUB is not set
+-# CONFIG_BSP_BOARD_S2LM_ELEKTRA is not set
+-# CONFIG_BSP_BOARD_S2LM_ICEMAN is not set
+-# CONFIG_BSP_BOARD_S2LM_IRONCAR is not set
+ CONFIG_BSP_BOARD_S2LM_IRONMAN=y
+-# CONFIG_BSP_BOARD_S2LM_KAR is not set
+ # CONFIG_BSP_BOARD_S2LM_KIWI is not set
+-# CONFIG_BSP_BOARD_S2LSMALLBIN is not set
+-# CONFIG_BSP_BOARD_STRAWBERRY is not set
+ CONFIG_BOARD_VERSION_S2LMIRONMAN_S2L55M=y
+ # CONFIG_S2LMIRONMAN_DSP_BOOT is not set
+ # CONFIG_S2LMIRONMAN_AUDIO_BOOT is not set
+@@ -51,6 +42,7 @@ AMBARELLA_INITRD_PHYS=0x00800000
+ IDSP_RAM_START=0x07000000
+ DSP_FASTDATA_SIZE=0x0000000
+ DSP_FASTAUDIO_SIZE=0x0000000
++FRAMEBUFFER_SIZE=0x0000000
+ 
+ #
+ # Hardware Options
+@@ -107,6 +99,7 @@ CONFIG_NAND_P2K_E128K=y
+ # CONFIG_NAND_HY27U1G8F2B is not set
+ # CONFIG_NAND_H27U518S2c is not set
+ # CONFIG_NAND_HY27US4G86F2D is not set
++# CONFIG_NAND_H27U2G8F2C is not set
+ # CONFIG_NAND_H27U2G8F2D is not set
+ # CONFIG_NAND_MX30LF1G08AA is not set
+ # CONFIG_NAND_MX30LF1GE8AB is not set
+@@ -155,30 +148,28 @@ CONFIG_NAND_S34ML02G1=y
+ CONFIG_NAND_1DEVICE=y
+ # CONFIG_NAND_2DEVICE is not set
+ # CONFIG_NAND_4DEVICE is not set
+-# CONFIG_AMBOOT_ENABLE_CRYPTO_CHIP is not set
+ CONFIG_AMBOOT_ENABLE_SD=y
+ 
+ #
+ # SD Subsystem Options
+ #
+ # CONFIG_AMBOOT_ENABLE_SPINOR is not set
++# CONFIG_AMBOOT_ENABLE_SPINAND is not set
+ # CONFIG_AMBOOT_ENABLE_SPI is not set
+-# CONFIG_AMBOOT_ENABLE_IDC is not set
+-CONFIG_AMBOOT_ENABLE_ETH=y
++CONFIG_AMBOOT_ENABLE_IDC=y
+ 
+ #
+-# ETH Subsystem Options
++# IDC Subsystem Options
+ #
+-CONFIG_AMBOOT_ENABLE_USB=y
++# CONFIG_AMBOOT_ENABLE_ISL12022M is not set
++# CONFIG_AMBOOT_ENABLE_PCA953X is not set
++CONFIG_AMBOOT_ENABLE_ETH=y
+ 
+ #
+-# USB Subsystem Options
++# ETH Subsystem Options
+ #
++CONFIG_AMBOOT_ENABLE_USB=y
+ CONFIG_AMBOOT_ENABLE_GPIO=y
+-
+-#
+-# GPIO Subsystem Options
+-#
+ # CONFIG_AMBOOT_DISABLE_UART is not set
+ CONFIG_AMBOOT_ENABLE_UART0=y
+ 
+@@ -200,22 +191,12 @@ CONFIG_BOOT_MEDIA_NAND=y
+ # CONFIG_4K_BOOT_IMAGE is not set
+ 
+ #
+-# NAND Boot Options
+-#
+-
+-#
+ # Common Boot Options
+ #
+ CONFIG_AMBOOT_COMMAND_SUPPORT=y
+-CONFIG_AMBOOT_BD_FDT_SUPPORT=y
+-# CONFIG_AMBOOT_BD_ATAG_SUPPORT is not set
+-# CONFIG_AMBOOT_BD_NONE_SUPPORT is not set
+ # CONFIG_AMBOOT_FDT_LOW_ADDR is not set
+ # CONFIG_AMBOOT_SEARCH_PTB is not set
+ CONFIG_AMBOOT_BD_CMDLINE=""
+-CONFIG_AMBOOT_BAPI_SUPPORT=y
+-CONFIG_AMBOOT_BAPI_ZERO_FB=y
+-# CONFIG_AMBOOT_BAPI_AOSS is not set
+ AMBOOT_DEFAULT_SN=""
+ AMBOOT_DEFAULT_LINUX_MACHINE_ID=4603
+ AMBOOT_DEV_AUTO_BOOT=y
+@@ -295,17 +276,17 @@ BUILD_AMBARELLA_APPLICATION=y
+ CONFIG_APP_INSTALL_DIR="$(FAKEROOT_DIR)/usr/local/bin"
+ CONFIG_APP_IPCAM_CONFIG_DIR="$(FAKEROOT_DIR)/etc/ambaipcam"
+ # BUILD_AMBARELLA_APP_DEBUG is not set
+-BUILD_AMBAREALLA_CLOUD_LIB=y
+-BUILD_AMBAREALLA_CLOUD_AGENT=y
++# BUILD_AMBAREALLA_CLOUD_LIB is not set
+ BUILD_AMBARELLA_APP_IPCAM=y
++BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON=y
++# BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_C is not set
+ BUILD_AMBARELLA_APP_IPCAM_RTSP=y
+ # BUILD_AMBARELLA_APP_IPCAM_AUTORUN_SERVICES is not set
+ # BUILD_AMBARELLA_APP_IPCAM_SMART_LDC is not set
+ # BUILD_AMBARELLA_APP_HTTP_UPLOADER is not set
++# BUILD_AMBARELLA_APP_WOWL is not set
+ # BUILD_AMBARELLA_APP_FASTBOOT_AUDIO is not set
+ # BUILD_AMBARELLA_APP_FASTBOOT_APP is not set
+-# BUILD_AMBARELLA_APP_ELEKTRA_BOOT is not set
+-# BUILD_AMBARELLA_APP_PROXY_DARWIN_INJECTOR is not set
+ # BUILD_AMBARELLA_APP_SMARTCAM is not set
+ BUILD_AMBAREALLA_APP_UTILITY=y
+ BUILD_AMBAREALLA_UTILITY_SCRIPTS=y
+@@ -320,26 +301,28 @@ BUILD_AMBARELLA_APP_UTILITY_DSPLOG=y
+ BUILD_AMBAREALLA_APP_UTILITY_UPGRADE=y
+ BUILD_UPGRADE_FOR_3_10=y
+ # BUILD_UPGRADE_FOR_3_8 is not set
++# BUILD_UPGRADE_FOR_4_4 is not set
++# BUILD_SONY_SD_TOOL is not set
+ BUILD_AMBARELLA_LINUX_KERNEL=y
+ CONFIG_LINUX_KERNEL_VERSION="3.10"
+ CONFIG_KERNEL_DEFCONFIG_STRING="s2lmironman_kernel_config"
+ CONFIG_KERNEL_MODULES_INSTALL_DIR="$(FAKEROOT_DIR)"
+ BUILD_AMBARELLA_EXTERNAL_MODULES=y
+ BUILD_WIFI_BLUETOOTH_MODULES=y
+-# BUILD_MARVELL_WIFI_BT_SD8688 is not set
+-# BUILD_MARVELL_WIFI_BT_SD8787 is not set
+ # BUILD_ATHEROS_WIFI_AR6002 is not set
+ # BUILD_ATHEROS_WIFI_AR6003 is not set
+ # BUILD_ATHEROS_WIFI_AR9374 is not set
+ # BUILD_ATHEROS_WIFI_AR9375 is not set
+ # BUILD_ATHEROS_WIFI_AR1021 is not set
+ BUILD_BROADCOM_WIFI_SDIO=y
++# BUILD_BROADCOM_WIFI_PROC_PM_STATE is not set
+ # BUILD_BROADCOM_WIFI_ARP_OFFLOAD is not set
+ # BUILD_BROADCOM_WIFI_TXGLOM is not set
+ # BUILD_BROADCOM_WIFI_SDIO_OOB is not set
+ # BUILD_BROADCOM_WIFI_SDIO_TCPKA is not set
+ GPIO_BCM_WL_HOST_WAKE=4
+ GPIO_BCM_WL_REG_ON=102
++WIFI_CONN_SD_SLOT_NUM=0
+ BUILD_BROADCOM_WIFI_SDIO_V3_0=y
+ # BUILD_BROADCOM_WIFI_SDIO_V2_V3_0 is not set
+ # BUILD_BROADCOM_WIFI_SDIO_CHIP_BCM43362 is not set
+@@ -347,7 +330,14 @@ BUILD_BROADCOM_WIFI_SDIO_V3_0=y
+ BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6234=y
+ # BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6234_PS is not set
+ # BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6212 is not set
++# BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6452 is not set
++# BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6212A is not set
++# BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6255 is not set
++# BUILD_BROADCOM_WIFI_SDIO_MODULE_AP62X2 is not set
+ # BUILD_BROADCOM_WIFI_USB is not set
++# BUILD_MARVELL_WIFI_BT_SD8688 is not set
++# BUILD_MARVELL_WIFI_BT_SD8787 is not set
++# BUILD_MARVELL_WIFI_BT_SD8977 is not set
+ # BUILD_REALTEK_WIFI_8812AU is not set
+ # BUILD_REALTEK_WIFI_8821AU is not set
+ # BUILD_REALTEK_WIFI_8192EU is not set
+@@ -356,8 +346,6 @@ BUILD_BROADCOM_WIFI_SDIO_MODULE_AP6234=y
+ # BUILD_COMPAT_WIRELESS is not set
+ # BUILD_EXTERNAL_CRYPTO_MODULES is not set
+ BUILD_AMBARELLA_PRIVATE_MODULES=y
+-# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
+-BUILD_AMBARELLA_HW_TIMER=y
+ BUILD_AMBARELLA_VIN=y
+ 
+ #
+@@ -374,6 +362,7 @@ BUILD_AMBARELLA_VIN=y
+ # CONFIG_SENSOR_AR0237P is not set
+ # CONFIG_SENSOR_AR0331 is not set
+ # CONFIG_SENSOR_OV2710P is not set
++# CONFIG_SENSOR_OV2718_MIPI is not set
+ CONFIG_SENSOR_OV4689_MIPI=y
+ # CONFIG_SENSOR_OV5653 is not set
+ # CONFIG_SENSOR_OV9710 is not set
+@@ -403,6 +392,7 @@ CONFIG_SENSOR_OV4689_MIPI=y
+ # CONFIG_SENSOR_MN34210PL is not set
+ # CONFIG_SENSOR_MN34220PL is not set
+ # CONFIG_SENSOR_MN34227PL is not set
++# CONFIG_SENSOR_MN34420PL is not set
+ # CONFIG_SENSOR_FPGA is not set
+ # CONFIG_SENSOR_AMBDS is not set
+ 
+@@ -414,12 +404,6 @@ CONFIG_SENSOR_OV4689_MIPI=y
+ # CONFIG_AMBARELLA_VIN_DEBUG is not set
+ # CONFIG_VIN_FPS_STAT is not set
+ # BUILD_AMBARELLA_LENS is not set
+-BUILD_AMBARELLA_DSP=y
+-CONFIG_PRINT_DSP_CMD=y
+-CONFIG_PRINT_DSP_CMD_MORE=y
+-# CONFIG_PRINT_DSP_CMD_RAW is not set
+-CONFIG_DSP_LOG_START_0X80000=y
+-# CONFIG_DSP_LOG_START_IAVMEM is not set
+ BUILD_AMBARELLA_VOUT=y
+ # CONFIG_DVE_NULL is not set
+ CONFIG_DVE_AMBTVE=y
+@@ -429,30 +413,42 @@ CONFIG_HDMI_NULL=y
+ # CONFIG_HDMI_AMBHDMI is not set
+ # BUILD_AMBARELLA_IT66121_HDMI is not set
+ # CONFIG_AMBARELLA_VOUT_DEBUG is not set
++# BUILD_AMBARELLA_PRIVATE_DRV_MSG is not set
++BUILD_AMBARELLA_HW_TIMER=y
++BUILD_AMBARELLA_DSP=y
++CONFIG_PRINT_DSP_CMD=y
++CONFIG_PRINT_DSP_CMD_MORE=y
++# CONFIG_PRINT_DSP_CMD_RAW is not set
++CONFIG_DSP_LOG_START_0X80000=y
++# CONFIG_DSP_LOG_START_IAVMEM is not set
+ BUILD_AMBARELLA_IAV=y
++# CONFIG_AMBARELLA_IAV_DRAM_DECODE_ONLY is not set
+ 
+ #
+ # IAV memory options
+ #
+ DSP_BSB_SIZE=0x600000
+ DSP_IAVRSVD_SIZE=0x1000000
+-IAV_MEM_USR_SIZE=0x0000000
++IAV_MEM_USR_SIZE=0x00800000
++IAV_MEM_MV_SIZE=0x0000000
+ IAV_MEM_OVERLAY_SIZE=0x0200000
+-# CONFIG_AMBARELLA_IAV_QP_OFFSET_IPB is not set
++# CONFIG_AMBARELLA_IAV_ROI_IPB is not set
+ IAV_MEM_QPM_SIZE=0x0018000
+ CONFIG_AMBARELLA_IAV_DRAM_WARP_MEM=y
+ IAV_MEM_PM_SIZE_S2L=0x03C0000
++IAV_MEM_VCA_SIZE=0x0000000
+ # CONFIG_AMBARELLA_IAV_SESSION_ID_SUPPORT is not set
+ # CONFIG_AMBARELLA_IAV_GUARD_VSYNC_LOSS is not set
+ BUILD_AMBARELLA_IMGPROC_DRV=y
+ CONFIG_IMGPROC_MEM_SMALL=y
+ # CONFIG_IMGPROC_MEM_LARGE is not set
+-BUILD_AMBARELLA_DEBUG=y
+-# BUILD_AMBARELLA_CRYPTO is not set
+ # BUILD_GYRO is not set
+ # BUILD_EIS is not set
++BUILD_AMBARELLA_DEBUG=y
+ BUILD_AMBARELLA_DSP_LOG=y
++# BUILD_AMBARELLA_CRYPTO is not set
+ # BUILD_PRIVATE_DRIVER_FOR_CRYPTOCHIP is not set
++# BUILD_AMBARELLA_UVC_CAMERA is not set
+ CONFIG_DSP_FIRMWARE_GERNEIC=y
+ # CONFIG_DSP_FIRMWARE_ENCODE_ONLY is not set
+ # CONFIG_DSP_FIRMWARE_DEBUG is not set
+@@ -463,6 +459,7 @@ BUILD_AMBARELLA_ORYX_MW=y
+ # Ambarella Oryx MW File Path
+ #
+ BUILD_AMBARELLA_ORYX_LIB_DIR="/usr/lib"
++BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN_DIR="/usr/lib/oryx/video"
+ BUILD_AMBARELLA_ORYX_DEMUXER_DIR="/usr/lib/oryx/demuxer"
+ BUILD_AMBARELLA_ORYX_MUXER_DIR="/usr/lib/oryx/muxer"
+ BUILD_AMBARELLA_ORYX_CODEC_DIR="/usr/lib/oryx/codec"
+@@ -478,53 +475,87 @@ BUILD_AMBARELLA_ORYX_AUDIO_CAPTURE_PULSE=y
+ BUILD_AMBARELLA_ORYX_AUDIO_DEVICE=y
+ BUILD_AMBARELLA_ORYX_AUDIO_DEVICE_PULSE=y
+ # BUILD_AMBARELLA_ORYX_CLOUD_STORAGE is not set
++BUILD_AMBARELLA_ORYX_CFG_SET=y
++# BUILD_AMBARELLA_ORYX_CFG_SET_UNIT_TEST is not set
+ BUILD_AMBARELLA_ORYX_CONFIG=y
+-BUILD_AMBARELLA_ORYX_CONFIG_UNIT_TEST=y
++# BUILD_AMBARELLA_ORYX_CONFIG_UNIT_TEST is not set
+ # BUILD_AMBARELLA_ORYX_DISCOVERY is not set
+ BUILD_AMBARELLA_ORYX_EVENTMONITOR=y
+ BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_DIR="/usr/lib/oryx/event"
+-BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_MOTION_DETECT=y
+ BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_AUDIO_ALERT=y
+ BUILD_AMBARELLA_ORYX_EVENT_PLUGIN_KEY_INPUT=y
+ BUILD_AMBARELLA_ORYX_IMAGE_QUALITY=y
+-BUILD_AMBARELLA_ORYX_IMAGE_QUALITY_UNIT_TEST=y
++# BUILD_AMBARELLA_ORYX_IMAGE_QUALITY_UNIT_TEST is not set
+ BUILD_AMBARELLA_ORYX_IPC=y
+-BUILD_AMBARELLA_ORYX_IPC_UNIT_TEST=y
++# BUILD_AMBARELLA_ORYX_IPC_UNIT_TEST is not set
+ BUILD_AMBARELLA_ORYX_LED=y
+ # BUILD_AMBARELLA_ORYX_LED_UNIT_TEST is not set
+-BUILD_AMBARELLA_ORYX_NETWORK=y
++# BUILD_AMBARELLA_ORYX_NETWORK is not set
+ BUILD_AMBARELLA_ORYX_PROTOCOL=y
+ BUILD_AMBARELLA_ORYX_PROTOCOL_RTSP=y
+-BUILD_AMBARELLA_ORYX_PROTOCOL_SIP=y
++# BUILD_AMBARELLA_ORYX_PROTOCOL_SIP is not set
+ BUILD_AMBARELLA_ORYX_SERVICES=y
+ BUILD_AMBARELLA_ORYX_SERVICE_API_PROXY=y
+ BUILD_AMBARELLA_ORYX_SERVICE_APPS_LAUNCHER=y
+ BUILD_AMBARELLA_ORYX_SERVICE_AUDIO=y
+ BUILD_AMBARELLA_ORYX_SERVICE_EVENT=y
+ BUILD_AMBARELLA_ORYX_SERVICE_IMAGE=y
++# BUILD_AMBARELLA_ORYX_SERVICE_IMAGE_SELF_TEST is not set
+ BUILD_AMBARELLA_ORYX_SERVICE_MEDIA=y
+ BUILD_AMBARELLA_ORYX_SERVICE_NETWORK=y
+ BUILD_AMBARELLA_ORYX_RTSP_SERVICE=y
+ BUILD_AMBARELLA_ORYX_SERVICE_FRAME=y
+ BUILD_AMBARELLA_ORYX_SERVICE_MANAGER=y
+-BUILD_AMBARELLA_ORYX_SIP_SERVICE=y
++# BUILD_AMBARELLA_ORYX_SIP_SERVICE is not set
+ BUILD_AMBARELLA_ORYX_SERVICE_SYSTEM=y
+ BUILD_AMBARELLA_ORYX_SERVICE_VIDEO=y
+-# BUILD_AMBARELLA_ORYX_CGI is not set
++BUILD_AMBARELLA_ORYX_SERVICE_PLAYBACK=y
++BUILD_AMBARELLA_ORYX_SERVICE_VIDEO_EDIT=y
++BUILD_AMBARELLA_ORYX_SERVICE_EFM_SOURCE=y
++BUILD_AMBARELLA_ORYX_CGI=y
++BUILD_AMBARELLA_ORYX_WEB_APPS=y
++BUILD_AMBARELLA_ORYX_WEB_DOCUMENT=y
+ BUILD_AMBARELLA_ORYX_STREAM=y
+ BUILD_AMBARELLA_ORYX_STREAM_RECORD=y
+ BUILD_AMBARELLA_ORYX_STREAM_PLAYBACK=y
+-BUILD_AMBARELLA_ORYX_STREAM_PLAYBACK_UNIT_TEST=y
++# BUILD_AMBARELLA_ORYX_STREAM_UNIT_TEST is not set
+ BUILD_AMBARELLA_ORYX_UPGRADE=y
++BUILD_AMBARELLA_ORYX_UPGRADE_MTD_MOUNT_FS_TYPE="ubifs"
+ # BUILD_AMBARELLA_ORYX_UPGRADE_UNIT_TEST is not set
+-BUILD_AMBARELLA_ORYX_OSAL=y
+ BUILD_AMBARELLA_ORYX_UTILITY=y
++BUILD_AMBARELLA_ORYX_DEC7Z=y
++BUILD_AMBARELLA_ORYX_JPEG_ENCODER=y
++# BUILD_AMBARELLA_ORYX_JPEG_SNAPSHOT is not set
++BUILD_AMBARELLA_ORYX_LIBARCHIVE=y
++# BUILD_AMBARELLA_ORYX_LIBARCHIVE_UNIT_TEST is not set
++BUILD_AMBARELLA_ORYX_OSAL=y
++BUILD_AMBARELLA_ORYX_UTIL=y
+ # BUILD_AMBARELLA_ORYX_UTILITY_UNIT_TEST is not set
+ BUILD_AMBARELLA_ORYX_VIDEO=y
+-BUILD_AMBARELLA_ORYX_VIDEO_UNIT_TEST=y
+-# BUILD_AMBARELLA_ORYX_VIDEO_NEW is not set
++CONFIG_AMBARELLA_ORYX_VIDEO_IAV2=y
++BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_OVERLAY=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_DPTZ=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_WARP=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_LBR=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_EIS=y
++BUILD_AMBARELLA_VIDEO_PLUGIN_MD=y
++BUILD_AMBARELLA_ORYX_VIDEO_TEST=y
+ BUILD_AMBARELLA_ORYX_WATCHDOG=y
+-# BUILD_AMBARELLA_ORYX_PLAYBACK_NEW is not set
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_UNIT_TEST=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_DEMUXER_RTSP=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_DEMUXER_MP4=y
++# BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_DEMUXER_TS is not set
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_MUXER_MP4=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_LINUXFB=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_ALSA_LIBRARY=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_FFMPEG_LIBRARY=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_AUDIO_AMBA_AAC_LIBRARY=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_LINUX_UVC=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_AMBA_DSP=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_VIDEO_DECODER_AMBA=y
++BUILD_AMBARELLA_ORYX_PLAYBACK_NEW_VIDEO_RENDERER_AMBA=y
+ # ENABLE_ORYX_PERFORMANCE_PROFILE is not set
+ BUILD_AMBARELLA_PACKAGE=y
+ BUILD_AMBARELLA_PACKAGES_PROPRIETARY_SOURCES=y
+@@ -534,7 +565,10 @@ BUILD_AMBARELLA_DEWARP_PACKAGE=y
+ CONFIG_DEWARP_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/dewarp"
+ BUILD_AMBARELLA_DEWARP_DYNAMIC=y
+ # BUILD_AMBARELLA_DEWARP_STATIC is not set
+-# BUILD_AMBARELLA_EIS_PACKAGE is not set
++BUILD_AMBARELLA_EIS_PACKAGE=y
++CONFIG_EIS_INSTALL_DIR="$(AMBABUILD_TOPDIR)/prebuild/eis"
++BUILD_AMBARELLA_EIS_DYNAMIC=y
++# BUILD_AMBARELLA_EIS_STATIC is not set
+ BUILD_AMBARELLA_IMGPROC_PACKAGE=y
+ CONFIG_IMGPROC_INSTALL_DIR="$(AMB_TOPDIR)/prebuild/imgproc"
+ # CONFIG_IMGPROC_PACKAGE_DYNAMIC_LIB is not set
+@@ -560,12 +594,17 @@ BUILD_AMBARELLA_LW_CRYPTOGRAPHY=y
+ BUILD_AMBARELLA_DIGITAL_SIGNATURE=y
+ CONFIG_DIGITAL_SIGNATURE_LIBRARY_NATIVE=y
+ # CONFIG_DIGITAL_SIGNATURE_LIBRARY_OPENSSL is not set
+-# BUILD_AMBARELLA_LW_MEDIA is not set
+-# BUILD_CRYPTOCHIP_LIBRARY is not set
++# BUILD_AMBARELLA_CRYPTOCHIP_LIBRARY is not set
++# BUILD_AMBARELLA_UNIQUEID_PUF_BPP is not set
+ # BUILD_AMBARELLA_DIGITAL_WATERMARKER is not set
+ BUILD_AMBARELLA_SMARTCAM_PACKAGE=y
+ BUILD_AMBARELLA_SMARTCAM_PACKAGE_MDET=y
+ # BUILD_AMBARELLA_SMARTCAM_PACKAGE_FDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_HDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_MHDET is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_PEDESTRIAN is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_HUMAN is not set
++# BUILD_AMBARELLA_SMARTCAM_PACKAGE_FREC is not set
+ # BUILD_AMBARELLA_SMARTCAM_PACKAGE_DEFOG is not set
+ # BUILD_AMBARELLA_SMARTCAM_PACKAGE_PDET is not set
+ # BUILD_AMBARELLA_SMARTCAM_PACKAGE_STEREO is not set
+@@ -657,6 +696,7 @@ CONFIG_AMBARELLA_PULSEAUDIO_UTILS_SUPPORT=y
+ #
+ # Libraries
+ #
++CONFIG_AMBARELLA_7ZDEC_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBNL_1_SUPPORT is not set
+ CONFIG_AMBARELLA_GLIB_SUPPORT=y
+ CONFIG_AMBARELLA_LIBFFI_SUPPORT=y
+@@ -668,11 +708,22 @@ CONFIG_AMBARELLA_LIBELF_SUPPORT=y
+ CONFIG_AMBARELLA_FREETYPE_SUPPORT=y
+ CONFIG_AMBARELLA_FREE_FONTS_SUPPORT=y
+ # CONFIG_AMBARELLA_FREE_CHINESE_FONTS_SUPPORT is not set
+-# CONFIG_AMBARELLA_LOCALE_SUPPORT is not set
++CONFIG_AMBARELLA_LOCALE_SUPPORT=y
++CONFIG_AMBARELLA_SYSTEM_LANGUAGE_ZH_CN=y
++# CONFIG_AMBARELLA_SYSTEM_LANGUAGE_ZH_TW is not set
++# CONFIG_AMBARELLA_SYSTEM_LANGUAGE_ZH_HK is not set
++# CONFIG_AMBARELLA_SYSTEM_LANGUAGE_KO_KR is not set
++# CONFIG_AMBARELLA_SYSTEM_LANGUAGE_JA_JP is not set
++CONFIG_AMBARELLA_LOCALE_ZH_CN_SUPPORT=y
++# CONFIG_AMBARELLA_LOCALE_ZH_TW_SUPPORT is not set
++# CONFIG_AMBARELLA_LOCALE_ZH_HK_SUPPORT is not set
++# CONFIG_AMBARELLA_LOCALE_KO_KR_SUPPORT is not set
++# CONFIG_AMBARELLA_LOCALE_JA_JP_SUPPORT is not set
+ CONFIG_AMBARELLA_EXPAT_SUPPORT=y
+-# CONFIG_AMBARELLA_LIBXML2_SUPPORT is not set
+-# CONFIG_AMBARELLA_MXML_SUPPORT is not set
+-# CONFIG_AMBARELLA_CLEARSILVER_SUPPORT is not set
++CONFIG_AMBARELLA_LIBXML2_SUPPORT=y
++CONFIG_AMBARELLA_MXML_SUPPORT=y
++CONFIG_AMBARELLA_CLEARSILVER_SUPPORT=y
++# CONFIG_AMBARELLA_LIBEVENT_SUPPORT is not set
+ CONFIG_AMBARELLA_LIBNL_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBNL_UTILS_SUPPORT is not set
+ CONFIG_AMBARELLA_LIBTOOL_SUPPORT=y
+@@ -685,21 +736,23 @@ CONFIG_AMBARELLA_LIBGCRYPT_SUPPORT=y
+ CONFIG_AMBARELLA_GNUTLS_SUPPORT=y
+ # CONFIG_AMBARELLA_GNUTLS_UTILS_SUPPORT is not set
+ CONFIG_AMBARELLA_CA_CERTIFICATES_SUPPORT=y
++# CONFIG_AMBARELLA_LIBZRTPCPP_SUPPORT is not set
+ CONFIG_AMBARELLA_JSONC_SUPPORT=y
+ CONFIG_AMBARELLA_LIBOGG_SUPPORT=y
++CONFIG_AMBARELLA_LIBARCHIVE_SUPPORT=y
++CONFIG_AMBARELLA_SOXR_SUPPORT=y
+ CONFIG_AMBARELLA_LIBG7XX_SUPPORT=y
+ CONFIG_AMBARELLA_LIBOPUS_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBOPUSFILE_SUPPORT is not set
+ # CONFIG_AMBARELLA_OPUS_TOOLS_SUPPORT is not set
+ # CONFIG_AMBARELLA_AUDIOFILE_SUPPORT is not set
+-# CONFIG_AMBARELLA_LIBVORBIS_SUPPORT is not set
+ # CONFIG_AMBARELLA_LIBSAMPLERATE_SUPPORT is not set
+ CONFIG_AMBARELLA_LIBSNDFILE_SUPPORT=y
+ CONFIG_AMBARELLA_WEBRTC_AUDIO_PROCESSING_SUPPORT=y
+ CONFIG_AMBARELLA_SPEEX_SUPPORT=y
+ CONFIG_AMBARELLA_SPEEX_DSP_SUPPORT=y
+ # CONFIG_AMBARELLA_SPEEX_UTILS_SUPPORT is not set
+-# CONFIG_AMBARELLA_ORC_SUPPORT is not set
++CONFIG_AMBARELLA_FFMPEG_SUPPORT=y
+ CONFIG_AMBARELLA_NCURSES_SUPPORT=y
+ CONFIG_AMBARELLA_LIBSELINUX_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBSELINUX_UTILS_SUPPORT is not set
+@@ -708,17 +761,17 @@ CONFIG_AMBARELLA_LIBSEPOL_SUPPORT=y
+ CONFIG_AMBARELLA_LIBSSH2_SUPPORT=y
+ CONFIG_AMBARELLA_LIBIDN_SUPPORT=y
+ CONFIG_AMBARELLA_LIBCURL_SUPPORT=y
++# CONFIG_AMBARELLA_LIBPNG_SUPPORT is not set
+ CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBJPEG_TURBO_UTIL_SUPPORT is not set
+ # CONFIG_AMBARELLA_ZBAR_SUPPORT is not set
+ # CONFIG_AMBARELLA_LIBDAEMON_SUPPORT is not set
+-# CONFIG_AMBARELLA_JRTPLIB_SUPPORT is not set
+-# CONFIG_AMBARELLA_LIBJTHREAD_SUPPORT is not set
+ # CONFIG_AMBARELLA_LIBICAL_SUPPORT is not set
+ CONFIG_AMBARELLA_LIBUSBX_SUPPORT=y
+ CONFIG_AMBARELLA_LIBUSB_COMPAT_SUPPORT=y
+ CONFIG_AMBARELLA_READLINE_SUPPORT=y
+ # CONFIG_AMBARELLA_SBC_SUPPORT is not set
++CONFIG_AMBARELLA_BIND_LIB_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBPCAP_SUPPORT is not set
+ CONFIG_AMBARELLA_LIBCAP_SUPPORT=y
+ # CONFIG_AMBARELLA_LIBCAP_UTILS_SUPPORT is not set
+@@ -747,11 +800,15 @@ CONFIG_AMBARELLA_LIBNDP_SUPPORT=y
+ #
+ # Wireless
+ #
+-# CONFIG_AMBARELLA_MARVELL_WIRELESS_SUPPORT is not set
+ # CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
+-CONFIG_AMBARELLA_BROADCOM_SUPPORT=y
++CONFIG_AMBARELLA_BROADCOM_WIFI_SUPPORT=y
++# CONFIG_AMBARELLA_MARVELL_WIFI_SUPPORT is not set
+ # CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
++# CONFIG_ATHEROS_TOOL_SUPPORT is not set
+ CONFIG_BROADCOM_TOOL_SUPPORT=y
++# CONFIG_BROADCOM_GPS_SUPPORT is not set
++# CONFIG_MARVELL_TOOL_SUPPORT is not set
++# CONFIG_REALTEK_TOOL_SUPPORT is not set
+ CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT=y
+ CONFIG_AMBARELLA_WPA_SUPPLICANT_SUPPORT=y
+ CONFIG_AMBARELLA_WPA_SUPPLICANT_LATEST_SUPPORT=y
+@@ -760,22 +817,21 @@ CONFIG_AMBARELLA_WPA_SUPPLICANT_LATEST_SUPPORT=y
+ CONFIG_AMBARELLA_IW_SUPPORT=y
+ CONFIG_AMBARELLA_DNSMASQ_SUPPORT=y
+ CONFIG_AMBARELLA_HOSTAPD_SUPPORT=y
++CONFIG_AMBARELLA_HOSTAPD_LATEST_SUPPORT=y
++# CONFIG_AMBARELLA_HOSTAPD_RTW_11967 is not set
+ 
+ #
+ # BlueTooth
+ #
+-# CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT is not set
+-CONFIG_AMBARELLA_BLUETOOTH4_TOOL_SUPPORT=y
++CONFIG_AMBARELLA_NO_BLUETOOTH_SUPPORT=y
+ # CONFIG_AMBARELLA_BLUETOOTH5_TOOL_SUPPORT is not set
+-CONFIG_AMBARELLA_BLUETOOTH_USB_SUPPORT=y
+ CONFIG_AMBARELLA_BLUEZ_TOOLS_SUPPORT=y
+ 
+ #
+ # Network Utilities
+ #
+-# CONFIG_AMBARELLA_NO_IPTABLES_SUPPORT is not set
+-# CONFIG_AMBARELLA_IPTABLES_2_6_38_SUPPORT is not set
+-CONFIG_AMBARELLA_IPTABLES_3_8_SUPPORT=y
++CONFIG_AMBARELLA_NO_IPTABLES_SUPPORT=y
++# CONFIG_AMBARELLA_IPTABLES_3_10_SUPPORT is not set
+ CONFIG_AMBARELLA_DHCP_SUPPORT=y
+ # CONFIG_AMBARELLA_DHCP_TOOL_OMSHELL is not set
+ # CONFIG_AMBARELLA_DHCP_TOOL_DHCPD is not set
+@@ -789,13 +845,12 @@ CONFIG_AMBARELLA_AUTO_TELNETD=y
+ # CONFIG_AMBARELLA_AVAHI_SUPPORT is not set
+ # CONFIG_AMBARELLA_TFTPD_SUPPORT is not set
+ # CONFIG_AMBARELLA_NFS_SERVICE_SUPPORT is not set
+-# CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT is not set
++CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT=y
+ # CONFIG_AMBARELLA_PARTNER_Y_SUPPORT is not set
+-# CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT is not set
++CONFIG_AMBARELLA_SPAWN_FCGI_SUPPORT=y
+ CONFIG_AMBARELLA_NTP_SUPPORT=y
+ # CONFIG_AMBARELLA_TCPDUMP_SUPPORT is not set
+ # CONFIG_AMBARELLA_USTREAM_SUPPORT is not set
+-# CONFIG_AMBARELLA_PPPD_SUPPORT is not set
+ CONFIG_AMBARELLA_ETHTOOL_SUPPORT=y
+ 
+ #
+@@ -815,7 +870,6 @@ CONFIG_AMBARELLA_EXFAT_UTILS_SUPPORT=y
+ # Script Language
+ #
+ CONFIG_AMBARELLA_LUA_SUPPORT=y
+-# CONFIG_AMBARELLA_PERL_SUPPORT is not set
+ # CONFIG_AMBARELLA_PYTHON_SUPPORT is not set
+ 
+ #
+@@ -825,7 +879,9 @@ CONFIG_AMBARELLA_LUA_SUPPORT=y
+ # CONFIG_AMBARELLA_CYCLICTEST_SUPPORT is not set
+ # CONFIG_AMBARELLA_HALTEST_SUPPORT is not set
+ # CONFIG_AMBARELLA_IOZONE_SUPPORT is not set
++# CONFIG_AMBARELLA_I2C_TOOLS_SUPPORT is not set
+ CONFIG_AMBARELLA_IPERF_SUPPORT=y
++# CONFIG_AMBARELLA_IPERF3_SUPPORT is not set
+ 
+ #
+ # System Utils
+@@ -847,7 +903,6 @@ CONFIG_UTIL_LINUX_SUPPORT=y
+ #
+ # CONFIG_AMBARELLA_GDB_SUPPORT is not set
+ # CONFIG_AMBARELLA_GDBSERVER_SUPPORT is not set
+-# CONFIG_AMBARELLA_GPROF_SUPPORT is not set
+ # CONFIG_AMBARELLA_STRACE_SUPPORT is not set
+ # CONFIG_AMBARELLA_LTRACE_SUPPORT is not set
+ # CONFIG_AMBARELLA_VALGRIND_SUPPORT is not set
+@@ -864,6 +919,7 @@ BUILD_AMBARELLA_UNIT_TESTS_PI_CSS5=y
+ # BUILD_AMBARELLA_UNIT_TESTS_MEM is not set
+ # BUILD_AMBARELLA_UNIT_TESTS_SD_WRITE is not set
+ # BUILD_AMBARELLA_UNIT_TESTS_SD_TEST is not set
++# BUILD_AMBARELLA_UNIT_TESTS_SD_BENCHMARK is not set
+ # BUILD_AMBARELLA_UNIT_TESTS_NET_TEST is not set
+ # BUILD_AMBARELLA_UNIT_TESTS_MEMTESTER is not set
+ # BUILD_AMBARELLA_UNIT_TESTS_CRYPTO is not set
+diff --git a/config/s2lm_ironman_fastboot_config b/config/s2lm_ironman_fastboot_config
+index 3437879..80af512 100644
+--- a/config/s2lm_ironman_fastboot_config
++++ b/config/s2lm_ironman_fastboot_config
+@@ -581,7 +581,7 @@ CONFIG_AMBARELLA_LIBNL_SUPPORT=y
+ #
+ # CONFIG_AMBARELLA_MARVELL_WIRELESS_SUPPORT is not set
+ # CONFIG_AMBARELLA_ATHEROS_WIFI_SUPPORT is not set
+-CONFIG_AMBARELLA_BROADCOM_SUPPORT=y
++CONFIG_AMBARELLA_BROADCOM_WIFI_SUPPORT=y
+ # CONFIG_AMBARELLA_REALTEK_WIFI_SUPPORT is not set
+ # CONFIG_BROADCOM_TOOL_SUPPORT is not set
+ # CONFIG_AMBARELLA_WIRELESS_TOOL_SUPPORT is not set
+diff --git a/devices.h b/devices.h
+index d19413c..5382b76 100644
+--- a/devices.h
++++ b/devices.h
+@@ -3,13 +3,33 @@
+  * History:
+  * 2014/09/17 - [Bin Wang] Created this file
+  *
+- * Copyright (C) 2014-2018 Ambarella, Inc.
+  *
+- * All rights reserved. No Part of this file may be reproduced, stored
+- * in a retrieval system, or transmitted, in any form, or by any means,
+- * electronic, mechanical, photocopying, recording, or otherwise,
+- * without the prior consent of Ambarella, Inc.
+- *********************************************************************/
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ 
+ #ifndef __DEVICES_H__
+ #define __DEVICES_H__
+diff --git a/img_data/adj_params/ov4689_aeb_param.c b/img_data/adj_params/ov4689_aeb_param.c
+index f0a88b9..58f5741 100644
+--- a/img_data/adj_params/ov4689_aeb_param.c
++++ b/img_data/adj_params/ov4689_aeb_param.c
+@@ -1,3 +1,35 @@
++/**
++ * boards/s2lm_ironman/img_data/adj_params/ov4689_aeb_param.c
++ *
++ * History:
++ *    Author: Lu Wang <lwang@ambarella.com>
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #include "img_adv_struct_arch.h"
+ 
+ img_aeb_tile_config_t ov4689_aeb_tile_config ={
+diff --git a/img_data/adj_params/ov4689_aliso_adj_param.c b/img_data/adj_params/ov4689_aliso_adj_param.c
+index 54ca687..d8abdad 100644
+--- a/img_data/adj_params/ov4689_aliso_adj_param.c
++++ b/img_data/adj_params/ov4689_aliso_adj_param.c
+@@ -1,3 +1,35 @@
++/**
++ * boards/s2lm_ironman/img_data/adj_params/ov4689_aliso_adj_param.c
++ *
++ * History:
++ *    Author: Lu Wang <lwang@ambarella.com>
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #include "img_abs_filter.h"
+ 
+ //######LISO ADJ SET
+diff --git a/img_data/adj_params/ov4689_liso_adj_param.c b/img_data/adj_params/ov4689_liso_adj_param.c
+index 9d893b8..44752a5 100644
+--- a/img_data/adj_params/ov4689_liso_adj_param.c
++++ b/img_data/adj_params/ov4689_liso_adj_param.c
+@@ -1,3 +1,35 @@
++/**
++ * boards/s2lm_ironman/img_data/adj_params/ov4689_liso_adj_param.c
++ *
++ * History:
++ *    Author: Lu Wang <lwang@ambarella.com>
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #include "img_abs_filter.h"
+ 
+ //######LISO ADJ SET
+diff --git a/img_data/adj_params/ov4689_mliso_adj_param.c b/img_data/adj_params/ov4689_mliso_adj_param.c
+index 2577aa5..9a2e52a 100644
+--- a/img_data/adj_params/ov4689_mliso_adj_param.c
++++ b/img_data/adj_params/ov4689_mliso_adj_param.c
+@@ -1,3 +1,35 @@
++/**
++ * boards/s2lm_ironman/img_data/adj_params/ov4689_mliso_adj_param.c
++ *
++ * History:
++ *    Author: Lu Wang <lwang@ambarella.com>
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #include "img_abs_filter.h"
+ 
+ //######LISO ADJ SET
+diff --git a/img_data/adj_params/ov4689_mliso_adj_param_hdr.c b/img_data/adj_params/ov4689_mliso_adj_param_hdr.c
+index 11ede6c..9842151 100644
+--- a/img_data/adj_params/ov4689_mliso_adj_param_hdr.c
++++ b/img_data/adj_params/ov4689_mliso_adj_param_hdr.c
+@@ -1,3 +1,35 @@
++/**
++ * boards/s2lm_ironman/img_data/adj_params/ov4689_mliso_adj_param_hdr.c
++ *
++ * History:
++ *    Author: Lu Wang <lwang@ambarella.com>
++ *
++ * Copyright (c) 2015 Ambarella, Inc.
++ *
++ * This file and its contents ("Software") are protected by intellectual
++ * property rights including, without limitation, U.S. and/or foreign
++ * copyrights. This Software is also the confidential and proprietary
++ * information of Ambarella, Inc. and its licensors. You may not use, reproduce,
++ * disclose, distribute, modify, or otherwise prepare derivative works of this
++ * Software or any portion thereof except pursuant to a signed license agreement
++ * or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
++ * In the absence of such an agreement, you agree to promptly notify and return
++ * this Software to Ambarella, Inc.
++ *
++ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
++ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
++ * MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
++ * IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
++ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
++ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
++ * LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
++ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
++ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
++ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
++ * POSSIBILITY OF SUCH DAMAGE.
++ *
++ */
++
+ #include "img_abs_filter.h"
+ 
+ //######LISO ADJ SET
+diff --git a/rootfs/default/etc/init.d/S10syscfg b/rootfs/default/etc/init.d/S10syscfg
+index 8981b5a..2ed4250 100644
+--- a/rootfs/default/etc/init.d/S10syscfg
++++ b/rootfs/default/etc/init.d/S10syscfg
+@@ -1,47 +1,16 @@
+ #!/bin/sh
+ #
+-# Init S2Lm Ironman board sys config
++# Init system config
+ #
+ 
+-vm_dir=/proc/sys/vm
+-netdir=/proc/sys/net
+-
+ start()
+ {
+-  echo 327680 > $netdir/core/wmem_default
+-  #Turn off laptop mode
+-	echo 0 > $vm_dir/laptop_mode
+-
+-	#update free mem to 2K more than default
+-	echo 2000 > $vm_dir/min_free_kbytes
+-	echo 160 > $vm_dir/vfs_cache_pressure
+-
+-	#if you want to make system flush disk faster, uncomment below
+-	#enable below will reduce write peak, but slightly reduce throughput
+-	echo 1000 > $vm_dir/dirty_expire_centisecs
+-	echo 200 > $vm_dir/dirty_writeback_centisecs
+-	#echo 5 > $vm_dir/dirty_ratio
+-	#echo 5 > $vm_dir/dirty_background_ratio
+-
+-	#remount sd card if there is
+-	#if (grep mmcblk0p1 /proc/mounts); then
+-	#	echo "remount sd card to improve performance"
+-	#	mount -o remount,noatime,nodiratime /tmp/mmcblk0p1
+-	#fi
+-
++	find /etc/sysctl.d -type f -name "*.conf" -exec /sbin/sysctl -p "{}" \;
+ }
+ 
+ stop()
+ {
+-	#Turn on laptop_mode and restore to default
+-	echo 1 > $vm_dir/laptop_mode
+-	echo 2048 > $vm_dir/min_free_kbytes
+-	echo 100 > $vm_dir/vfs_cache_pressure
+-
+-	#if (grep mmcblk0p1 /proc/mounts); then
+-	#	echo "remount sd in default mode"
+-	#	mount -o remount,atime,diratime,relatime /tmp/mmcblk0p1
+-	#fi
++	/bin/true
+ }
+ 
+ restart() {
+diff --git a/rootfs/default/etc/pulse/daemon.conf b/rootfs/default/etc/pulse/daemon.conf
+index 7902e23..a8c88b4 100644
+--- a/rootfs/default/etc/pulse/daemon.conf
++++ b/rootfs/default/etc/pulse/daemon.conf
+@@ -71,11 +71,11 @@ resample-method = speex-float-4
+ ; rlimit-msgqueue = -1
+ ; rlimit-nice = 31
+ ; rlimit-rtprio = 9
+-; rlimit-rttime = 1000000
++rlimit-rttime = 300000
+ 
+ default-sample-format = s16le
+ default-sample-rate = 16000
+-alternate-sample-rate = 16000
++alternate-sample-rate = 8000
+ ; default-sample-channels = 2
+ ; default-channel-map = front-left,front-right
+ 
+diff --git a/rootfs/default/etc/pulse/system.pa b/rootfs/default/etc/pulse/system.pa
+index a7d4c42..cfbe95a 100644
+--- a/rootfs/default/etc/pulse/system.pa
++++ b/rootfs/default/etc/pulse/system.pa
+@@ -63,7 +63,7 @@ load-module module-echo-cancel rate=16000 aec_method=webrtc
+ 
+ .ifexists module-dbus-protocol.so
+ ### If you want to allow TCP connections, set access to "remote" or "local,remote".
+-load-module module-dbus-protocol access=local,remote
++load-module module-dbus-protocol access=local
+ .endif
+ 
+ ### Automatically move streams to the default sink if the sink they are
+diff --git a/rootfs/default/etc/sysctl.d/ambarella.conf b/rootfs/default/etc/sysctl.d/ambarella.conf
+index 71f88c4..e7398ad 100644
+--- a/rootfs/default/etc/sysctl.d/ambarella.conf
++++ b/rootfs/default/etc/sysctl.d/ambarella.conf
+@@ -1,8 +1,9 @@
+-net.core.wmem_default=327680
++net.core.wmem_default=524288
++net.core.wmem_max=1048576
+ vm.laptop_mode=0
+-vm.min_free_kbytes=2000
++vm.min_free_kbytes=2048
+ vm.vfs_cache_pressure=160
+-vm.dirty_expire_centisecs=1000
++vm.dirty_expire_centisecs=600
+ vm.dirty_writeback_centisecs=200
+-#vm.dirty_ratio=5
+-#vm.dirty_background_ratio=5
++vm.dirty_ratio=3
++vm.dirty_background_ratio=3

@@ -1,0 +1,152 @@
+#!/bin/sh
+#
+# Init S2LM ELEKTRA...
+#
+
+if [ -f /etc/ambarella.conf ]; then
+	. /etc/ambarella.conf
+fi
+
+create_node()
+{
+	[ -r /dev/iav ] || mknod -m 666 /dev/iav c 248 0
+	[ -r /dev/ucode ] || mknod -m 666 /dev/ucode c 248 1
+	[ -r /dev/overlay ] || mknod -m 666 /dev/overlay c 248 2
+	[ -r /dev/ambad ] || mknod -m 666 /dev/ambad c 248 248
+	[ -r /dev/dsplog ] || mknod -m 666 /dev/dsplog c 248 249
+}
+
+install_basic_modules(){
+  if [ /lib/modules/$kernel_ver/extra/ambad.ko ]; then
+    modprobe ambad
+    if [ "$?" == 0 ]; then
+      return 0
+    fi
+  fi
+  echo "modprobe ambad failed!"
+  return 1
+}
+
+install_video_modules()
+{
+  #Install IAV
+  if [ /lib/modules/$kernel_ver/extra/hw_timer.ko ]; then
+    modprobe hw_timer fastboot=1
+  fi
+
+  modprobe dsp
+  modprobe dsplog clean_dsplog_memory=0
+  modprobe iav
+  #/sbin/modprobe ambtve
+  modprobe imx322
+  #/usr/local/bin/test_fastosd -a &
+}
+
+install_audio_modules()
+{
+  #Audio
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/snd-soc-core.ko ]; then
+    modprobe snd-soc-core pmdown_time=500
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/ambarella/snd-soc-ambarella.ko ]; then
+    modprobe snd-soc-ambarella
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/ambarella/snd-soc-ambarella-i2s.ko ]; then
+    modprobe snd-soc-ambarella-i2s capture_enabled=0
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/codecs/snd-soc-ambdummy.ko ]; then
+    modprobe snd-soc-ambdummy
+  fi
+  if [ -r /lib/modules/$kernel_ver/kernel/sound/soc/ambarella/snd-soc-amba-board.ko ]; then
+    modprobe snd-soc-amba-board
+  fi
+}
+
+install_wifi_modules(){
+  #gpio 112 up then down to reset wifi chip
+  /usr/local/bin/amba_debug -g 112 -d 0x01
+  sleep 0.01
+  /usr/local/bin/amba_debug -g 112 -d 0x00
+  /usr/local/bin/amba_debug -g 102 -d 0x01
+  modprobe bcmdhd
+}
+
+# install_sdcard_modules(){
+#     echo "prepare sdcard drivers..."
+#     modprobe ehci_hcd
+#     modprobe ehci_ambarella
+#     echo host > /proc/ambarella/usbphy0
+#     modprobe scsi_mod
+#     modprobe usb_storage
+#     modprobe sd_mod
+#     modprobe fat
+#     modprobe vfat
+#     sleep 3
+# }
+
+mount_config_files_partition()
+{
+  echo "start build config files..."
+  /bin/mkdir -p /tmp/config
+  ADD_NUM=$(grep add < /proc/mtd | awk -F: '{print $1}' | sed -e s/^mtd//)
+  #ADD=mtdblock${ADD_NUM}
+
+  /usr/sbin/ubiattach /dev/ubi_ctrl -d 0 -m $ADD_NUM
+  echo "/bin/mount -t ubifs /dev/ubi0_0 /tmp/config -o rw,sync,relatime"
+  /bin/mount -t ubifs /dev/ubi0_0 /tmp/config -o rw,sync,relatime
+
+  if [ ! -d /tmp/config/etc/oryx ]; then
+    /bin/mkdir -p /tmp/config/etc/oryx
+    /bin/mkdir -p /tmp/config/etc/bpi
+    cp /etc/oryx/* /tmp/config/etc/oryx/ -rf
+    cp /etc/bpi/* /tmp/config/etc/bpi/ -rf
+  fi
+  /bin/mount /tmp/config/etc/oryx /etc/oryx
+  /bin/mount /tmp/config/etc/bpi /etc/bpi
+  echo "build config files done"
+}
+
+start()
+{
+  kernel_ver=$(uname -r)
+  create_node
+  install_basic_modules
+  install_video_modules
+  # install_audio_modules
+  install_wifi_modules
+  # install_sdcard_modules
+  modprobe pwm-ambarella
+  modprobe pwm_bl
+  #echo 1 > /sys/class/backlight/0.pwm_bl/brightness
+
+  mount_config_files_partition
+}
+
+stop()
+{
+  kernel_ver=$(uname -r)
+}
+
+restart()
+{
+  stop
+  start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

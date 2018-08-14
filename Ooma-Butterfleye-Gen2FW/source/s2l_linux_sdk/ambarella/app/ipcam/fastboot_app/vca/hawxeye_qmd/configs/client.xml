@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<videoAnalysisManagerParams>
+    <version>
+        <majorVersion>1</majorVersion>
+        <minorVersion>8</minorVersion>
+        <patchVersion>0</patchVersion>
+    </version>
+    <engineConfig>/usr/bin/configs/config.dat</engineConfig>
+    <classifierConfig>/usr/bin/configs/classifier.bin</classifierConfig>
+    <detectorConfig>/usr/bin/configs/detector.bin</detectorConfig>
+    <modelRoot>/usr/bin/</modelRoot>
+    <defaultValues>
+        <enableUnclassified>1</enableUnclassified>
+        <enablePedestrian>1</enablePedestrian>
+        <daytimeSetting>day</daytimeSetting>
+        <locationSetting>outdoor</locationSetting>
+        <motionSensitivityThreshold>0.5</motionSensitivityThreshold>
+        <pedestrianAspectRatioThreshold>1.8</pedestrianAspectRatioThreshold>
+        <unclassifiedMinNormalizedArea>0.010</unclassifiedMinNormalizedArea>
+        <pedestrianMinNormalizedArea>0.015</pedestrianMinNormalizedArea>
+        <unclassifiedTrackAcceptanceThreshold>0.5</unclassifiedTrackAcceptanceThreshold>
+        <pedestrianTrackAcceptanceThreshold>0.5</pedestrianTrackAcceptanceThreshold>
+        <lostTrackDropThreshold>0.5</lostTrackDropThreshold>
+        <stopGoJoinSensitivity>0.5</stopGoJoinSensitivity>
+        <pedestrianClassifierSensitivity>0.5</pedestrianClassifierSensitivity>
+        <filesystemLogging>
+            <enable>0</enable>
+            <configDir>/tmp</configDir>
+            <logDir>/tmp</logDir>
+            <maxBytes>2000000</maxBytes>
+        </filesystemLogging>
+    </defaultValues>
+</videoAnalysisManagerParams>

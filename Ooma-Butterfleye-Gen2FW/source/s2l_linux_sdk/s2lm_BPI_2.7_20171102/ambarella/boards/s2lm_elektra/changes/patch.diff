@@ -1,0 +1,347 @@
+diff --git a/AmbaConfig b/AmbaConfig
+index 1ca13c9..ae386e0 100644
+--- a/AmbaConfig
++++ b/AmbaConfig
+@@ -48,13 +48,21 @@ config CONFIG_BOARD_VERSION_S2LMELEKTRA_IMX322_S2L22M
+ 
+ endchoice
+ 
++menuconfig CONFIG_ELEKTRA_FAST_BOOT
++    bool "Amboot Fast Boot Configuration"
++    depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
++    default n
++    help
++        Boot Sensor, DSP, Audio in Amboot
++
++if CONFIG_ELEKTRA_FAST_BOOT
++
+ menuconfig CONFIG_S2LMELEKTRA_DSP_BOOT
+ 	bool "Start DSP in Amboot"
+ 	default n
+ 	depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
+ 	select AMBOOT_BOOT_DSP
+ 	select AMBOOT_DEV_FAST_BOOT
+-	select CONFIG_S2LMELEKTRA_FASTBOOT_HTTP_SERVER
+ 	help
+ 		Select this option to start preview and encoding in Amboot.
+ 
+@@ -68,6 +76,27 @@ config CONFIG_S2LMELEKTRA_DSP_LOG_CAPTURE
+ 	bool "DSP Log Capture"
+ 	select AMBOOT_DSP_LOG_CAPTURE
+ 	default n
++
++choice
++    prompt "Encode Mode"
++    default CONFIG_ELEKTRA_ISO_PLUS_MODE
++    depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
++
++config CONFIG_ELEKTRA_NORMAL_ISO_MODE
++    bool "Mode 0(Normal ISO Mode)"
++
++config CONFIG_ELEKTRA_ISO_PLUS_MODE
++    bool "Mode 4(ISO PLUS Mode)"
++endchoice
++
++config CONFIG_S2LMELEKTRA_CHECK_LIGHT
++	bool "enable check light sensor in amboot"
++	default n
++	depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
++	help
++		Check_light provides a more accurate 3A but time consuming.
++
++
+ endif ## The end of menuconfig CONFIG_S2LMELEKTRA_DSP_BOOT
+ 
+ menuconfig CONFIG_S2LMELEKTRA_AUDIO_BOOT
+@@ -100,20 +129,6 @@ config CONFIG_S2LMELEKTRA_FASTBOOT_AUDIOPLAY
+ 
+ endif ## The end of menuconfig CONFIG_S2LMELEKTRA_AUDIO_BOOT
+ 
+-config CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
+-	bool "Chip works as advanced ISO mode"
+-	default n
+-	depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
+-	help
+-		Enable DSP to work on advanced ISO mode.
+-
+-config CONFIG_S2LMELEKTRA_BUILD_POWER_TEST_TOOL
+-	bool "Build the power test tool"
+-	default n
+-	depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
+-	help
+-		Build the power test tool.
+-
+ config CONFIG_S2LMELEKTRA_VCA
+ 	bool "Enable VCA"
+ 	default n
+@@ -133,10 +148,4 @@ config IAV_MEM_VCA_SIZE
+ 		1 + 288 + 288 /2: Buffer_height which is (1 for PTS + max_preview_height for luma
+ 		+ max_preview_height / 2 for chroma).
+ 		32: The max number of frames which can dumped.
+-
+-config CONFIG_S2LMELEKTRA_CHECK_LIGHT
+-	bool "enable check light sensor in amboot"
+-	default n
+-	depends on CONFIG_BSP_BOARD_S2LM_ELEKTRA
+-	help
+-		Check_light provides a more accurate 3A but time consuming.
++endif ## CONFIG_ELEKTRA_FAST_BOOT
+diff --git a/bsp/bsp.c b/bsp/bsp.c
+index 1dc6e91..c790337 100644
+--- a/bsp/bsp.c
++++ b/bsp/bsp.c
+@@ -42,6 +42,9 @@
+ 
+ #if defined(CONFIG_S2LMELEKTRA_DSP_BOOT)
+ #include "iav_fastboot.h"
++#include "iav/sensor_light.c"
++#include "iav/smart3a.c"
++
+ #if defined(CONFIG_S2LMELEKTRA_VCA)
+ #include "iav/vca.c"
+ #endif
+@@ -50,11 +53,6 @@
+ #include "iav/sensor_imx322.c"
+ #endif
+ 
+-#if defined(BUILD_AMBARELLA_APP_FASTBOOT_SMART3A)
+-#include "iav/sensor_light.c"
+-#include "iav/smart3a.c"
+-#endif
+-
+ #if defined(CONFIG_S2LMELEKTRA_DSP_FASTOSD)
+ #include "iav/iav_fastosd.c"
+ #endif
+@@ -71,19 +69,16 @@ int idsp_cfg_index = -1;
+ struct adcfw_header *hdr = NULL;
+ 
+ 
+-#if defined(CONFIG_S2LMELEKTRA_DSP_BOOT)
+ /*
+ typedef enum fastboot_mode {
+     FASTBOOT_MODE_WLAN_CONFIG = 0x00,//000
+     FASTBOOT_MODE_WLAN_RECONNECT = 0x01,//001
+     FASTBOOT_MODE_NOTIFY = 0x02, //010
++    FASTBOOT_MODE_REBUILD_HIBERNATION = 0x03, //011
+     FASTBOOT_MODE_RECORDING = 0x04,//100
+     FASTBOOT_MODE_STREAMING = 0x05,// 101
+ } FASTBOOT_MODE;
+ */
+-
+-#define IS_ENABLE_DSP(mode) (mode & 0x04)
+-
+ static int check_boot_mode()
+ {
+ 	//int enable_dsp = gpio_get(38);
+@@ -106,16 +101,15 @@ char *boot_mode_name(int boot_mode){
+ 	default:return "UNKNOWN";
+ 	}
+ }
+-
+-static void reset_wifi_chip(void)
++#if defined(CONFIG_S2LMELEKTRA_DSP_BOOT)
++/*static void reset_wifi_chip(void)
+ {
+ 	gpio_config_sw_out(112);
+ 	gpio_set(112);
+ 	rct_timer_dly_ms(100);
+ 	gpio_clr(112);
+ }
+-#endif
+-
++*/
+ static void amboot_fast_boot_sensor(flpart_table_t *pptb)
+ {
+ 	/* prepare setup sensor */
+@@ -127,25 +121,11 @@ static void amboot_fast_boot_sensor(flpart_table_t *pptb)
+ 	vin_phy_init_pre(SENSOR_PARALLEL_LVCMOS);
+ #endif
+ 
+-#if defined(BUILD_AMBARELLA_APP_FASTBOOT_SMART3A)
+ 	smart3a_ret = find_idsp_cfg(pptb, &hdr, &idsp_cfg_index);
+ 	putstrdec("iDSP config index: ", idsp_cfg_index);
+ 	if (!smart3a_ret) {
+ 		load_shutter_gain_param(hdr, idsp_cfg_index);
+ 	}
+-#else
+-	int rval = bld_loader_load_partition(PART_ADC, pptb, 0, 0);
+-	if (rval < 0) {
+-		putstr("Load PART_ADC  failed\r\n");
+-		return;
+-	}
+-
+-	hdr = (struct adcfw_header *)pptb->part[PART_ADC].mem_addr;
+-	if (hdr->magic != ADCFW_IMG_MAGIC || hdr->fw_size != pptb->part[PART_ADC].img_len) {
+-		putstr("Invalid PART_ADC size\r\n");
+-		return;
+-	}
+-#endif
+ 	return;
+ }
+ 
+@@ -162,6 +142,7 @@ int amboot_update_pandora_aaa(void* pre_aeb)
+ 	return 0;
+ }
+ #endif
++#endif
+ 
+ /* ==========================================================================*/
+ int amboot_bsp_early_init()
+@@ -195,7 +176,9 @@ int amboot_bsp_hw_init()
+ 		putstr("sanitized ptb.dev\r\n");
+ 		flprog_set_part_table(&ptb);
+ 	}
++#if defined(CONFIG_S2LMELEKTRA_DSP_BOOT)
+ 	amboot_fast_boot_sensor(&ptb);
++#endif
+ 	return retval;
+ }
+ 
+@@ -256,7 +239,7 @@ static void amboot_fast_boot(flpart_table_t *pptb,int boot_mode)
+ 		// iav_fastosd(hdr->params_in_amboot.timezone, hdr->params_in_amboot.fastosd_string);
+ 	}
+ 
+-#if defined(CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE) && defined(BUILD_AMBARELLA_APP_FASTBOOT_SMART3A)
++#if defined(CONFIG_ELEKTRA_ISO_PLUS_MODE)
+ 	load_iso_idsp_param(hdr, idsp_cfg_index, boot_mode);
+ #endif
+ 
+@@ -369,18 +352,16 @@ static  int is_pba_bootup(){
+ int amboot_bsp_entry(flpart_table_t *pptb)
+ {
+ 	int retval = 0;
+-	flpart_table_t ptb;
++	int boot_mode = check_boot_mode();
++	printf("%s\n", boot_mode_name(boot_mode));
+ 
+ #if defined(CONFIG_S2LMELEKTRA_DSP_BOOT)
+-	int boot_mode = check_boot_mode();
+-	putstr(boot_mode_name(boot_mode));
+-	putstr("\r\n");
+ 	if (is_pba_bootup()) {
+ 		putstr("PBA Boot Up, do not boot DSP\r\n");
+ 		boot_mode = 0;
+ 	}
+-	//hibernation is enabled, in config mode or rebuild hibernation mode also need to start encoding
+-	if (IS_ENABLE_DSP(boot_mode) || (0 == boot_mode) || (3 == boot_mode)) {
++	//start encoding in recording/streaming mode and in the case of creating hibernation image.
++	if ((4 == boot_mode) || (5 == boot_mode) || (0 == boot_mode) || (3 == boot_mode)) {
+ 		amboot_fast_boot(pptb, boot_mode);
+ #if defined(CONFIG_S2LMELEKTRA_AUDIO_BOOT)
+ 		audio_start();
+@@ -389,18 +370,6 @@ int amboot_bsp_entry(flpart_table_t *pptb)
+ 
+ #endif
+ 
+-	/* Read the partition table */
+-	retval = flprog_get_part_table(&ptb);
+-	if (retval < 0) {
+-		return retval;
+-	}
+-
+-	/* BIOS boot */
+-	if (ptb.dev.rsv[0] > 0) {
+-		putstr("Find BIOS boot flag\r\n");
+-		retval = ptb.dev.rsv[0];
+-	}
+-
+ 	//hibernation is enabled and if current mode is rebuild-hibernation mode, disable hibernation boot
+ 	if ((3 == boot_mode) && (0 == retval)) {
+ 		retval = 4;
+diff --git a/bsp/bsp.h b/bsp/bsp.h
+index 761d954..f957d8b 100644
+--- a/bsp/bsp.h
++++ b/bsp/bsp.h
+@@ -51,7 +51,7 @@
+ #define AMBOOT_SWP_SIZE		0
+ #define AMBOOT_ADD_SIZE		0
+ #define AMBOOT_ADC_SIZE		0
+-#elif defined(CONFIG_S2LMELEKTRA_DSP_BOOT)
++#elif defined(CONFIG_ELEKTRA_FAST_BOOT)
+ #define AMBOOT_BST_SIZE		AMBOOT_BST_FIXED_SIZE
+ #define AMBOOT_PTB_SIZE		(AMBOOT_MIN_PART_SIZE * 7)
+ #define AMBOOT_BLD_SIZE 	(AMBOOT_MIN_PART_SIZE * 8)   //1024K
+diff --git a/bsp/iav/sensor_imx322.c b/bsp/iav/sensor_imx322.c
+index 75ab9ac..beb72d7 100644
+--- a/bsp/iav/sensor_imx322.c
++++ b/bsp/iav/sensor_imx322.c
+@@ -142,7 +142,7 @@ static system_setup_info_t system_setup_info = {
+ 	/* End */
+ 	.pip_vin_enabled = 0,
+ 	.raw_encode_enabled = 0,
+-#ifdef CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
++#ifdef CONFIG_ELEKTRA_ISO_PLUS_MODE
+ 	.adv_iso_disabled = 1,
+ #else
+ 	.adv_iso_disabled = 0,
+@@ -151,7 +151,7 @@ static system_setup_info_t system_setup_info = {
+ 	.sub_mode_sel.power_mode = 0,
+ 	.lcd_3d = 0,
+ 	.iv_360 = 0,
+-#ifdef CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
++#ifdef CONFIG_ELEKTRA_ISO_PLUS_MODE
+ 	.mode_flags = 4,
+ #else
+ 	.mode_flags = 0,
+@@ -211,7 +211,7 @@ static sensor_input_setup_t sensor_input_setup = {
+ 	.first_line_field_5 = 0,
+ 	.first_line_field_6 = 0,
+ 	.first_line_field_7 = 0,
+-#ifdef CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
++#ifdef CONFIG_ELEKTRA_ISO_PLUS_MODE
+ 	.sensor_readout_mode = 0
+ #endif
+ };
+@@ -258,7 +258,7 @@ static video_preproc_t video_preprocessing = {
+ 	.main_out_frame_rate_ext = 0,
+ 	.vid_skip = 0,
+ 	.EIS_delay_count = 0,
+-#ifdef CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
++#ifdef CONFIG_ELEKTRA_ISO_PLUS_MODE
+ 	.Vert_WARP_enable = 1,
+ #else
+ 	.Vert_WARP_enable = 0,
+@@ -274,13 +274,13 @@ static video_preproc_t video_preprocessing = {
+ 	.preview_src_h_B = 0,
+ 	.preview_src_x_offset_B = 0,
+ 	.preview_src_y_offset_B = 0,
+-#ifdef CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
++#ifdef CONFIG_ELEKTRA_ISO_PLUS_MODE
+ 	.still_iso_config_daddr = (u32)DSP_STILL_ISO_CONFIG_START
+ #else
+ 	.still_iso_config_daddr = 0x00000000
+ #endif
+ };
+-#if defined( CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE)
++#if defined( CONFIG_ELEKTRA_ISO_PLUS_MODE)
+ #include "ldc_warp_ctrl_tables.h"
+ static set_warp_control_t set_warp_control_mode4 = {
+ 	.cmd_code = SET_WARP_CONTROL,
+@@ -911,7 +911,7 @@ static int setup_preview(unsigned int enable_ldc)
+ 	add_dsp_cmd(&sensor_input_setup, sizeof(sensor_input_setup));
+ 	add_dsp_cmd(&video_preprocessing, sizeof(video_preprocessing));
+ 	if (enable_ldc){
+-#if defined( CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE)
++#if defined( CONFIG_ELEKTRA_ISO_PLUS_MODE)
+ 		add_dsp_cmd(&set_warp_control_mode4, sizeof(set_warp_control));
+ #else
+ 		add_dsp_cmd(&set_warp_control, sizeof(set_warp_control));
+diff --git a/bsp/iav/smart3a.c b/bsp/iav/smart3a.c
+index b1e5e14..65e35fa 100644
+--- a/bsp/iav/smart3a.c
++++ b/bsp/iav/smart3a.c
+@@ -33,10 +33,13 @@
+ 
+ //#define SMART_3A_DEBUG
+ #include "iav_fastboot.h"
++#ifdef CONFIG_PANDORA_RTOS
++#include "dsp/fb_aaa_ctrl.h"
++#endif
+ 
+ static unsigned char night_mode = 0;
+ 
+-#ifdef CONFIG_S2LMELEKTRA_ENABLE_ADVANCED_ISO_MODE
++#ifdef CONFIG_ELEKTRA_ISO_PLUS_MODE
+ 
+ static struct image_binary_info image_info[MAX_IMAGE_BINARY_NUM] =
+ {

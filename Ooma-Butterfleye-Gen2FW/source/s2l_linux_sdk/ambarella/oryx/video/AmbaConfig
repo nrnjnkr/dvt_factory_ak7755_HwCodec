@@ -1,0 +1,175 @@
+##
+## ambarella/oryx/video/AmbaConfig
+##
+## History:
+##    2015/07/22/ - [Yupeng Chang] Create
+##
+## Copyright (c) 2016 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+menuconfig BUILD_AMBARELLA_ORYX_VIDEO
+  bool "Build Oryx Video"
+  depends on BUILD_AMBARELLA_ORYX_MW
+  select CONFIG_AMBARELLA_LIBJPEG_TURBO_SUPPORT
+  select CONFIG_AMBARELLA_FREETYPE_SUPPORT
+  select BUILD_AMBARELLA_TEXTINSERT_PACKAGE
+  default n
+  help
+    Build Oryx Video
+
+choice
+  bool "Ambarella IAV version"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO
+
+  config CONFIG_AMBARELLA_ORYX_VIDEO_IAV1
+  bool "Select Ambarella IAV version 1"
+  depends on CONFIG_ARCH_S2E
+  help
+    Select Ambarella IAV version 1
+
+  config CONFIG_AMBARELLA_ORYX_VIDEO_IAV2
+  bool "Select Ambarella IAV version 2"
+  depends on CONFIG_ARCH_S2L
+  help
+    Select Ambarella IAV version 2
+
+  config CONFIG_AMBARELLA_ORYX_VIDEO_IAV3
+  bool "Select Ambarella IAV version 3"
+  depends on CONFIG_ARCH_S3L
+  help
+    Select Ambarella IAV version 3
+
+  config CONFIG_AMBARELLA_ORYX_VIDEO_IAV4
+  bool "Select Ambarella IAV version 4"
+  depends on CONFIG_ARCH_S5 || CONFIG_ARCH_S5L
+  help
+    Select Ambarella IAV version 4
+
+endchoice
+
+menuconfig BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN
+  bool "Video Plugin"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO
+  default n
+  help
+      Build Video Device Plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_OVERLAY
+  bool "Video Plugin OVERLAY"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN
+  select BUILD_AMBARELLA_TEXTINSERT_PACKAGE
+  default y
+  help
+    Build Overlay plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_DPTZ
+  bool "Video Plugin DPTZ"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN
+  default y
+  help
+    Build DPTZ plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_WARP
+  bool "Video Plugin WARP"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN && (CONFIG_ARCH_S2E || \
+             CONFIG_ARCH_S2L || CONFIG_ARCH_S3L || CONFIG_ARCH_S5L)
+  select CONFIG_AMBARELLA_DEWARP_LIBRARY
+  select BUILD_AMBARELLA_UTILITIES_PACKAGE
+  default n
+  help
+    Build WARP plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_LBR
+  bool "Video Plugin LBR"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN
+  select BUILD_AMBARELLA_LBR_PACKAGE
+  select BUILD_AMBARELLA_VIDEO_PLUGIN_MD
+  default n
+  help
+    Build LBR plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_SMARTRC
+  bool "Video Plugin SmartRC"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN
+  select CONFIG_AMBARELLA_SMARTRC_LIBRARY
+  default n
+  help
+    Build SmartRC plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_EIS
+  bool "Video Plugin EIS"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN && (CONFIG_ARCH_S2E || \
+             CONFIG_ARCH_S2L || CONFIG_ARCH_S3L)
+  select CONFIG_AMBARELLA_EIS_LIBRARY
+  default n
+  help
+    Build EIS plugin
+
+menuconfig BUILD_AMBARELLA_VIDEO_PLUGIN_VCA
+  bool "Video Plugin VCA"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO_PLUGIN
+  default n
+  help
+      Build VCA plugin
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_VCA_FD
+  bool "VCA plugin Face Detect"
+  depends on BUILD_AMBARELLA_VIDEO_PLUGIN_VCA
+  select CONFIG_AMBARELLA_PREBUILD
+  select CONFIG_AMBARELLA_SMARTCAM_PREBUILD
+  select CONFIG_AMBARELLA_OPT_SC_ALGOS_LIBRARY
+  select CONFIG_AMBARELLA_FREETYPE_SUPPORT
+  default n
+  help
+    Build VCA plugin Face Detect
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_VCA_MD
+  bool "VCA Plugin Motion Detect"
+  depends on BUILD_AMBARELLA_VIDEO_PLUGIN_VCA
+  select BUILD_AMBARELLA_PACKAGE
+  select BUILD_AMBARELLA_SMARTCAM_PACKAGE
+  select BUILD_AMBARELLA_SMARTCAM_PACKAGE_MDET
+
+  select CONFIG_AMBARELLA_PREBUILD
+  select CONFIG_AMBARELLA_SMARTCAM_PREBUILD
+  select CONFIG_AMBARELLA_MDET_LIBRARY
+  default n
+  help
+    Build VCA plugin Motion Detect
+
+config BUILD_AMBARELLA_VIDEO_PLUGIN_VCA_HXE
+  bool "VCA Plugin Hawxeye"
+  depends on  BUILD_AMBARELLA_VIDEO_PLUGIN_VCA
+  select BUILD_AMBARELLA_HAWXEYE_LIBARAY
+  default n
+  help
+    Build VCA plugin Hawxeye
+
+config BUILD_AMBARELLA_ORYX_VIDEO_TEST
+  bool "Build Oryx Video Test program"
+  depends on BUILD_AMBARELLA_ORYX_VIDEO
+  default n
+  help
+    Build Oryx Video Test Program

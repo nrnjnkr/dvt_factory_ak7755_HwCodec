@@ -1,0 +1,51 @@
+#!/bin/sh
+
+if [ -f /etc/ambarella.conf ]; then
+	. /etc/ambarella.conf
+fi
+
+start()
+{
+	kernel_ver=$(uname -r)
+	#Install USB module
+	modprobe ehci-hcd
+	modprobe ohci-hcd
+	modprobe ambarella_udc
+	# if [ -r /lib/modules/$kernel_ver/kernel/drivers/usb/gadget/g_$SYS_USB_G_TYPE.ko ]; then
+	# 		modprobe g_$SYS_USB_G_TYPE $SYS_USB_G_PARAMETER
+	# fi
+    # Naresh K : Disabling default serial-over usb for factory test
+    # as usb controller will used for sdcard mount and ethernet later in
+    # the test.
+    #modprobe g_serial
+    #/usr/local/bin/mptool &
+}
+
+stop()
+{
+	kernel_ver=$(uname -r)
+}
+
+restart()
+{
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

@@ -1,0 +1,113 @@
+#!/bin/sh
+#
+# Init S2LM BTFL...
+#
+
+if [ -f /etc/ambarella.conf ]; then
+	. /etc/ambarella.conf
+fi
+
+
+create_node()
+{
+	[ -r /dev/iav ] || mknod -m 666 /dev/iav c 248 0
+	[ -r /dev/ucode ] || mknod -m 666 /dev/ucode c 248 1
+	[ -r /dev/overlay ] || mknod -m 666 /dev/overlay c 248 2
+	[ -r /dev/ambad ] || mknod -m 666 /dev/ambad c 248 248
+	[ -r /dev/dsplog ] || mknod -m 666 /dev/dsplog c 248 249
+}
+
+install_drivers()
+{
+	kernel_ver=$(uname -r)
+
+	#Install I2C module
+	modprobe i2c-dev
+
+	#Install SPI module
+	modprobe spi_ambarella
+	modprobe spidev
+
+	#Ethernet
+	#modprobe libphy
+	#modprobe ksz80x1r
+	#modprobe ambarella_eth
+
+	#Audio
+	modprobe snd-soc-core pmdown_time=300
+	modprobe snd-soc-ambarella
+	modprobe snd-soc-ambarella-i2s
+	modprobe snd-soc-ak7755
+	modprobe snd-soc-amba-board
+	# modprobe snd-soc-ambdummy
+	# modprobe snd-soc-dummy
+
+	#Power WiFi, BT
+	modprobe ambad
+	/usr/local/bin/amba_debug -g 102 -d 0x01
+	/usr/local/bin/amba_debug -g 101 -d 0x01
+
+	#SD/MMC
+	modprobe ambarella_sd
+	modprobe mmc_block
+
+	#Install input module
+	#modprobe gpio_keys
+	modprobe evdev
+	modprobe ambarella_input_adc
+	#modprobe ambarella_input_ir
+
+	#Install USB module
+	modprobe ehci-hcd
+	modprobe ohci-hcd
+	modprobe ambarella_udc
+	if [ -r /lib/modules/$kernel_ver/kernel/drivers/usb/gadget/g_$SYS_USB_G_TYPE.ko ]; then
+		modprobe g_$SYS_USB_G_TYPE $SYS_USB_G_PARAMETER
+	fi
+
+	echo host > /proc/ambarella/usbphy0
+
+	#Install PWM module
+	modprobe pwm-ambarella
+	modprobe pwm_bl
+
+	#Install wifi and BT module
+	# modprobe bcmdhd
+	# /usr/sbin/brcm_patchram --tosleep=200000 --no2bytes --enable_hci --baudrate 1500000 --patchram /lib/firmware/broadcom/ap6234/bcm43341b0.hcd /dev/ttyS1 &
+
+}
+
+start()
+{
+	install_drivers
+	create_node
+}
+
+stop()
+{
+	kernel_ver=$(uname -r)
+}
+
+restart()
+{
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

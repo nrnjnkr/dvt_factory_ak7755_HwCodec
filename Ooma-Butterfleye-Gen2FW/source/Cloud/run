@@ -1,0 +1,10 @@
+#!/bin/sh
+
+KERNEL_NAME=$(uname -s)
+ARCH_VERSION=$(getconf LONG_BIT)
+
+killall -q wdog
+killall -q node
+
+PATH=./deps/${KERNEL_NAME}-${ARCH_VERSION}/bin:$PATH
+node main.js

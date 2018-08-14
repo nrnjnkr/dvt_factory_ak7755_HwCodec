@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><a href="/">Home</a></h1>
+    <br>
+    <h1><%= title %></h1>
+    <ul>
+      <li><a href="..">..</a></li>
+      <% for(i=0; i < list.length; i++) { %>
+        <% if(list[i].isLink) { %>
+          <% if (list[i].ignorePrefix) {%>
+            <li><a href="<%= list[i].name %>"><%= list[i].name %></a></li>
+          <% } else { %>
+            <li><a href="<%= version + list[i].name %>"><%= version + list[i].name %></a></li>
+          <% } %>
+        <% } else { %>
+          <li><%= version + list[i].name %></li>
+        <% } %>
+      <% } %>
+    </ul>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+LOCAL_SRCS      := $(LOCAL_PATH)/../bpi_vca.cpp
+LOCAL_CFLAGS	:= -I$(LOCAL_PATH)/.. \
+                   -I$(LOCAL_PATH)/../../bpi_app \
+                   -I$(LOCAL_PATH)/../../utils \
+                   -I$(ORYX_DIR)/include \
+                   -I$(ORYX_DIR)/include/utility \
+                   -I$(ORYX_DIR)/include/video \
+                   -std=c++11 -Werror
+LOCAL_LIBS      := libamvideo-reader.so libamvideo-address.so
+LOCAL_LDFLAGS   :=
+
+IPCAM_APP_LIB_DIR         := $(FAKEROOT_DIR)/usr/lib
+VCA_SO_NAME     := libvca.so.0
+LOCAL_SO_NAME   := $(VCA_SO_NAME)
+
+ifeq ($(CONFIG_BPI_APP_HIBERNATION), y)
+LOCAL_CFLAGS += -DPRE_STORED_YUV=1
+endif

@@ -1,0 +1,183 @@
+##
+## boards/BTFL/AmbaConfig
+##
+## History:
+##    2014/03/20 - [Cao Rongrong] Create
+##
+## Copyright (c) 2015 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+config CONFIG_BSP_BOARD_BTFL
+	bool "BTFL"
+	depends on CONFIG_ARCH_S2L
+
+choice
+	prompt "Board Type"
+	default CONFIG_BOARD_VERSION_S2LMBTFL_IMX322_S2L22M
+	depends on CONFIG_BSP_BOARD_BTFL
+	help
+		Select the BSP of the BTFL.
+
+config CONFIG_BOARD_VERSION_S2LMBTFL_IMX322_S2L22M
+        bool "S2L22M"
+
+endchoice
+
+menuconfig CONFIG_BTFL_FAST_BOOT
+    bool "Amboot Fast Boot Configuration"
+    depends on CONFIG_BSP_BOARD_BTFL
+    default n
+    help
+        Boot Sensor, DSP, Audio in Amboot
+
+if CONFIG_BTFL_FAST_BOOT
+
+menuconfig CONFIG_S2LMBTFL_DSP_BOOT
+	bool "Start DSP in Amboot"
+	default n
+	depends on CONFIG_BSP_BOARD_BTFL
+	select AMBOOT_BOOT_DSP
+	select AMBOOT_DEV_FAST_BOOT
+	select CONFIG_S2LMBTFL_FASTBOOT_HTTP_SERVER
+	help
+		Select this option to start preview and encoding in Amboot.
+
+if CONFIG_S2LMBTFL_DSP_BOOT
+
+config CONFIG_S2LMBTFL_ENABLE_ADVANCED_ISO_MODE
+	bool "Encode mode: ISO PLUS"
+	default n
+	depends on CONFIG_BSP_BOARD_BTFL
+	help
+		Enable DSP to work in ISO plus mode.
+
+config CONFIG_S2LMBTFL_DSP_FASTOSD
+	bool "Show Fast OSD on stream"
+	default n
+
+config CONFIG_S2LMBTFL_DSP_LOG_CAPTURE
+	bool "DSP Log Capture"
+	select AMBOOT_DSP_LOG_CAPTURE
+	default n
+
+menu "Advanced Functionality"
+
+config CONFIG_S2LMBTFL_TWO_REFERENCE
+	bool "2 reference for P frame"
+	default n
+	help
+		Enable 2 ref P frame with rotation disabled
+
+config CONFIG_S2LMBTFL_B_FRAME
+	bool "B frame"
+	default n
+	help
+		Add B frame to GOP structure
+
+choice
+	prompt "GOP M"
+	depends on CONFIG_S2LMBTFL_B_FRAME
+	default CONFIG_S2LMBTFL_ONE_B_FRAME
+config CONFIG_S2LMBTFL_ONE_B_FRAME
+	bool "1 B frame"
+	help
+		"GOP structure: IBPBPB...IBPBPB..."
+config CONFIG_S2LMBTFL_TWO_B_FRAME
+	bool "2 B frames"
+	help
+		"GOP structure: IBBPBBPBB...IBBPBBPBB..."
+endchoice
+
+config CONFIG_S2LMBTFL_GOP_LENGTH
+	int "GOP N"
+	default 30
+	range 30 240
+	help
+		Change keyframe interval
+
+endmenu
+
+endif## The end of menuconfig CONFIG_S2LMBTFL_DSP_BOOT
+
+menuconfig CONFIG_S2LMBTFL_AUDIO_BOOT
+	bool "Start Audio in Amboot"
+	default n
+	depends on CONFIG_BSP_BOARD_BTFL
+	select AMBOOT_DEV_FAST_BOOT
+
+	help
+		Select this option to start audio in Amboot.
+
+if CONFIG_S2LMBTFL_AUDIO_BOOT
+
+choice
+	prompt "Audio Codec Device"
+	default CONFIG_S2LMBTFL_AK7755
+
+config CONFIG_S2LMBTFL_WM8974
+	bool "WM8974"
+
+config CONFIG_S2LMBTFL_AK7755
+	bool "AK7755"
+
+endchoice
+
+config CONFIG_S2LMBTFL_FASTBOOT_AUDIOPLAY
+	bool "Start Audio Play in Amboot"
+	default n
+	depends on CONFIG_BSP_BOARD_BTFL
+	select AMBOOT_DEV_FAST_BOOT_AUDIOPLAY
+	help
+		Select this option to start audio in Amboot.
+
+endif ## The end of menuconfig CONFIG_S2LMBTFL_AUDIO_BOOT
+endif ## The end of menuconfig CONFIG_BTFL_FAST_BOOT
+
+config CONFIG_S2LMBTFL_VCA
+	bool "Enable VCA"
+	default n
+	depends on CONFIG_BSP_BOARD_BTFL
+	help
+		Enable VCA
+
+config IAV_MEM_VCA_SIZE
+	hex "IAV Vca Buffer Size"
+	default 0x1000000
+	depends on CONFIG_S2LMBTFL_VCA
+	help
+		This Mem is used for VCA dump, set it as below rules.
+		If this function is not used, set it to 0x0;
+		Or else, default is 5M, it's for cif, 352 * (1 + 288 + 288 /2) * 32  = 4.65 MB.
+		352: Buffer_pitch which is ROUND_UP32(max_preview_width).
+		1 + 288 + 288 /2: Buffer_height which is (1 for PTS + max_preview_height for luma
+		+ max_preview_height / 2 for chroma).
+		32: The max number of frames which can dumped.
+
+config CONFIG_S2LMBTFL_CHECK_LIGHT
+	bool "enable check light sensor in amboot"
+	default n
+	depends on CONFIG_BSP_BOARD_BTFL
+	help
+		Check_light provides a more accurate 3A but time consuming.

@@ -1,0 +1,76 @@
+##
+## app/ipcam/AmbaConfig
+##
+## History:
+##    2010/02/04 - [Jian Tang] Create
+##
+## Copyright (c) 2016 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+menuconfig BUILD_AMBARELLA_APP_IPCAM
+	bool "IPCAM Application Configurations"
+	default n
+	help
+		Build IPCAM Applications.
+
+if BUILD_AMBARELLA_APP_IPCAM
+
+config BUILD_AMBARELLA_APP_IPCAM_CTRLSERVER
+	depends on CONFIG_AMBARELLA_AVAHI_SUPPORT
+	bool "Build IP Camera Control Center Server"
+	default n
+	depends on BUILD_AMBARELLA_APP_IPCAM
+	help
+		Build IP Camera Control Center Server.
+
+choice
+	prompt "Build web cgi"
+	depends on CONFIG_AMBARELLA_WEB_SERVICE_SUPPORT
+	default BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON
+
+config BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_PYTHON
+	bool "CGI in Python"
+	help
+		Build Web CGI with Python
+
+config BUILD_AMBARELLA_APP_IPCAM_WEB_CGI_C
+	bool "CGI in C"
+	help
+		Build Web CGI with C
+
+endchoice
+
+source app/ipcam/rtsp/AmbaConfig
+source app/ipcam/autorun_services/AmbaConfig
+source app/ipcam/smart_ldc/AmbaConfig
+source app/ipcam/http_uploader/AmbaConfig
+source app/ipcam/wowl/AmbaConfig
+source app/ipcam/fastboot_audio/AmbaConfig
+source app/ipcam/fastboot_smart3a/AmbaConfig
+source app/ipcam/fastboot_app/AmbaConfig
+
+endif
+
+

@@ -1,0 +1,177 @@
+##
+## unit_test/private/AmbaConfig
+##
+## History:
+##    2008/02/18 - [Anthony Ginger] Create
+##
+## Copyright (C) 2015 Ambarella, Inc.
+##
+## This file and its contents ("Software") are protected by intellectual
+## property rights including, without limitation, U.S. and/or foreign
+## copyrights. This Software is also the confidential and proprietary
+## information of Ambarella, Inc. and its licensors. You may not use, reproduce,
+## disclose, distribute, modify, or otherwise prepare derivative works of this
+## Software or any portion thereof except pursuant to a signed license agreement
+## or nondisclosure agreement with Ambarella, Inc. or its authorized affiliates.
+## In the absence of such an agreement, you agree to promptly notify and return
+## this Software to Ambarella, Inc.
+##
+## THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+## INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF NON-INFRINGEMENT,
+## MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+## IN NO EVENT SHALL AMBARELLA, INC. OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT,
+## INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+## (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+## LOSS OF USE, DATA, OR PROFITS; COMPUTER FAILURE OR MALFUNCTION; OR BUSINESS
+## INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+## CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+## ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+## POSSIBILITY OF SUCH DAMAGE.
+##
+
+menuconfig BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS
+	bool "Ambarella Private Linux Unit test configs"
+	default n
+	depends on BUILD_AMBARELLA_UNIT_TESTS
+	help
+		Build Ambarella Private Linux Unit tests.
+
+if BUILD_AMBARELLA_PRIVATE_LINUX_UNIT_TESTS
+
+config BUILD_AMBARELLA_UNIT_TESTS_CALIBRATION
+	bool "Build Calibration unit tests"
+	default n
+	help
+		Build Ambarella Private Linux Calibration unit tests.
+
+config BUILD_AMBARELLA_UNIT_TESTS_AMBADEBUG
+	bool "Build Debug unit tests"
+	default n
+	help
+		Build Ambarella Private Linux amba_debug.
+
+menuconfig BUILD_AMBARELLA_UNIT_TESTS_IAV
+	bool "Build IAV unit tests"
+	default n
+	help
+		Build Ambarella Private Linux IAV unit tests.
+
+if BUILD_AMBARELLA_UNIT_TESTS_IAV
+config BUILD_AMBARELLA_IAV_AUTO_TEST
+	bool "Build IAV unit auto tests"
+	default n
+	help
+		Build Ambarella Private Linux IAV unit auto tests.
+endif
+
+menuconfig BUILD_AMBARELLA_UNIT_TESTS_IDSP
+	bool "Build Image DSP unit tests"
+	default n
+	help
+		Build Ambarella Private Linux image idsp unit tests.
+
+if BUILD_AMBARELLA_UNIT_TESTS_IDSP
+
+config BUILD_AMBARELLA_UNIT_TESTS_IDSP_EXP
+	bool "Build IDSP EXPERIMENTAL unit tests"
+	default n
+	help
+		Build Ambarella Private IDSP experimental unit tests
+
+endif
+
+config BUILD_AMBARELLA_UNIT_TESTS_CUSTOM_IDSP
+	bool "Build IDSP Customized unit tests"
+	default n
+	help
+		Build Ambarella Private Linux custom aaa.
+
+config BUILD_AMBARELLA_UNIT_TESTS_IR_DEMO
+	bool "Build IR demo unit tests"
+	default n
+	depends on BUILD_AMBARELLA_TEXTINSERT_PACKAGE
+	help
+		Build Ambarella Private ir demo test.
+
+config BUILD_AMBARELLA_UNIT_TESTS_MW
+	bool "Build Middleware unit tests"
+	default n
+	help
+		Build Ambarella Private Linux Middleware unit tests.
+
+config BUILD_AMBARELLA_UNIT_TESTS_PACKAGE
+	bool "Build Package unit tests"
+	default n
+	select CONFIG_AMBARELLA_DEWARP_LIBRARY
+	select CONFIG_AMBARELLA_EIS_LIBRARY
+	select CONFIG_AMBARELLA_SMARTRC_LIBRARY
+	select CONFIG_AMBARELLA_MDET_LIBRARY
+	help
+		Build Ambarella Private Linux Package unit tests.
+
+config BUILD_AMBARELLA_UNIT_TESTS_VIN
+	bool "Build VIN unit tests"
+	default n
+	help
+		Build Ambarella Private Linux VIN unit tests.
+
+config BUILD_AMBARELLA_UNIT_TESTS_VOUT
+	bool "Build VOUT unit tests"
+	default n
+	help
+		Build Ambarella Private Linux VOUT unit tests.
+
+config BUILD_AMBARELLA_UNIT_TESTS_VSYNC
+	bool "Build Vsync unit tests"
+	default n
+	help
+		Build Ambarella Private Linux soft v-sync test.
+
+config 	BUILD_AMBARELLA_UNIT_TESTS_SHMOO
+	bool "Build Shmoo unit tests"
+	default n
+	help
+		Build Ambarella Private Linux shmoo test.
+
+config BUILD_AMBARELLA_UNIT_TESTS_HW_TIMER
+	bool "Build hw_timer unit tests"
+	default n
+	help
+		Build Ambarella Private hw_timer unit test.
+
+config BUILD_AMBARELLA_UNIT_TESTS_AUDIO
+	bool "Build Audio unit tests"
+	default n
+	help
+		Build Ambarella Private Linux audio tests.
+
+endif
+
+menuconfig BUILD_AMBARELLA_UNIT_TESTS_TEK
+    bool "Teknique Unit test configs"
+    default y
+    depends on (BUILD_AMBARELLA_UNIT_TESTS && CONFIG_BSP_BOARD_BTFL)
+    help
+        Build Ambarella Teknique Unit tests.
+
+if BUILD_AMBARELLA_UNIT_TESTS_TEK
+
+config BUILD_AMBARELLA_UNIT_TESTS_TEK_DAY_NIGHT
+    bool "Build day night unit test"
+    default y
+    help
+        Build Teknique day night test.
+
+config BUILD_AMBARELLA_UNIT_TESTS_TEK_ALS
+    bool "Build als unit test"
+    default y
+    help
+        Build Teknique ALS test.
+
+config BUILD_AMBARELLA_UNIT_TESTS_TEK_MCU_OTA
+	bool "Build mcu ota test"
+	default y
+	help
+		Build mcu ota test
+
+endif
